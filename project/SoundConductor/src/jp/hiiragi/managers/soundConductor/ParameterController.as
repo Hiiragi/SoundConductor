@@ -50,6 +50,7 @@ package jp.hiiragi.managers.soundConductor
 //  Public methods
 //
 //--------------------------------------------------------------------------
+
 		override public function setValue(value:Number, easingTimeByMS:Number = 0, easing:Function = null):void
 		{
 			value = applyLimitter(value);

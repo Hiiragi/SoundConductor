@@ -188,6 +188,12 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 
+		public function validateNow():void
+		{
+			// マスターボリュームとグループボリュームを適用する。
+			valueChanged();
+		}
+
 //--------------------------------------------------------------------------
 //
 //  Protected methods

@@ -152,31 +152,6 @@ package jp.hiiragi.managers.soundConductor
 			_soundChannel.stop();
 		}
 
-		/*
-		private var _volumeBeforeMute:Number;
-
-		override public function mute():void
-		{
-			if (isMute)
-				return;
-
-			super.mute();
-
-			_volumeBeforeMute = volumeController.value;
-			volumeController.setEnabled(false);
-		}
-
-		override public function unmute():void
-		{
-			if (!isMute)
-				return;
-
-			super.unmute();
-
-			volumeController.setEnabled(true);
-		}
-		*/
-
 		override public function dispose():void
 		{
 			super.dispose();
@@ -225,6 +200,17 @@ package jp.hiiragi.managers.soundConductor
 			setVolumeController(new SoundParameterController(SoundParameterType.VOLUME, _soundChannel, masterVolumeController, groupVolumeController));
 			setPanController(new SoundParameterController(SoundParameterType.PAN, _soundChannel));
 
+			if (volume == 1)
+			{
+				// 音は最大音量のままなので、マスターボリュームとグループボリュームを適用させるのみにする
+				SoundParameterController(volumeController).validateNow();
+			}
+			else
+			{
+				// 音の変更があるので、通常通りセットする
+				volumeController.setValue(volume);
+			}
+
 			var enabled:Boolean = validateEnabled();
 
 			if (enabled)
@@ -235,24 +221,6 @@ package jp.hiiragi.managers.soundConductor
 			{
 				volumeController.setEnabled(false);
 			}
-		/*
-		// ボリュームの計算を行い、適用する
-		var calcuratedVolume:Number = (fadeInTimeByMS > 0) ? 0 : volume;
-		if (groupVolumeController != null)
-		{
-			calcuratedVolume *= groupVolumeController.value;
-		}
-
-		calcuratedVolume *= masterVolumeController.value;
-
-		_soundChannel.soundTransform = new SoundTransform(calcuratedVolume, pan);
-
-		// フェードインを行う場合は、その処理を行う
-		if (fadeInTimeByMS > 0)
-		{
-			volumeController.setValue(calcuratedVolume, fadeInTimeByMS, fadeInEasing);
-		}
-		*/
 		}
 
 //--------------------------------------------------------------------------
