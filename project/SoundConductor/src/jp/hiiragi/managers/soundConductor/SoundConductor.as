@@ -429,7 +429,7 @@ package jp.hiiragi.managers.soundConductor
 		 * @param loops
 		 * @param volume
 		 * @param pan
-		 * @return 
+		 * @return 再生した <code>Sound</code> から生成される <code>SoundChannel</code> クラスです。何らかの問題で再生されなかった場合は <code>null</code> が返ります。
 		 */		
 		public static function playSoundObject(sound:Sound,  groupName:String = "", startTime:Number = 0, loops:int = 0, volume:Number = 1, pan:Number = 0):SoundChannel
 		{
@@ -457,7 +457,10 @@ package jp.hiiragi.managers.soundConductor
 			}
 			
 			var soundChannel:SoundChannel = sound.play(startTime, loops);
-			soundChannel.soundTransform = new SoundTransform(volume, pan);
+			if (soundChannel != null)
+			{
+				soundChannel.soundTransform = new SoundTransform(volume, pan);
+			}
 			
 			return soundChannel;
 		}
