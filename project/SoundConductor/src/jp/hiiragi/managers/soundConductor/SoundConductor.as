@@ -457,10 +457,7 @@ package jp.hiiragi.managers.soundConductor
 			}
 			
 			var soundChannel:SoundChannel = sound.play(startTime, loops);
-			if (soundChannel != null)
-			{
-				soundChannel.soundTransform = new SoundTransform(volume, pan);
-			}
+			soundChannel.soundTransform = new SoundTransform(volume, pan);
 			
 			return soundChannel;
 		}
