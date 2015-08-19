@@ -43,7 +43,9 @@ version : 0.1
 ### 初期化
 このライブラリは、必ず初期化する必要があります。
 
-`SoundConductor.initialize(true, SoundBufferType.BUFFER_SIZE_4096);`
+```
+SoundConductor.initialize(true, SoundBufferType.BUFFER_SIZE_4096);
+```
 
 第1引数は、「SoundGenerator 機能を使用するかどうか」を指定します。デフォルトは false です。第2引数は、SoundGenerator 機能を使用する際のバッファサイズを指定します。
 
@@ -51,30 +53,38 @@ version : 0.1
 このライブラリの目玉といえる機能です。主にゲームなどの「コンテンツの BGM 」で使える機能です。
 
 #### まずは「登録用データ」を作成
-`var soundObject:Sound = new Sound(...);
-var bgm01Register:RegisterSoundInfo = new RegisterSoundInfo(soundObject, true);`
+```
+var soundObject:Sound = new Sound(...);
+var bgm01Register:RegisterSoundInfo = new RegisterSoundInfo(soundObject, true);
+```
 
 登録用データは RegisterSoundInfo オブジェクトを使用します。コンストラクタにサウンドオブジェクトを指定します。
 第2引数は、PCM の ByteArray を作成するかを指定します。これを true にすると、Sound オブジェクトから PCM の ByteArray を作成します。無限ループは SoundGenerator 機能を使用するため、このパラメータは true にする必要があります。
 
 #### SoundConductor に登録
-`var soundId:SoundId = SoundConductor.registerSound(bgm01Register);`
+```
+var soundId:SoundId = SoundConductor.registerSound(bgm01Register);
+```
 
 先ほどの登録用データを、SoundConductor に登録します。登録すると、SoundId オブジェクトが返されます。これが、登録したサウンドに紐づいた ID となり、この ID を使用してサウンドの再生を行うことになります。
 
 #### 「再生用データ」を作成
-`var bgm01PlayInfo:SoundPlayInfo = new SoundPlayInfo(soundId);
+```
+var bgm01PlayInfo:SoundPlayInfo = new SoundPlayInfo(soundId);
 bgm01PlayInfo.loops = SoundLoopType.INFINITE_LOOP;
 bgm01PlayInfo.startTimeByMS = 500;	// 500ms の部分から開始
 bgm01PlayInfo.loopStartTimeByMS = 7991;	// ループの際は、7991ms の部分からループ開始
-bgm01PlayInfo.loopEndTimeByMS = 107650;	// 107650ms になったらループ開始位置まで戻る`
+bgm01PlayInfo.loopEndTimeByMS = 107650;	// 107650ms になったらループ開始位置まで戻る
+```
 
 再生用データは、SoundPlayInfo オブジェクトを使用します。先ほど登録した際に入手した soundId を指定します。
 
 このオブジェクトでは、再生情報をプロパティとして指定します。内容は上記コードのコメントを参考ください。
 
 #### 再生
-`var bgmController1:SoundController = SoundConductor.play(bgm01PlayInfo);`
+```
+var bgmController1:SoundController = SoundConductor.play(bgm01PlayInfo);
+```
 
 先ほど作成した「再生用データ」を用いて、SoundConductor で再生を行います。これで「500ms から再生を開始し、107650ms に到達したら、7991ms に戻ってループ再生を行うという「イントロ付き無限ループ」が実現されます。
 
