@@ -1,7 +1,8 @@
 # SoundConductor
 sound manager for ActionScript 3.
 
-version : 0.1
+Licence : MIT Licence.
+Version : 0.1
 
 ** 執筆中 **
 
@@ -25,7 +26,7 @@ version : 0.1
 - 「マスターボリューム」「グループボリューム」、そして「音そのもののボリューム」を使用した多段性のボリューム調整機能
 - ポーズ・リジューム機能
 
-主にゲームなどの、サウンドを常用的に扱うコンテンツに特化したライブラリとなっています。
+主にゲームなどの、「サウンドを常用的に扱うコンテンツ」に特化したライブラリとなっています。
 
 ## 使い方
 ### 前知識
@@ -49,7 +50,7 @@ SoundConductor.initialize(true, SoundBufferType.BUFFER_SIZE_4096);
 
 第1引数は、「SoundGenerator 機能を使用するかどうか」を指定します。デフォルトは false です。第2引数は、SoundGenerator 機能を使用する際のバッファサイズを指定します。
 
-### 無限ループ機能
+### イントロ付き無限ループ機能
 このライブラリの目玉といえる機能です。主にゲームなどの「コンテンツの BGM 」で使える機能です。
 
 #### まずは「登録用データ」を作成
@@ -71,6 +72,7 @@ var soundId:SoundId = SoundConductor.registerSound(bgm01Register);
 #### 「再生用データ」を作成
 ```
 var bgm01PlayInfo:SoundPlayInfo = new SoundPlayInfo(soundId);
+bgm01PlayInfo.soundPlayType = SoundPlayType.SINGLE_SOUND_GENERATOR;
 bgm01PlayInfo.loops = SoundLoopType.INFINITE_LOOP;
 bgm01PlayInfo.startTimeByMS = 500;	// 500ms の部分から開始
 bgm01PlayInfo.loopStartTimeByMS = 7991;	// ループの際は、7991ms の部分からループ開始
@@ -79,7 +81,9 @@ bgm01PlayInfo.loopEndTimeByMS = 107650;	// 107650ms になったらループ開�
 
 再生用データは、SoundPlayInfo オブジェクトを使用します。先ほど登録した際に入手した soundId を指定します。
 
-このオブジェクトでは、再生情報をプロパティとして指定します。内容は上記コードのコメントを参考ください。
+soundPlayType プロパティは、どういった機能を用いて再生を行うか」を指定する大事なパラメータです。SoundPlayType.SINGLE_SOUND_GENERATOR は一つのサウンドに付き一つの SoundGenerator（Sound オブジェクト）を生成し、利用します。この詳細はいずれ後述します。
+
+このオブジェクトでは、上記のように、再生情報をプロパティとして指定します。内容は上記コードのコメントを参考ください。
 
 #### 再生
 ```
@@ -100,3 +104,12 @@ SoundController は、AS3 の Sound クラスにおける SoundChannel と同じ
 - また、SoundGenerator の特性上、再生開始と終了にラグが生じます。
 - PCM の ByteArray を使うため、メモリの使用量が相当にあります。特にサウンドが長ければ長いほど顕著になります。モバイルなどで扱う場合はこれが原因でアプリ自体が落ちる可能性もあります。ご注意ください。
 - 大量に使うと、サウンド生成の処理が多量に走るため、パフォーマンスに影響する可能性があります。
+
+### サウンド再生の種類
+SoundPlayType クラスで定義されている再生手法について説明します。現在執筆中。
+
+### サウンドのグルーピング機能
+`SoundConductor.createGroup()` を使用します。現在執筆中。
+
+### 登録を行わない再生手法
+`SoundConductor.playSoundObject()` を使用します。現在執筆中。
