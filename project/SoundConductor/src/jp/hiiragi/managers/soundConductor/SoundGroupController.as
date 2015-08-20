@@ -71,7 +71,7 @@ package jp.hiiragi.managers.soundConductor
 //--------------------------------------------------------------------------
 		public function SoundGroupController(groupName:String)
 		{
-			_isMute = true;
+			_isMute = false;
 
 			_groupName = groupName;
 			_groupVolumeController = new ParameterController(1);
