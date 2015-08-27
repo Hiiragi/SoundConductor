@@ -1,8 +1,8 @@
 # SoundConductor
 sound manager for ActionScript 3.
 
-Licence : MIT Licence.
-Version : 0.1
+- Licence : MIT Licence.
+- Version : 0.1
 
 ** 執筆中 **
 
@@ -56,7 +56,7 @@ SoundConductor.initialize(true, SoundBufferType.BUFFER_SIZE_4096);
 #### まずは「登録用データ」を作成
 ```
 var soundObject:Sound = new Sound(...);
-var bgm01Register:RegisterSoundInfo = new RegisterSoundInfo(soundObject, true);
+var bgmRegister:RegisterSoundInfo = new RegisterSoundInfo(soundObject, true);
 ```
 
 登録用データは RegisterSoundInfo オブジェクトを使用します。コンストラクタにサウンドオブジェクトを指定します。
@@ -64,30 +64,30 @@ var bgm01Register:RegisterSoundInfo = new RegisterSoundInfo(soundObject, true);
 
 #### SoundConductor に登録
 ```
-var soundId:SoundId = SoundConductor.registerSound(bgm01Register);
+var soundId:SoundId = SoundConductor.registerSound(bgmRegister);
 ```
 
 先ほどの登録用データを、SoundConductor に登録します。登録すると、SoundId オブジェクトが返されます。これが、登録したサウンドに紐づいた ID となり、この ID を使用してサウンドの再生を行うことになります。
 
 #### 「再生用データ」を作成
 ```
-var bgm01PlayInfo:SoundPlayInfo = new SoundPlayInfo(soundId);
-bgm01PlayInfo.soundPlayType = SoundPlayType.SINGLE_SOUND_GENERATOR;
-bgm01PlayInfo.loops = SoundLoopType.INFINITE_LOOP;
-bgm01PlayInfo.startTimeByMS = 500;	// 500ms の部分から開始
-bgm01PlayInfo.loopStartTimeByMS = 7991;	// ループの際は、7991ms の部分からループ開始
-bgm01PlayInfo.loopEndTimeByMS = 107650;	// 107650ms になったらループ開始位置まで戻る
+var bgmPlayInfo:SoundPlayInfo = new SoundPlayInfo(soundId);
+bgmPlayInfo.soundPlayType = SoundPlayType.SINGLE_SOUND_GENERATOR;
+bgmPlayInfo.loops = SoundLoopType.INFINITE_LOOP;
+bgmPlayInfo.startTimeByMS = 500;	// 500ms の部分から開始
+bgmPlayInfo.loopStartTimeByMS = 7991;	// ループの際は、7991ms の部分からループ開始
+bgmPlayInfo.loopEndTimeByMS = 107650;	// 107650ms になったらループ開始位置まで戻る
 ```
 
 再生用データは、SoundPlayInfo オブジェクトを使用します。先ほど登録した際に入手した soundId を指定します。
 
-soundPlayType プロパティは、どういった機能を用いて再生を行うか」を指定する大事なパラメータです。SoundPlayType.SINGLE_SOUND_GENERATOR は一つのサウンドに付き一つの SoundGenerator（Sound オブジェクト）を生成し、利用します。この詳細はいずれ後述します。
+soundPlayType プロパティは、「どういった機能を用いてサウンド再生を行うか」を指定する大事なパラメータです。SoundPlayType.SINGLE_SOUND_GENERATOR は一つのサウンドに付き一つの SoundGenerator（Sound オブジェクト）を生成し、利用します。この詳細は後述しています。
 
 このオブジェクトでは、上記のように、再生情報をプロパティとして指定します。内容は上記コードのコメントを参考ください。
 
 #### 再生
 ```
-var bgmController1:SoundController = SoundConductor.play(bgm01PlayInfo);
+var bgmController:SoundController = SoundConductor.play(bgmPlayInfo);
 ```
 
 先ほど作成した「再生用データ」を用いて、SoundConductor で再生を行います。これで「500ms から再生を開始し、107650ms に到達したら、7991ms に戻ってループ再生を行うという「イントロ付き無限ループ」が実現されます。
@@ -101,15 +101,32 @@ SoundController は、AS3 の Sound クラスにおける SoundChannel と同じ
 
 ### SoundGenerator 機能を使う際の注意点
 - 音質が変化する場合があります。
-- また、SoundGenerator の特性上、再生開始と終了にラグが生じます。
+- SoundGenerator の特性上、再生開始と終了にラグが生じます。
 - PCM の ByteArray を使うため、メモリの使用量が相当にあります。特にサウンドが長ければ長いほど顕著になります。モバイルなどで扱う場合はこれが原因でアプリ自体が落ちる可能性もあります。ご注意ください。
 - 大量に使うと、サウンド生成の処理が多量に走るため、パフォーマンスに影響する可能性があります。
 
 ### サウンド再生の種類
-SoundPlayType クラスで定義されている再生手法について説明します。現在執筆中。
+`SoundConductor` においてサウンドを登録する際、3パターンの再生手法を選択することが出来ます。
+- `SoundPlayType.NORMAL_SOUND_ARCHITECT`
+- `SoundPlayType.SINGLE_SOUND_GENERATOR`
+- `SoundPlayType.SHARED_SOUND_GENERATOR`
+
+`SoundPlayType.NORMAL_SOUND_ARCHITECT` は、通常の `Sound` をそのまま登録し、再生を行います。そのため、挙動は `Sound` クラスそのものです。そのため、「イントロ付き無限ループ」を行うことも出来ません。（通常の単純なループは可能です）
+
+`SoundPlayType.SINGLE_SOUND_GENERATOR` は、登録する一つのサウンドに対して、一つの `Sound` オブジェクトを割り当て、そこで SoundGenerator を使用します。SoundGenerator を使うのであれば、この再生手法を使うのがベターです。ボリューム変更とパン変更も `SoundChannel` の機能を使うので、適用は早いです。
+
+`SoundPlayType.SHARED_SOUND_GENERATOR` は、共用の SoundGenerator を使用し、一つ以上のサウンドを合成して再生します。そのため、`SoundChannel` による同時発音数の制限はありません。但し、そもそも SoundGenerator を使うには PCM の ByteArray 化を行う必要があるので、複数同時に扱う場合はメモリが大量に必要になります。また、この手法はボリューム変更とパン変更を波形を弄って行わなければならないため、必然的にタイムラグが発生します。
 
 ### サウンドのグルーピング機能
-`SoundConductor.createGroup()` を使用します。現在執筆中。
+例えばゲームなどでよくあるのが、BGM、効果音、ボイスなどをカテゴリーごとに制御するという仕様です。`SoundConductor` では、グループ機能というのを扱うことにより、グループごとのサウンド制御を可能にします。
+
+`SoundConductor.createGroup()` を使用し、'SoundGroupController' をオブジェクトを取得します。このコントローラを使用し、グループの再生の制御を行います。
+
+再生するサウンドをグループに紐づけたい場合は、`SoundConductor.createGroup()` を扱う際に登録する「グループ名」を、`SoundConductor.play()` の引数に渡すことで可能です。
 
 ### 登録を行わない再生手法
-`SoundConductor.playSoundObject()` を使用します。現在執筆中。
+今までは「登録を行うことで管理をする」という手法に基づいて説明してきました。しかし、そんなに何度も使わない、ちょっとしたサウンドに対していちいち登録を行うというのは面倒なものです。
+
+`SoundConductor` では、「管理は行わず、現在制御している音量を元にサウンドの再生を行う」だけの再生手法を用意しました。`SoundConductor.playSoundObject()` を使用します。
+
+これは本当に単純に、マスターボリュームと、場合によってはグループのボリュームを換算して、普通に 'Sound' を鳴らすというものです。ですので、戻り値は `SoundController` ではなく、'SoundChannnel' となります。`SoundConductor` では管理されないため、再生したした後は、'SoundConductor' による制御は適用されません。
