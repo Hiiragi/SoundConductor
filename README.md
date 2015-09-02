@@ -41,6 +41,8 @@ sound manager for ActionScript 3.
 
 少々煩雑な扱いにはなってしまいますが、この手順を踏むことにより、多くの機能や設定を行うことが出来るようになっています。
 
+後述しますが、登録を行わずに再生することも可能です。その際、管理されることによる恩恵はうけれなくなります。
+
 ### 初期化
 このライブラリは、必ず初期化する必要があります。
 
@@ -48,7 +50,7 @@ sound manager for ActionScript 3.
 SoundConductor.initialize(true, SoundBufferType.BUFFER_SIZE_4096);
 ```
 
-第1引数は、「SoundGenerator 機能を使用するかどうか」を指定します。デフォルトは false です。第2引数は、SoundGenerator 機能を使用する際のバッファサイズを指定します。
+第1引数は、「SoundGenerator 機能を使用するかどうか」を指定します。デフォルトは false です。第2引数は、SoundGenerator 機能を使用する際のバッファサイズを指定します。第1引数が false であれば指定しなくても良いです。
 
 ### イントロ付き無限ループ機能
 このライブラリの目玉といえる機能です。主にゲームなどの「コンテンツの BGM 」で使える機能です。

@@ -57,6 +57,9 @@ package jp.hiiragi.managers.soundConductor.error
 		/** useSharedSoundGenerator プロパティは false です。SoundPlayType.SHARED_SOUND_GENERATOR での再生は出来ません。 */
 		public static const ERROR_10202:SoundConductorErrorType = create(10202, "useSharedSoundGenerator プロパティは false です。SoundPlayType.SHARED_SOUND_GENERATOR での再生は出来ません。");
 
+		/** 指定されたオブジェクトには soundTransform プロパティが存在しません。 */
+		public static const ERROR_10203:SoundConductorErrorType = create(10203, "指定されたオブジェクトには soundTransform プロパティが存在しません。");
+
 
 //--------------------------------------------------------------------------
 //

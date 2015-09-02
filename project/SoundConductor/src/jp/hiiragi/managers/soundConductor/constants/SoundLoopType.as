@@ -1,5 +1,7 @@
 package jp.hiiragi.managers.soundConductor.constants
 {
+	import jp.hiiragi.managers.soundConductor.error.SoundConductorError;
+	import jp.hiiragi.managers.soundConductor.error.SoundConductorErrorType;
 
 	/**
 	 * <code>SoundLoopType</code> クラスは、サウンドのループ機能に関する定数値の列挙です。
@@ -25,12 +27,12 @@ package jp.hiiragi.managers.soundConductor.constants
 //
 //--------------------------------------------------------------------------
 		/**
-		 * コンストラクタです。外部からはインスタンス化できません。
+		 * コンストラクタです。外部からはインスタンス化できません.
 		 * @private
 		 */
 		public function SoundLoopType()
 		{
-			throw new Error("This class is static.");
+			throw new SoundConductorError(SoundConductorErrorType.ERROR_10001);
 		}
 
 	}

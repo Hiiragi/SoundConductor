@@ -434,34 +434,18 @@ package jp.hiiragi.managers.soundConductor
 		public static function playSoundObject(sound:Sound,  groupName:String = "", startTime:Number = 0, loops:int = 0, volume:Number = 1, pan:Number = 0):SoundChannel
 		{
 			var playable:Boolean = checkPlayable();
-			var groupController:SoundGroupController;
 			
 			if (!playable) return null;
 			
 			volume *= getMasterVolume();
-			
-			if (groupName.length > 0)
-			{
-				groupController = getGroupController(groupName);
-				if (groupController != null)
-				{
-					if (groupController.isMute)
-					{
-						volume = 0;
-					}
-					else
-					{
-						volume *= groupController.getVolume();
-					}
-				}
-			}
+			volume = applyGroupVolume(volume, groupName);
 			
 			var soundChannel:SoundChannel = sound.play(startTime, loops);
 			soundChannel.soundTransform = new SoundTransform(volume, pan);
 			
 			return soundChannel;
 		}
-		
+	
 
 //--------------------------------------------------------------------------
 //
@@ -498,6 +482,11 @@ package jp.hiiragi.managers.soundConductor
         {
             checkInitialize();
 
+			if (groupName == "")
+			{
+				return null;
+			}
+			
             var len:int = _groupList.length;
             for (var i:int = 0; i < len; i++)
             {
@@ -560,6 +549,34 @@ package jp.hiiragi.managers.soundConductor
             masterVolumeController.setValue(volume, easingTimeByMS, easing);
         }
 
+		/**
+		 * <code>soundTransform</code> プロパティが存在する指定したオブジェクトにマスターボリュームを適用します.
+		 * <p>グループ名を指定した場合、そのグループのボリュームも適用します。</p>
+		 * @param object
+		 * @param groupName
+		 */		
+		public static function setVolumeToObject(object:*, groupName:String = ""):void
+		{
+			checkInitialize();
+			
+			if (object.hasOwnProperty("soundTransform"))
+			{
+				var volume:Number = 1;
+				
+				volume *= getMasterVolume();
+				volume = applyGroupVolume(volume, groupName);
+				
+				var soundTransform:SoundTransform = object["soundTransform"];
+				var pan:int = soundTransform.pan;
+				
+				object["soundTransform"] = new SoundTransform(volume, pan);
+			}
+			else
+			{
+				throw new SoundConductorError(SoundConductorErrorType.ERROR_10203);
+			}
+		}
+		
 //--------------------------------------------------------------------------
 //
 //  Class Public methods - EventDispatcher
@@ -590,6 +607,7 @@ package jp.hiiragi.managers.soundConductor
 		{
 			return _eventDispatcher.willTrigger(type);
 		}
+		
 //--------------------------------------------------------------------------
 //
 //  Class Protected methods
@@ -629,6 +647,24 @@ package jp.hiiragi.managers.soundConductor
 			return false;
 		}
 
+		
+		/**
+		 * 指定グループのボリュームを適用した値を取得します.
+		 * @param volume
+		 * @param groupName
+		 * @return 指定グループのボリュームです。指定グループが無い場合は、何も適用しません。
+		 */		
+		private static function applyGroupVolume(volume:Number, groupName:String = ""):Number
+		{
+			var groupController:SoundGroupController = getGroupController(groupName);
+			if (groupController != null)
+			{
+				volume *= groupController.getVolume();
+			}
+			
+			return volume;
+		}	
+		
 //--------------------------------------------------------------------------
 //
 //  Class Event handlers
