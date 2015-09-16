@@ -141,181 +141,178 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 		//----------------------------------
-		//  propertyName
+		//  soundContoller
 		//----------------------------------
 		private var _soundContoller:SoundController;
 
-		public function get soundContoller():SoundController
-		{
-			return _soundContoller;
-		}
+		public function get soundContoller():SoundController  { return _soundContoller; }
 
-		public function set soundContoller(value:SoundController):void
-		{
-			_soundContoller = value;
-		}
+		public function set soundContoller(value:SoundController):void  { _soundContoller = value; }
 
-
+		//----------------------------------
+		//  soundId
+		//----------------------------------
 		private var _soundId:SoundId;
 
-		public function get soundId():SoundId
-		{
-			return _soundId;
-		}
+		public function get soundId():SoundId  { return _soundId; }
 
-
+		//----------------------------------
+		//  soundId
+		//----------------------------------
 		private var _startTime:Number;
 
-		public function get startTime():Number
-		{
-			return _startTime;
-		}
+		public function get startTime():Number  { return _startTime; }
 
-
+		//----------------------------------
+		//  soundId
+		//----------------------------------
 		private var _loops:int;
 
-		public function get loops():int
-		{
-			return _loops;
-		}
+		public function get loops():int  { return _loops; }
 
+		//----------------------------------
+		//  currentLoopCount
+		//----------------------------------
 		private var _currentLoopCount:int;
 
-		public function get currentLoopCount():int
-		{
-			return _currentLoopCount;
-		}
+		public function get currentLoopCount():int  { return _currentLoopCount; }
 
+		//----------------------------------
+		//  loopStartTime
+		//----------------------------------
 		private var _loopStartTime:Number;
 
-		public function get loopStartTime():Number
-		{
-			return _loopStartTime;
-		}
+		public function get loopStartTime():Number  { return _loopStartTime; }
 
-
+		//----------------------------------
+		//  loopEndTime
+		//----------------------------------
 		private var _loopEndTime:Number;
 
-		public function get loopEndTime():Number
-		{
-			return _loopEndTime;
-		}
+		public function get loopEndTime():Number  { return _loopEndTime; }
 
-
+		//----------------------------------
+		//  soundPlayType
+		//----------------------------------
 		private var _soundPlayType:SoundPlayType;
 
-		public function get soundPlayType():SoundPlayType
-		{
-			return _soundPlayType;
-		}
+		public function get soundPlayType():SoundPlayType  { return _soundPlayType; }
 
-
+		//----------------------------------
+		//  weakReference
+		//----------------------------------
 		private var _weakReference:Boolean;
 
-		public function get weakReference():Boolean
-		{
-			return _weakReference;
-		}
+		public function get weakReference():Boolean  { return _weakReference; }
 
-
+		//----------------------------------
+		//  status
+		//----------------------------------
 		private var _status:SoundStatusType;
 
-		public function get status():SoundStatusType
-		{
-			return _status;
-		}
+		public function get status():SoundStatusType  { return _status; }
 
+		//----------------------------------
+		//  volumeController
+		//----------------------------------
 		private var _volumeController:IParameterController;
 
-		public function get volumeController():IParameterController
-		{
-			return _volumeController;
-		}
+		public function get volumeController():IParameterController  { return _volumeController; }
 
-
-
+		//----------------------------------
+		//  panController
+		//----------------------------------
 		private var _panController:IParameterController;
 
-		public function get panController():IParameterController
-		{
-			return _panController;
-		}
+		public function get panController():IParameterController  { return _panController; }
 
-
-
+		//----------------------------------
+		//  masterVolumeController
+		//----------------------------------
 		private var _masterVolumeController:ParameterController;
 
-		public function get masterVolumeController():ParameterController
-		{
-			return _masterVolumeController;
-		}
+		public function get masterVolumeController():ParameterController  { return _masterVolumeController; }
 
-
+		//----------------------------------
+		//  soundGroupController
+		//----------------------------------
 		private var _soundGroupController:SoundGroupController;
 
-		public function get soundGroupController():SoundGroupController
-		{
-			return _soundGroupController;
-		}
+		public function get soundGroupController():SoundGroupController  { return _soundGroupController; }
 
-
+		//----------------------------------
+		//  soundChannel
+		//----------------------------------
 		private var _soundChannel:SoundChannel;
 
-		public function get soundChannel():SoundChannel
-		{
-			return _soundChannel;
-		}
+		public function get soundChannel():SoundChannel  { return _soundChannel; }
 
-
+		//----------------------------------
+		//  allowMultiple
+		//----------------------------------
 		private var _allowMultiple:Boolean;
 
-		public function get allowMultiple():Boolean
-		{
-			return _allowMultiple;
-		}
+		public function get allowMultiple():Boolean  { return _allowMultiple; }
 
+		//----------------------------------
+		//  allowInterrupt
+		//----------------------------------
 		private var _allowInterrupt:Boolean;
 
-		public function get allowInterrupt():Boolean
-		{
-			return _allowInterrupt;
-		}
+		public function get allowInterrupt():Boolean  { return _allowInterrupt; }
 
+		//----------------------------------
+		//  initVolume
+		//----------------------------------
 		private var _initVolume:Number;
 
-		public function get initVolume():Number
-		{
-			return _initVolume;
-		}
+		public function get initVolume():Number  { return _initVolume; }
 
+		//----------------------------------
+		//  initPan
+		//----------------------------------
 		private var _initPan:Number;
 
-		public function get initPan():Number
-		{
-			return _initPan;
-		}
+		public function get initPan():Number  { return _initPan; }
 
-
+		//----------------------------------
+		//  pausedVolume
+		//----------------------------------
 		private var _pausedVolume:Number;
 
-		protected function get pausedVolume():Number
-		{
-			return _pausedVolume;
-		}
+		protected function get pausedVolume():Number  { return _pausedVolume; }
 
+		//----------------------------------
+		//  pausedPan
+		//----------------------------------
 		private var _pausedPan:Number;
 
-		protected function get pausedPan():Number
-		{
-			return _pausedPan;
-		}
+		protected function get pausedPan():Number  { return _pausedPan; }
 
+		//----------------------------------
+		//  isMute
+		//----------------------------------
 		private var _isMute:Boolean;
 
-		protected function get isMute():Boolean
-		{
-			return _isMute;
-		}
+		protected function get isMute():Boolean  { return _isMute; }
+
+		//----------------------------------
+		//  currentPosition
+		//----------------------------------
+		private var _currentPosition:Number;
+
+		protected function get currentPosition():Number  { return _currentPosition; }
+
+		protected function set currentPosition(value:Number):void  { _currentPosition = value; }
+
+		//----------------------------------
+		//  totalLength
+		//----------------------------------
+		private var _totalLength:Number;
+
+		protected function get totalLength():Number  { return _totalLength; }
+
+		protected function set totalLength(value:Number):void  { _totalLength = value; }
 
 //--------------------------------------------------------------------------
 //
@@ -334,6 +331,16 @@ package jp.hiiragi.managers.soundConductor
 //  Public methods
 //
 //--------------------------------------------------------------------------
+
+		public function getCurrentPosition():Number
+		{
+			return _currentPosition;
+		}
+
+		public function getTotalLength():Number
+		{
+			return _totalLength;
+		}
 
 		public final function getPan():Number
 		{

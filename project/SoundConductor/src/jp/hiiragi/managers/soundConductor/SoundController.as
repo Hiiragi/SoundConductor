@@ -63,14 +63,11 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 		//----------------------------------
-		//  propertyName
+		//  enabled
 		//----------------------------------
 		private var _enabled:Boolean;
 
-		public function get enabled():Boolean
-		{
-			return _enabled;
-		}
+		public function get enabled():Boolean  { return _enabled; }
 
 
 //--------------------------------------------------------------------------
@@ -101,6 +98,16 @@ package jp.hiiragi.managers.soundConductor
 		{
 			checkEnabled();
 			return _playingData.getVolume();
+		}
+
+		public function getCurrentPosition():Number
+		{
+			return _playingData.getCurrentPosition();
+		}
+
+		public function getTotalLength():Number
+		{
+			return _playingData.getTotalLength();
 		}
 
 		public function pause(fadeOutTimeByMS:Number = 0, fadeOutEasing:Function = null):void

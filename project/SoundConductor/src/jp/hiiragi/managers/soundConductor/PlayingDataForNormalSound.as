@@ -80,6 +80,7 @@ package jp.hiiragi.managers.soundConductor
 			super(playInfo, registeredSoundData, groupController);
 
 			_sound = registeredSoundData.sound;
+			totalLength = _sound.length;
 		}
 
 //--------------------------------------------------------------------------
@@ -150,6 +151,11 @@ package jp.hiiragi.managers.soundConductor
 			_pausedPosition = _soundChannel.position;
 			_soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundCompleteHandler);
 			_soundChannel.stop();
+		}
+
+		override public function getCurrentPosition():Number
+		{
+			return _soundChannel.position;
 		}
 
 		override public function dispose():void

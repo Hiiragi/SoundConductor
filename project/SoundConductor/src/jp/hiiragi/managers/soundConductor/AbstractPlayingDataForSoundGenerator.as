@@ -22,9 +22,11 @@ package jp.hiiragi.managers.soundConductor
 
 				_soundByteArray = registeredSoundData.soundByteArray;
 
-				_startByteIndex = _currentByteIndex = playInfo.startTimeByMS * 44.1 * 8;
-				_loopStartByteIndex = playInfo.loopStartTimeByMS * 44.1 * 8;
-				_loopEndByteIndex = (playInfo.loopEndTimeByMS == 0) ? _soundByteArray.length : playInfo.loopEndTimeByMS * 44.1 * 8;
+				_startByteIndex = _currentByteIndex = playInfo.startTimeByMS * 352.8; // 352.8 = 44.1 * 8
+				_loopStartByteIndex = playInfo.loopStartTimeByMS * 352.8;
+				_loopEndByteIndex = (playInfo.loopEndTimeByMS == 0) ? _soundByteArray.length : playInfo.loopEndTimeByMS * 352.8;
+
+				totalLength = Math.floor(_soundByteArray.length / 352.8);
 			}
 			else
 			{
@@ -140,6 +142,7 @@ package jp.hiiragi.managers.soundConductor
 			// ポジションを最初に戻す
 			byteArray.position = 0;
 
+			currentPosition = Math.floor(_currentByteIndex / 352.8); // 352.8 = 44100 * 8 / 1000
 //			trace(_currentByteIndex + " / " + _soundByteArray.length);
 			byteArray = writeSoundByteArrayFinished(byteArray);
 
