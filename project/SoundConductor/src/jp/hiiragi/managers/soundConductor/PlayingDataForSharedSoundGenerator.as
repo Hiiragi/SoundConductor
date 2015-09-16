@@ -121,19 +121,19 @@ package jp.hiiragi.managers.soundConductor
 			var len:int = byteArray.length;
 			var editedByteArray:ByteArray = new ByteArray();
 
-			var volumeMultipleValue:Number = masterVolumeController.value;
-			volumeMultipleValue *= volumeController.value;
-			if (soundGroupController != null)
-			{
-				volumeMultipleValue *= soundGroupController.groupVolumeController.value;
-			}
-
-			var pan:Number = panController.value;
-			var leftMultipleValue:Number = ((pan < 0) ? 1 : 1 - pan) * volumeMultipleValue;
-			var rightMultipleValue:Number = ((pan > 0) ? 1 : pan + 1) * volumeMultipleValue;
-
 			while (byteArray.bytesAvailable)
 			{
+				var volumeMultipleValue:Number = masterVolumeController.value;
+				volumeMultipleValue *= volumeController.value;
+				if (soundGroupController != null)
+				{
+					volumeMultipleValue *= soundGroupController.groupVolumeController.value;
+				}
+
+				var pan:Number = panController.value;
+				var leftMultipleValue:Number = ((pan < 0) ? 1 : 1 - pan) * volumeMultipleValue;
+				var rightMultipleValue:Number = ((pan > 0) ? 1 : pan + 1) * volumeMultipleValue;
+
 				editedByteArray.writeFloat(byteArray.readFloat() * leftMultipleValue);
 				editedByteArray.writeFloat(byteArray.readFloat() * rightMultipleValue);
 			}
