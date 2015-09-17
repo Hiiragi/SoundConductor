@@ -9,9 +9,9 @@ sound manager for ActionScript 3.
 ## 注意
 このライブラリは開発中であり、幾つかの未実装機能が存在します。
 
-- seek()
-- allowMultiple
-- allowInterrupt
+- `seek()`
+- `allowMultiple`
+- `allowInterrupt`
 
 また、テストケースがそこまで無いため、不安定な挙動やバグを起こす可能性があります。
 
@@ -33,9 +33,9 @@ sound manager for ActionScript 3.
 このライブラリでサウンドを扱うには、基本的に「サウンドを登録する」必要があります。内容としては、
 
 1. 「登録用データ」を作成する。
-2. SoundConductor に「登録用データ」を登録する
+2. `SoundConductor` に「登録用データ」を登録する
 3. 登録したデータを扱うための「再生用データ」を作成する。
-4. SoundConductor に「再生用データ」を渡して再生する。
+4. `SoundConductor` に「再生用データ」を渡して再生する。
 
 という手順を踏むことになります。
 
@@ -50,7 +50,7 @@ sound manager for ActionScript 3.
 SoundConductor.initialize(true, SoundBufferType.BUFFER_SIZE_4096);
 ```
 
-第1引数は、「SoundGenerator 機能を使用するかどうか」を指定します。デフォルトは false です。第2引数は、SoundGenerator 機能を使用する際のバッファサイズを指定します。第1引数が false であれば指定しなくても良いです。
+第1引数は、「SoundGenerator 機能を使用するかどうか」を指定します。デフォルトは `false` です。第2引数は、SoundGenerator 機能を使用する際のバッファサイズを指定します。第1引数が `false` であれば指定しなくても良いです。
 
 ### イントロ付き無限ループ機能
 このライブラリの目玉といえる機能です。主にゲームなどの「コンテンツの BGM 」で使える機能です。
@@ -61,15 +61,15 @@ var soundObject:Sound = new Sound(...);
 var bgmRegister:RegisterSoundInfo = new RegisterSoundInfo(soundObject, true);
 ```
 
-登録用データは RegisterSoundInfo オブジェクトを使用します。コンストラクタにサウンドオブジェクトを指定します。
-第2引数は、PCM の ByteArray を作成するかを指定します。これを true にすると、Sound オブジェクトから PCM の ByteArray を作成します。無限ループは SoundGenerator 機能を使用するため、このパラメータは true にする必要があります。
+登録用データは `RegisterSoundInfo` オブジェクトを使用します。コンストラクタにサウンドオブジェクトを指定します。
+第2引数は、PCM の ByteArray を作成するかを指定します。これを `true` にすると、`Sound` オブジェクトから PCM の ByteArray を作成します。無限ループは SoundGenerator 機能を使用するため、このパラメータは `true` にする必要があります。
 
 #### SoundConductor に登録
 ```
 var soundId:SoundId = SoundConductor.registerSound(bgmRegister);
 ```
 
-先ほどの登録用データを、SoundConductor に登録します。登録すると、SoundId オブジェクトが返されます。これが、登録したサウンドに紐づいた ID となり、この ID を使用してサウンドの再生を行うことになります。
+先ほどの登録用データを、`SoundConductor` に登録します。登録すると、`SoundId` オブジェクトが返されます。これが、登録したサウンドに紐づいた ID となり、この ID を使用してサウンドの再生を行うことになります。
 
 #### 「再生用データ」を作成
 ```
@@ -81,9 +81,9 @@ bgmPlayInfo.loopStartTimeByMS = 7991;	// ループの際は、7991ms の部分�
 bgmPlayInfo.loopEndTimeByMS = 107650;	// 107650ms になったらループ開始位置まで戻る
 ```
 
-再生用データは、SoundPlayInfo オブジェクトを使用します。先ほど登録した際に入手した soundId を指定します。
+再生用データは、`SoundPlayInfo` オブジェクトを使用します。先ほど登録した際に入手した `soundId` を指定します。
 
-soundPlayType プロパティは、「どういった機能を用いてサウンド再生を行うか」を指定する大事なパラメータです。SoundPlayType.SINGLE_SOUND_GENERATOR は一つのサウンドに付き一つの SoundGenerator（Sound オブジェクト）を生成し、利用します。この詳細は後述しています。
+`soundPlayType` プロパティは、「どういった機能を用いてサウンド再生を行うか」を指定する大事なパラメータです。`SoundPlayType.SINGLE_SOUND_GENERATOR` は一つのサウンドに付き一つの SoundGenerator（`Sound` オブジェクト）を生成し、利用します。この詳細は後述しています。
 
 このオブジェクトでは、上記のように、再生情報をプロパティとして指定します。内容は上記コードのコメントを参考ください。
 
@@ -92,9 +92,9 @@ soundPlayType プロパティは、「どういった機能を用いてサウン
 var bgmController:SoundController = SoundConductor.play(bgmPlayInfo);
 ```
 
-先ほど作成した「再生用データ」を用いて、SoundConductor で再生を行います。これで「500ms から再生を開始し、107650ms に到達したら、7991ms に戻ってループ再生を行うという「イントロ付き無限ループ」が実現されます。
+先ほど作成した「再生用データ」を用いて、`SoundConductor` で再生を行います。これで「500ms から再生を開始し、107650ms に到達したら、7991ms に戻ってループ再生を行うという「イントロ付き無限ループ」が実現されます。
 
-SoundController は、AS3 の Sound クラスにおける SoundChannel と同じ意味合いを持ちます。このコントローラクラスを用いて、一時停止やボリューム調整を行います。
+`SoundController` は、AS3 の `Sound` クラスにおける `SoundChannel` と同じ意味合いを持ちます。このコントローラクラスを用いて、一時停止やボリューム調整を行います。
 
 #### 無限ループ使用の注意点
 稀に、上記の設定を行っても無限ループがされない場合があります。その際は、ループの時間を少しだけ前後させてみてください。ループが機能する可能性があります。
@@ -122,7 +122,7 @@ SoundController は、AS3 の Sound クラスにおける SoundChannel と同じ
 ### サウンドのグルーピング機能
 例えばゲームなどでよくあるのが、BGM、効果音、ボイスなどをカテゴリーごとに制御するという仕様です。`SoundConductor` では、グループ機能というのを扱うことにより、グループごとのサウンド制御を可能にします。
 
-`SoundConductor.createGroup()` を使用し、'SoundGroupController' をオブジェクトを取得します。このコントローラを使用し、グループの再生の制御を行います。
+`SoundConductor.createGroup()` を使用し、`SoundGroupController` をオブジェクトを取得します。このコントローラを使用し、グループの再生の制御を行います。
 
 再生するサウンドをグループに紐づけたい場合は、`SoundConductor.createGroup()` を扱う際に登録する「グループ名」を、`SoundConductor.play()` の引数に渡すことで可能です。
 
@@ -131,4 +131,4 @@ SoundController は、AS3 の Sound クラスにおける SoundChannel と同じ
 
 `SoundConductor` では、「管理は行わず、現在制御している音量を元にサウンドの再生を行う」だけの再生手法を用意しました。`SoundConductor.playSoundObject()` を使用します。
 
-これは本当に単純に、マスターボリュームと、場合によってはグループのボリュームを換算して、普通に 'Sound' を鳴らすというものです。ですので、戻り値は `SoundController` ではなく、'SoundChannnel' となります。`SoundConductor` では管理されないため、再生したした後は、'SoundConductor' による制御は適用されません。
+これは本当に単純に、マスターボリュームと、場合によってはグループのボリュームを換算して、普通に `Sound` を鳴らすというものです。ですので、戻り値は `SoundController` ではなく、`SoundChannnel` となります。`SoundConductor` では管理されないため、再生したした後は、`SoundConductor` による制御は適用されません。
