@@ -126,7 +126,7 @@ package jp.hiiragi.managers.soundConductor
 
 		override protected function play_internal():void
 		{
-			executePlaySoundProcess(startTime, initVolume, initPan);
+			executePlaySoundProcess(startTimeByMS, initVolume, initPan);
 		}
 
 		override protected function seek_internal(timeByMS:Number):void
@@ -262,7 +262,7 @@ package jp.hiiragi.managers.soundConductor
 				incrementCurrentLoopCount();
 
 				// 再度再生
-				executePlaySoundProcess(startTime, currentVolume, currentPan);
+				executePlaySoundProcess(startTimeByMS, currentVolume, currentPan);
 			}
 		}
 

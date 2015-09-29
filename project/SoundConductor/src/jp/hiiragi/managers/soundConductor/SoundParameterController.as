@@ -16,7 +16,7 @@ package jp.hiiragi.managers.soundConductor
 //  Other metadata
 //--------------------------------------
 
-	public class SoundParameterController extends ParameterController
+	internal class SoundParameterController extends ParameterController
 	{
 //--------------------------------------------------------------------------
 //

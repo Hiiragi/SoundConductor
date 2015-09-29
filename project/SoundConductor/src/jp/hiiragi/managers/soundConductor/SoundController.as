@@ -30,21 +30,60 @@ package jp.hiiragi.managers.soundConductor
 	{
 //--------------------------------------------------------------------------
 //
+//  Class variables
+//
+//--------------------------------------------------------------------------
+		//----------------------------------
+		//  valiableName
+		//----------------------------------
+		private static var _isCalledFromInternal:Boolean = false;
+
+//--------------------------------------------------------------------------
+//
+//  Class Internal methods
+//
+//--------------------------------------------------------------------------
+
+		internal static function createController(playingData:AbstractPlayingData):SoundController
+		{
+			_isCalledFromInternal = true;
+			var controller:SoundController = new SoundController(playingData);
+
+			return controller;
+		}
+
+//--------------------------------------------------------------------------
+//
 //  Constructor
 //
 //--------------------------------------------------------------------------
+
+		/**
+		 * コンストラクタです.
+		 * <p>外部からのインスタンス化は出来ません。</p>
+		 * @param playingData
+		 */
 		public function SoundController(playingData:AbstractPlayingData)
 		{
-			_enabled = true;
-			_playingData = playingData;
+			if (_isCalledFromInternal)
+			{
+				_enabled = true;
+				_playingData = playingData;
 
-			_playingData.addEventListener(SoundConductorEvent.PAUSED, receiveEventFromPlayingData);
-			_playingData.addEventListener(SoundConductorEvent.PAUSING, receiveEventFromPlayingData);
-			_playingData.addEventListener(SoundConductorEvent.PLAYING, receiveEventFromPlayingData);
-			_playingData.addEventListener(SoundConductorEvent.STOPPED, receiveEventFromPlayingData);
-			_playingData.addEventListener(SoundConductorEvent.STOPPING, receiveEventFromPlayingData);
-			_playingData.addEventListener(SoundConductorEvent.MUTE, receiveEventFromPlayingData);
-			_playingData.addEventListener(SoundConductorEvent.UNMUTE, receiveEventFromPlayingData);
+				_playingData.addEventListener(SoundConductorEvent.PAUSED, receiveEventFromPlayingData);
+				_playingData.addEventListener(SoundConductorEvent.PAUSING, receiveEventFromPlayingData);
+				_playingData.addEventListener(SoundConductorEvent.PLAYING, receiveEventFromPlayingData);
+				_playingData.addEventListener(SoundConductorEvent.STOPPED, receiveEventFromPlayingData);
+				_playingData.addEventListener(SoundConductorEvent.STOPPING, receiveEventFromPlayingData);
+				_playingData.addEventListener(SoundConductorEvent.MUTE, receiveEventFromPlayingData);
+				_playingData.addEventListener(SoundConductorEvent.UNMUTE, receiveEventFromPlayingData);
+
+				_isCalledFromInternal = false;
+			}
+			else
+			{
+				throw new SoundConductorError(SoundConductorErrorType.ERROR_10003);
+			}
 		}
 
 //--------------------------------------------------------------------------
@@ -67,8 +106,7 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _enabled:Boolean;
 
-		public function get enabled():Boolean  { return _enabled; }
-
+		internal function get enabled():Boolean  { return _enabled; }
 
 //--------------------------------------------------------------------------
 //
@@ -82,46 +120,81 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 
+		/**
+		 * サウンドの再生状態を取得します.
+		 * @return
+		 */
 		public function getStatus():SoundStatusType
 		{
 			checkEnabled();
 			return _playingData.status;
 		}
 
-		public function getPan():Number
-		{
-			checkEnabled();
-			return _playingData.getPan();
-		}
-
+		/**
+		 * サウンドのボリュームを取得します.
+		 * @return
+		 */
 		public function getVolume():Number
 		{
 			checkEnabled();
 			return _playingData.getVolume();
 		}
 
+		/**
+		 * サウンドの定位を取得します.
+		 * @return
+		 */
+		public function getPan():Number
+		{
+			checkEnabled();
+			return _playingData.getPan();
+		}
+
+		/**
+		 * 現在の再生中の場所を取得します.
+		 * @return
+		 */
 		public function getCurrentPosition():Number
 		{
 			return _playingData.getCurrentPosition();
 		}
 
+		/**
+		 * サウンドの再生する長さを取得します.
+		 * @return
+		 */
 		public function getTotalLength():Number
 		{
 			return _playingData.getTotalLength();
 		}
 
+		/**
+		 * サウンドの一時停止を行います.
+		 * @param fadeOutTimeByMS
+		 * @param fadeOutEasing
+		 */
 		public function pause(fadeOutTimeByMS:Number = 0, fadeOutEasing:Function = null):void
 		{
 			checkEnabled();
 			_playingData.pause(fadeOutTimeByMS, fadeOutEasing);
 		}
 
+		/**
+		 * サウンドの一時停止の解除を行います.
+		 * @param fadeInTimeByMS
+		 * @param fadeInEasing
+		 */
 		public function resume(fadeInTimeByMS:Number = 0, fadeInEasing:Function = null):void
 		{
 			checkEnabled();
 			_playingData.resume(fadeInTimeByMS, fadeInEasing);
 		}
 
+		/**
+		 * サウンドのシークを行います（現在未実装です)
+		 * @param timeByMS
+		 * @private
+		 */
 		public function seek(timeByMS:Number):void
 		{
 			throw new Error("seek() is not implemented.");
@@ -130,29 +203,52 @@ package jp.hiiragi.managers.soundConductor
 			_playingData.seek(timeByMS);
 		}
 
+		/**
+		 * 定位を設定します.
+		 * @param value
+		 * @param easingTimeByMS
+		 * @param easing
+		 */
 		public function setPan(value:Number, easingTimeByMS:Number = 0, easing:Function = null):void
 		{
 			checkEnabled();
 			_playingData.setPan(value, easingTimeByMS, easing);
 		}
 
+		/**
+		 * ボリュームを設定します.
+		 * @param value
+		 * @param easingTimeByMS
+		 * @param easing
+		 */
 		public function setVolume(value:Number, easingTimeByMS:Number = 0, easing:Function = null):void
 		{
 			checkEnabled();
 			_playingData.setVolume(value, easingTimeByMS, easing);
 		}
 
+		/**
+		 * サウンドを停止します.
+		 * @param fadeOutTimeByMS
+		 * @param fadeOutEasing
+		 */
 		public function stop(fadeOutTimeByMS:Number = 0, fadeOutEasing:Function = null):void
 		{
 			checkEnabled();
 			_playingData.stop(fadeOutTimeByMS, fadeOutEasing);
 		}
 
+		/**
+		 * サウンドをミュートします.
+		 */
 		public function mute():void
 		{
 			_playingData.mute();
 		}
 
+		/**
+		 * サウンドのミュートを解除します.
+		 */
 		public function unmute():void
 		{
 			_playingData.unmute();

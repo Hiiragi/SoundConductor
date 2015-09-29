@@ -1,7 +1,6 @@
 package jp.hiiragi.managers.soundConductor
 {
-    import flash.media.Sound;
-    import flash.utils.ByteArray;
+	import flash.utils.ByteArray;
 
 //--------------------------------------
 //  Events
@@ -15,8 +14,8 @@ package jp.hiiragi.managers.soundConductor
 //  Other metadata
 //--------------------------------------
 
-    internal class RegisteredSoundData
-    {
+	internal class RegisteredSoundData
+	{
 //--------------------------------------------------------------------------
 //
 //  Class constants
@@ -28,18 +27,18 @@ package jp.hiiragi.managers.soundConductor
 //  Class variables
 //
 //--------------------------------------------------------------------------
-        //----------------------------------
-        //  valiableName
-        //----------------------------------
+		//----------------------------------
+		//  valiableName
+		//----------------------------------
 
 //--------------------------------------------------------------------------
 //
 //  Class properties
 //
 //--------------------------------------------------------------------------
-        //----------------------------------
-        //  propertyName
-        //----------------------------------
+		//----------------------------------
+		//  propertyName
+		//----------------------------------
 
 //--------------------------------------------------------------------------
 //
@@ -70,76 +69,73 @@ package jp.hiiragi.managers.soundConductor
 //  Constructor
 //
 //--------------------------------------------------------------------------
-        public function RegisteredSoundData(soundId:SoundId, sound:Sound, soundByteArray:ByteArray, allowMultiple:Boolean, allowInterrupt:Boolean)
-        {
-            _soundId = soundId;
-            _sound = sound;
-            _soundByteArray = soundByteArray;
-            _allowMultiple = allowMultiple;
-            _allowInterrupt = allowInterrupt;
-        }
+
+		public function RegisteredSoundData(soundId:SoundId, sound:*, soundByteArray:ByteArray, allowMultiple:Boolean = false, allowInterrupt:Boolean = false)
+		{
+			_soundId = soundId;
+			_sound = sound;
+			_soundByteArray = soundByteArray;
+			_allowMultiple = allowMultiple;
+			_allowInterrupt = allowInterrupt;
+		}
 
 //--------------------------------------------------------------------------
 //
 //  Variables
 //
 //--------------------------------------------------------------------------
-        //----------------------------------
-        //  valiableName
-        //----------------------------------
+		//----------------------------------
+		//  valiableName
+		//----------------------------------
 
 //--------------------------------------------------------------------------
 //
 //  Overridden properties
 //
 //--------------------------------------------------------------------------
-        //----------------------------------
-        //  propertyName
-        //----------------------------------
+		//----------------------------------
+		//  propertyName
+		//----------------------------------
 
 //--------------------------------------------------------------------------
 //
 //  Properties
 //
 //--------------------------------------------------------------------------
-        //----------------------------------
-        //  propertyName
-        //----------------------------------
-        private var _soundId:SoundId;
+		//----------------------------------
+		//  soundId
+		//----------------------------------
+		private var _soundId:SoundId;
 
-        public function get soundId():SoundId
-        {
-            return _soundId;
-        }
+		public function get soundId():SoundId  { return _soundId; }
 
-        private var _sound:Sound;
+		//----------------------------------
+		//  sound
+		//----------------------------------
+		private var _sound:*;
 
-        public function get sound():Sound
-        {
-            return _sound;
-        }
+		public function get sound():*  { return _sound; }
 
-        private var _soundByteArray:ByteArray;
+		//----------------------------------
+		//  soundByteArray
+		//----------------------------------
+		private var _soundByteArray:ByteArray;
 
-        public function get soundByteArray():ByteArray
-        {
-            return _soundByteArray;
-        }
+		public function get soundByteArray():ByteArray  { return _soundByteArray; }
 
+		//----------------------------------
+		//  allowMultiple
+		//----------------------------------
+		private var _allowMultiple:Boolean;
 
-        private var _allowMultiple:Boolean;
+		public function get allowMultiple():Boolean  { return _allowMultiple; }
 
-        public function get allowMultiple():Boolean
-        {
-            return _allowMultiple;
-        }
+		//----------------------------------
+		//  allowInterrupt
+		//----------------------------------
+		private var _allowInterrupt:Boolean;
 
-        private var _allowInterrupt:Boolean;
-
-        public function get allowInterrupt():Boolean
-        {
-            return _allowInterrupt;
-        }
+		public function get allowInterrupt():Boolean  { return _allowInterrupt; }
 
 
 //--------------------------------------------------------------------------
@@ -184,7 +180,7 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 
-    }
+	}
 }
 
 

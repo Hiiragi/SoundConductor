@@ -41,10 +41,7 @@ package jp.hiiragi.managers.soundConductor.events
 		//----------------------------------
 		private var _soundController:SoundController;
 
-		public function get soundController():SoundController
-		{
-			return _soundController;
-		}
+		public function get soundController():SoundController  { return _soundController; }
 
 
 //--------------------------------------------------------------------------

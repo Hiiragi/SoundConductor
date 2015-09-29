@@ -16,6 +16,8 @@ package jp.hiiragi.managers.soundConductor
 //  Class constants
 //
 //--------------------------------------------------------------------------
+
+		/** 無音の <code>ByteArray</code> です. */
 		private static const SILENT_BYTE_ARRAY:ByteArray = new ByteArray();
 
 
@@ -49,6 +51,10 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 
+		/**
+		 * 現在サウンドが再生可能かをチェックします.
+		 * @return
+		 */
 		public static function checkPlayable():Boolean
 		{
 			var sound:Sound = new Sound();
@@ -69,6 +75,11 @@ package jp.hiiragi.managers.soundConductor
 			}
 		}
 
+		/**
+		 * 指定の長さで生成された無音の <code>ByteArray</code> を取得します.
+		 * @param length
+		 * @return
+		 */
 		public static function getSilentByteArray(length:int):ByteArray
 		{
 			if (SILENT_BYTE_ARRAY.length == 0)
@@ -104,6 +115,7 @@ package jp.hiiragi.managers.soundConductor
 //  Constructor
 //
 //--------------------------------------------------------------------------
+
 		public function SoundUtil()
 		{
 			throw new SoundConductorError(SoundConductorErrorType.ERROR_10001);

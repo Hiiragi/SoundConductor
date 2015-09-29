@@ -1,6 +1,5 @@
 package jp.hiiragi.managers.soundConductor
 {
-	import flash.events.Event;
 	import flash.events.EventDispatcher;
 
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorError;
@@ -20,7 +19,10 @@ package jp.hiiragi.managers.soundConductor
 //  Other metadata
 //--------------------------------------
 
-	public class AbstractParameterController extends EventDispatcher implements IParameterController
+	/**
+	 * パラメータ用コントローラの抽象基本クラスです.
+	 */
+	internal class AbstractParameterController extends EventDispatcher implements IParameterController
 	{
 //--------------------------------------------------------------------------
 //
@@ -75,6 +77,13 @@ package jp.hiiragi.managers.soundConductor
 //  Constructor
 //
 //--------------------------------------------------------------------------
+
+		/**
+		 * コンストラクタです。
+		 * @param initValue	パラメータの初期値を指定します。
+		 * @param minValue	パラメータの最小値を指定します。
+		 * @param maxValue	パラメータの最大値を指定します。
+		 */
 		public function AbstractParameterController(initValue:Number, minValue:Number = 0, maxValue:Number = 1)
 		{
 			if (this["constructor"] != AbstractParameterController)
@@ -90,10 +99,6 @@ package jp.hiiragi.managers.soundConductor
 			{
 				throw new SoundConductorError(SoundConductorErrorType.ERROR_10000);
 			}
-		}
-
-		public function dispose():void
-		{
 		}
 
 //--------------------------------------------------------------------------
@@ -124,6 +129,10 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _value:Number = 0;
 
+		/**
+		 * パラメータの値を取得します.
+		 * @return
+		 */
 		public function get value():Number
 		{
 			if (!_enabled)
@@ -139,32 +148,33 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _minValue:Number;
 
-		public function get minValue():Number
-		{
-			return _minValue;
-		}
+		/**
+		 * コンストラクタにより設定されたパラメータの最小値を取得します.
+		 * @return
+		 */
+		public function get minValue():Number  { return _minValue; }
 
 		//----------------------------------
 		//  maxValue
 		//----------------------------------
 		private var _maxValue:Number;
 
-		public function get maxValue():Number
-		{
-			return _maxValue;
-		}
-
+		/**
+		 * コンストラクタにより設定されたパラメータの最大値を取得します.
+		 * @return
+		 */
+		public function get maxValue():Number  { return _maxValue; }
 
 		//----------------------------------
 		//  enabled
 		//----------------------------------
 		private var _enabled:Boolean;
 
-		public function get enabled():Boolean
-		{
-			return _enabled;
-		}
-
+		/**
+		 * コントローラが有効であるかどうかを取得します.
+		 * @return
+		 */
+		public function get enabled():Boolean  { return _enabled; }
 
 //--------------------------------------------------------------------------
 //
@@ -184,8 +194,10 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 
-
-
+		/**
+		 * コントローラが有効かどうかを設定します.
+		 * @param enabled
+		 */
 		public function setEnabled(enabled:Boolean):void
 		{
 			if (_enabled == enabled)
@@ -197,17 +209,35 @@ package jp.hiiragi.managers.soundConductor
 			valueChanged();
 		}
 
+		/**
+		 * コントローラの値を設定します.
+		 * @param value
+		 * @param easingTimeByMS
+		 * @param easing
+		 */
 		public function setValue(value:Number, easingTimeByMS:Number = 0, easing:Function = null):void
 		{
 			throw new SoundConductorError(SoundConductorErrorType.ERROR_10020);
 		}
 
+		/**
+		 * オブジェクトを破棄します.
+		 */
+		public function dispose():void
+		{
+		}
 
 //--------------------------------------------------------------------------
 //
 //  Protected methods
 //
 //--------------------------------------------------------------------------
+
+		/**
+		 * コンストラクタにより設定された上限・下限を適用します.
+		 * @param value
+		 * @return
+		 */
 		protected function applyLimitter(value:Number):Number
 		{
 			if (value < _minValue)
@@ -218,9 +248,11 @@ package jp.hiiragi.managers.soundConductor
 			return value;
 		}
 
+		/**
+		 * 値が変更されたときの呼び出されるメソッドです.
+		 */
 		protected function valueChanged():void
 		{
-
 		}
 
 		protected final function getValue_internal():Number

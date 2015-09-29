@@ -1,5 +1,7 @@
 package jp.hiiragi.managers.soundConductor
 {
+	import jp.hiiragi.managers.soundConductor.error.SoundConductorError;
+	import jp.hiiragi.managers.soundConductor.error.SoundConductorErrorType;
 	import jp.hiiragi.managers.soundConductor.events.SoundConductorEvent;
 
 //--------------------------------------
@@ -14,6 +16,9 @@ package jp.hiiragi.managers.soundConductor
 //  Other metadata
 //--------------------------------------
 
+	/**
+	 * サウンドのグループ用コントローラクラスです.
+	 */
 	public class SoundGroupController
 	{
 //--------------------------------------------------------------------------
@@ -30,6 +35,7 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		//  valiableName
 		//----------------------------------
+		private static var _isCalledFromInternal:Boolean = false;
 
 //--------------------------------------------------------------------------
 //
@@ -54,6 +60,20 @@ package jp.hiiragi.managers.soundConductor
 
 //--------------------------------------------------------------------------
 //
+//  Class Internal methods
+//
+//--------------------------------------------------------------------------
+
+		internal static function createController(groupName:String):SoundGroupController
+		{
+			_isCalledFromInternal = true;
+			var controller:SoundGroupController = new SoundGroupController(groupName);
+
+			return controller;
+		}
+
+//--------------------------------------------------------------------------
+//
 //  Class Protected methods
 //
 //--------------------------------------------------------------------------
@@ -69,13 +89,27 @@ package jp.hiiragi.managers.soundConductor
 //  Constructor
 //
 //--------------------------------------------------------------------------
+		/**
+		 * コンストラクタです.
+		 * <p>外部からのインスタンス化は出来ません。</p>
+		 * @param groupName
+		 */
 		public function SoundGroupController(groupName:String)
 		{
-			_isMute = false;
+			if (_isCalledFromInternal)
+			{
+				_isMute = false;
 
-			_groupName = groupName;
-			_groupVolumeController = new ParameterController(1);
-			_soundControllerList = new Vector.<SoundController>();
+				_groupName = groupName;
+				_groupVolumeController = new ParameterController(1);
+				_soundControllerList = new Vector.<SoundController>();
+
+				_isCalledFromInternal = false;
+			}
+			else
+			{
+				throw new SoundConductorError(SoundConductorErrorType.ERROR_10003);
+			}
 		}
 
 //--------------------------------------------------------------------------

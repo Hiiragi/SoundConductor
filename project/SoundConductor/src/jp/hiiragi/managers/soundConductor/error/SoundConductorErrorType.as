@@ -23,7 +23,8 @@ package jp.hiiragi.managers.soundConductor.error
 		/** このクラスは Enum クラスとして設計されている為、インスタンス化出来ません。 */
 		public static const ERROR_10002:SoundConductorErrorType = create(10002, "このクラスは Enum クラスとして設計されている為、インスタンス化出来ません。");
 
-
+		/** このクラスは、外部からはインスタンス化出来ません。 */
+		public static const ERROR_10003:SoundConductorErrorType = create(10003, "このクラスは、外部からはインスタンス化出来ません。");
 
 		/** このクラスを使用するには初期化を行う必要が有ります。 */
 		public static const ERROR_10010:SoundConductorErrorType = create(10010, "このクラスを使用するには初期化を行う必要が有ります。");
@@ -42,7 +43,7 @@ package jp.hiiragi.managers.soundConductor.error
 		public static const ERROR_10102:SoundConductorErrorType = create(10102, "指定されたクラスは Sound クラスではありません。");
 
 		/** Sound を登録するには、リンケージ名か Class クラス、あるいは Sound オブジェクトを指定する必要が有ります。 */
-		public static const ERROR_10103:SoundConductorErrorType = create(10103, "Sound を登録するには、リンケージ名か Class クラス、あるいは Sound オブジェクトを指定する必要が有ります。");
+		public static const ERROR_10103:SoundConductorErrorType = create(10103, '指定された音源は対応していません。指定できる音源は、 "リンケージの文字列"、"Soundクラスを拡張した音源クラス"、"Sound オブジェクト"、"PCM の ByteArray" です。');
 
 		/** 指定された SoundId は登録されていません。 */
 		public static const ERROR_10110:SoundConductorErrorType = create(10110, "指定された SoundId は登録されていません。");
@@ -121,7 +122,7 @@ package jp.hiiragi.managers.soundConductor.error
 		private var _id:int;
 
 		/**
-		 * Enumの値を取得します。
+		 * Enum の値を取得します.
 		 * @return
 		 */
 		public function get id():int  { return _id; }
@@ -132,7 +133,7 @@ package jp.hiiragi.managers.soundConductor.error
 		private var _message:String;
 
 		/**
-		 *
+		 * エラーメッセージを取得します.
 		 * @return
 		 */
 		public function get message():String  { return _message; }

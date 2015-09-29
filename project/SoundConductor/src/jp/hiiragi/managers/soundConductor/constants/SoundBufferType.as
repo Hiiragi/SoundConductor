@@ -14,11 +14,11 @@ package jp.hiiragi.managers.soundConductor.constants
 //
 //--------------------------------------------------------------------------
 
-		/** サウンドのバッファ <code>8192<code> を示します。*/
+		/** サウンドのバッファ <code>8192</code> を示します。*/
 		public static const BUFFER_SIZE_8192:SoundBufferType = create(8192);
-		/** サウンドのバッファ <code>4096<code> を示します。*/
+		/** サウンドのバッファ <code>4096</code> を示します。*/
 		public static const BUFFER_SIZE_4096:SoundBufferType = create(4096);
-		/** サウンドのバッファ <code>2048<code> を示します。*/
+		/** サウンドのバッファ <code>2048</code> を示します。*/
 		public static const BUFFER_SIZE_2048:SoundBufferType = create(2048);
 
 //--------------------------------------------------------------------------

@@ -29,6 +29,9 @@ package jp.hiiragi.managers.soundConductor
 //  Other metadata
 //--------------------------------------
 
+	/**
+	 * 再生中の情報を持つデータの抽象基本クラスです.
+	 */
 	internal class AbstractPlayingData extends EventDispatcher implements ISoundController
 	{
 //--------------------------------------------------------------------------
@@ -84,15 +87,22 @@ package jp.hiiragi.managers.soundConductor
 //  Constructor
 //
 //--------------------------------------------------------------------------
+
+		/**
+		 * コンストラクタです.
+		 * @param playInfo	再生したいデータの内容を保持する <code>SoundPlayInfo</code> オブジェクトを指定します。
+		 * @param registeredSoundData	再生する登録済みデータを指定します。
+		 * @param soundGroupController	グループに所属する場合のグループ用コントローラを指定します。
+		 */
 		public function AbstractPlayingData(playInfo:SoundPlayInfo, registeredSoundData:RegisteredSoundData, soundGroupController:SoundGroupController)
 		{
 			if (this["constructor"] != AbstractPlayingData)
 			{
 				_soundId = playInfo.soundId;
-				_startTime = playInfo.startTimeByMS;
+				_startTimeByMS = playInfo.startTimeByMS;
 				_loops = playInfo.loops;
-				_loopStartTime = playInfo.loopStartTimeByMS;
-				_loopEndTime = playInfo.loopEndTimeByMS;
+				_loopStartTimeByMS = playInfo.loopStartTimeByMS;
+				_loopEndTimeByMS = playInfo.loopEndTimeByMS;
 				_soundPlayType = playInfo.soundPlayType;
 				_weakReference = playInfo.weakReference;
 
@@ -145,6 +155,10 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _soundContoller:SoundController;
 
+		/**
+		 * 再生データに紐づく <code>SoundController</code> オブジェクトを取得・設定します.
+		 * @return
+		 */
 		public function get soundContoller():SoundController  { return _soundContoller; }
 
 		public function set soundContoller(value:SoundController):void  { _soundContoller = value; }
@@ -154,20 +168,32 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _soundId:SoundId;
 
+		/**
+		 * 再生中のデータが持つ <code>SoundId</code> オブジェクトを取得します.
+		 * @return
+		 */
 		public function get soundId():SoundId  { return _soundId; }
 
 		//----------------------------------
 		//  soundId
 		//----------------------------------
-		private var _startTime:Number;
+		private var _startTimeByMS:Number;
 
-		public function get startTime():Number  { return _startTime; }
+		/**
+		 * 音源の再生開始時間をミリ秒で取得します.
+		 * @return
+		 */
+		public function get startTimeByMS():Number  { return _startTimeByMS; }
 
 		//----------------------------------
-		//  soundId
+		//  loops
 		//----------------------------------
 		private var _loops:int;
 
+		/**
+		 * 指定されているループ回数を取得します.
+		 * @return
+		 */
 		public function get loops():int  { return _loops; }
 
 		//----------------------------------
@@ -175,34 +201,54 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _currentLoopCount:int;
 
+		/**
+		 * 現在のループ回数を取得します.
+		 * @return
+		 */
 		public function get currentLoopCount():int  { return _currentLoopCount; }
 
 		//----------------------------------
 		//  loopStartTime
 		//----------------------------------
-		private var _loopStartTime:Number;
+		private var _loopStartTimeByMS:Number;
 
-		public function get loopStartTime():Number  { return _loopStartTime; }
+		/**
+		 * ループ開始時間をミリ秒で取得します.
+		 * @return
+		 */
+		protected function get loopStartTimeByMS():Number  { return _loopStartTimeByMS; }
 
 		//----------------------------------
 		//  loopEndTime
 		//----------------------------------
-		private var _loopEndTime:Number;
+		private var _loopEndTimeByMS:Number;
 
-		public function get loopEndTime():Number  { return _loopEndTime; }
+		/**
+		 * ループ終了時間をミリ秒で取得します.
+		 * @return
+		 */
+		protected function get loopEndTimeByMS():Number  { return _loopEndTimeByMS; }
 
 		//----------------------------------
 		//  soundPlayType
 		//----------------------------------
 		private var _soundPlayType:SoundPlayType;
 
-		public function get soundPlayType():SoundPlayType  { return _soundPlayType; }
+		/**
+		 * 音源の再生タイプを取得します.
+		 * @return
+		 */
+		protected function get soundPlayType():SoundPlayType  { return _soundPlayType; }
 
 		//----------------------------------
 		//  weakReference
 		//----------------------------------
 		private var _weakReference:Boolean;
 
+		/**
+		 * 再生中のサウンドオブジェクトが弱再生であるかを取得します.
+		 * @return
+		 */
 		public function get weakReference():Boolean  { return _weakReference; }
 
 		//----------------------------------
@@ -210,6 +256,10 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _status:SoundStatusType;
 
+		/**
+		 * サウンドの再生状態を取得します.
+		 * @return
+		 */
 		public function get status():SoundStatusType  { return _status; }
 
 		//----------------------------------
@@ -217,34 +267,55 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _volumeController:IParameterController;
 
-		public function get volumeController():IParameterController  { return _volumeController; }
+		/**
+		 * ボリュームのコントローラを取得します.
+		 * @return
+		 */
+		protected function get volumeController():IParameterController  { return _volumeController; }
 
 		//----------------------------------
 		//  panController
 		//----------------------------------
 		private var _panController:IParameterController;
 
-		public function get panController():IParameterController  { return _panController; }
+		/**
+		 * 定位のコントローラを取得します.
+		 * @return
+		 *
+		 */
+		protected function get panController():IParameterController  { return _panController; }
 
 		//----------------------------------
 		//  masterVolumeController
 		//----------------------------------
 		private var _masterVolumeController:ParameterController;
 
-		public function get masterVolumeController():ParameterController  { return _masterVolumeController; }
+		/**
+		 * マスターボリュームのコントローラを取得します.
+		 * @return
+		 */
+		protected function get masterVolumeController():ParameterController  { return _masterVolumeController; }
 
 		//----------------------------------
 		//  soundGroupController
 		//----------------------------------
 		private var _soundGroupController:SoundGroupController;
 
-		public function get soundGroupController():SoundGroupController  { return _soundGroupController; }
+		/**
+		 * グループのコントローラを取得します.
+		 * @return
+		 */
+		protected function get soundGroupController():SoundGroupController  { return _soundGroupController; }
 
 		//----------------------------------
 		//  soundChannel
 		//----------------------------------
 		private var _soundChannel:SoundChannel;
 
+		/**
+		 * 再生中の <code>SoundChannel</code> オブジェクトを取得します.
+		 * @return
+		 */
 		public function get soundChannel():SoundChannel  { return _soundChannel; }
 
 		//----------------------------------
@@ -266,20 +337,32 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _initVolume:Number;
 
-		public function get initVolume():Number  { return _initVolume; }
+		/**
+		 * 初期のボリューム値を取得します.
+		 * @return
+		 */
+		protected function get initVolume():Number  { return _initVolume; }
 
 		//----------------------------------
 		//  initPan
 		//----------------------------------
 		private var _initPan:Number;
 
-		public function get initPan():Number  { return _initPan; }
+		/**
+		 * 初期の定位を取得します.
+		 * @return
+		 */
+		protected function get initPan():Number  { return _initPan; }
 
 		//----------------------------------
 		//  pausedVolume
 		//----------------------------------
 		private var _pausedVolume:Number;
 
+		/**
+		 * 一時停止中のボリュームを取得します.
+		 * @return
+		 */
 		protected function get pausedVolume():Number  { return _pausedVolume; }
 
 		//----------------------------------
@@ -287,6 +370,10 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _pausedPan:Number;
 
+		/**
+		 * 一時停止中の定位を取得します.
+		 * @return
+		 */
 		protected function get pausedPan():Number  { return _pausedPan; }
 
 		//----------------------------------
@@ -294,6 +381,10 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _isMute:Boolean;
 
+		/**
+		 * ミュート中かを取得します.
+		 * @return
+		 */
 		protected function get isMute():Boolean  { return _isMute; }
 
 		//----------------------------------
@@ -301,8 +392,10 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _currentPosition:Number;
 
-		protected function get currentPosition():Number  { return _currentPosition; }
-
+		/**
+		 * 現在の再生中の場所を設定します.
+		 * @return
+		 */
 		protected function set currentPosition(value:Number):void  { _currentPosition = value; }
 
 		//----------------------------------
@@ -310,8 +403,10 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _totalLength:Number;
 
-		protected function get totalLength():Number  { return _totalLength; }
-
+		/**
+		 * サウンドの再生する長さを設定します.
+		 * @return
+		 */
 		protected function set totalLength(value:Number):void  { _totalLength = value; }
 
 //--------------------------------------------------------------------------
@@ -526,17 +621,28 @@ package jp.hiiragi.managers.soundConductor
 			return enabled;
 		}
 
-
+		/**
+		 * 使用する <code>SoundChannel</code> を設定します.</code>
+		 * @param soundChannel
+		 */
 		protected final function setSoundChannel(soundChannel:SoundChannel):void
 		{
 			_soundChannel = soundChannel;
 		}
 
+		/**
+		 * 使用するボリュームコントローラを設定します.</code>
+		 * @param soundChannel
+		 */
 		protected final function setVolumeController(volumeController:IParameterController):void
 		{
 			_volumeController = volumeController;
 		}
 
+		/**
+		 * 使用するパンコントローラを設定します.</code>
+		 * @param soundChannel
+		 */
 		protected final function setPanController(panController:IParameterController):void
 		{
 			_panController = panController;
@@ -571,6 +677,10 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 
+		/**
+		 * ミュート状態を解除可能かどうかを検証します.
+		 * @return
+		 */
 		private function validateUnmutable():Boolean
 		{
 			// マスターのミュート状態と、（グループに所属している場合は）グループのミュート状態を見て、音を出せる状態であれば出す
@@ -596,6 +706,10 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 
+		/**
+		 * 一時停止が完了した際に発火するイベントハンドラです.
+		 * @param event
+		 */
 		private function onPauseCompleteHandler(event:Event):void
 		{
 			_pausedPan = panController.value;
@@ -605,6 +719,10 @@ package jp.hiiragi.managers.soundConductor
 			dispatchEvent(new SoundConductorEvent(SoundConductorEvent.PAUSED, _soundContoller));
 		}
 
+		/**
+		 * 停止が完了した際に発火するイベントハンドラです.
+		 * @param event
+		 */
 		private function onStopCompleteHandler(event:Event):void
 		{
 			volumeController.removeEventListener(Event.COMPLETE, onStopCompleteHandler);
