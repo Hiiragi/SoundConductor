@@ -4,7 +4,7 @@ package jp.hiiragi.managers.soundConductor.constants
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorErrorType;
 
 	/**
-	 * <code>SoundLoopType</code> クラスは、サウンドのループ機能に関する定数値の列挙です。
+	 * <code>SoundLoopType</code> クラスは、サウンドのループ機能に関する定数値の列挙です.
 	 * @author
 	 */
 	public class SoundLoopType

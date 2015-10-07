@@ -10,8 +10,7 @@ sound manager for ActionScript 3.
 このライブラリは開発中であり、幾つかの未実装機能が存在します。
 
 - `seek()`
-- `allowMultiple`
-- `allowInterrupt`
+- `weakReference`
 
 また、テストケースがそこまで無いため、不安定な挙動やバグを起こす可能性があります。
 
@@ -41,7 +40,7 @@ sound manager for ActionScript 3.
 
 少々煩雑な扱いにはなってしまいますが、この手順を踏むことにより、多くの機能や設定を行うことが出来るようになっています。
 
-後述しますが、登録を行わずに再生することも可能です。その際、管理されることによる恩恵はうけれなくなります。
+後述しますが、登録を行わずに再生することも可能です。その際、管理されることによる恩恵は受けることができません。
 
 ### 初期化
 このライブラリは、必ず初期化する必要があります。
@@ -62,7 +61,7 @@ var bgmRegister:RegisterSoundInfo = new RegisterSoundInfo(soundObject, true);
 ```
 
 登録用データは `RegisterSoundInfo` オブジェクトを使用します。コンストラクタにサウンドオブジェクトを指定します。
-第2引数は、PCM の ByteArray を作成するかを指定します。これを `true` にすると、`Sound` オブジェクトから PCM の ByteArray を作成します。無限ループは SoundGenerator 機能を使用するため、このパラメータは `true` にする必要があります。
+第2引数は、PCM の `ByteArray` を作成するかを指定します。これを `true` にすると、`Sound` オブジェクトから PCM の `ByteArray` を作成します。無限ループは SoundGenerator 機能を使用するため、このパラメータは `true` にする必要があります。
 
 #### SoundConductor に登録
 ```
@@ -104,7 +103,7 @@ var bgmController:SoundController = SoundConductor.play(bgmPlayInfo);
 ### SoundGenerator 機能を使う際の注意点
 - 音質が変化する場合があります。
 - SoundGenerator の特性上、再生開始と終了にラグが生じます。
-- PCM の ByteArray を使うため、メモリの使用量が相当にあります。特にサウンドが長ければ長いほど顕著になります。モバイルなどで扱う場合はこれが原因でアプリ自体が落ちる可能性もあります。ご注意ください。
+- PCM の `ByteArray` を使うため、メモリの使用量が相当にあります。特にサウンドが長ければ長いほど顕著になります。モバイルなどで扱う場合はこれが原因でアプリ自体が落ちる可能性もあります。ご注意ください。
 - 大量に使うと、サウンド生成の処理が多量に走るため、パフォーマンスに影響する可能性があります。
 
 ### サウンド再生の種類

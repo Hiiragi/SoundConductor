@@ -93,6 +93,7 @@ package jp.hiiragi.managers.soundConductor
 		 * コンストラクタです.
 		 * <p>外部からのインスタンス化は出来ません。</p>
 		 * @param groupName
+		 * @private
 		 */
 		public function SoundGroupController(groupName:String)
 		{
@@ -141,32 +142,21 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _groupName:String;
 
-		public function get groupName():String
-		{
-			return _groupName;
-		}
+		public function get groupName():String  { return _groupName; }
 
 		//----------------------------------
 		//  isMute
 		//----------------------------------
 		private var _isMute:Boolean;
 
-		public function get isMute():Boolean
-		{
-			return _isMute;
-		}
+		public function get isMute():Boolean  { return _isMute; }
 
 		//----------------------------------
 		//  groupVolumeController
 		//----------------------------------
 		private var _groupVolumeController:ParameterController;
 
-		internal function get groupVolumeController():ParameterController
-		{
-			return _groupVolumeController;
-		}
-
-
+		internal function get groupVolumeController():ParameterController  { return _groupVolumeController; }
 
 //--------------------------------------------------------------------------
 //
@@ -192,16 +182,31 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 
+		/**
+		 * グループのボリュームを取得します.
+		 * @return
+		 */
 		public function getVolume():Number
 		{
 			return groupVolumeController.value;
 		}
 
+		/**
+		 * グループのボリュームを設定します.
+		 * @param volume
+		 * @param easingTimeByMS
+		 * @param easing
+		 */
 		public function setVolume(volume:Number, easingTimeByMS:Number = 0, easing:Function = null):void
 		{
 			groupVolumeController.setValue(volume, easingTimeByMS, easing);
 		}
 
+		/**
+		 * グループに所属するサウンドの再生を一時停止します.
+		 * @param fadeOutTimeByMS
+		 * @param fadeOutEasing
+		 */
 		public function pause(fadeOutTimeByMS:Number = 0, fadeOutEasing:Function = null):void
 		{
 			var len:int = _soundControllerList.length;
@@ -211,6 +216,11 @@ package jp.hiiragi.managers.soundConductor
 			}
 		}
 
+		/**
+		 * グループに所属するサウンドの一時停止状態を解除します.
+		 * @param fadeInTimeByMS
+		 * @param fadeInEasing
+		 */
 		public function resume(fadeInTimeByMS:Number = 0, fadeInEasing:Function = null):void
 		{
 			var len:int = _soundControllerList.length;
@@ -220,6 +230,11 @@ package jp.hiiragi.managers.soundConductor
 			}
 		}
 
+		/**
+		 * グループに所属するサウンドの再生を停止します.
+		 * @param fadeOutTimeByMS
+		 * @param fadeOutEasing
+		 */
 		public function stop(fadeOutTimeByMS:Number = 0, fadeOutEasing:Function = null):void
 		{
 			var len:int = _soundControllerList.length;
@@ -229,6 +244,9 @@ package jp.hiiragi.managers.soundConductor
 			}
 		}
 
+		/**
+		 * グループに所属するサウンドをミュートします.
+		 */
 		public function mute():void
 		{
 			if (_isMute)
@@ -246,6 +264,9 @@ package jp.hiiragi.managers.soundConductor
 			}
 		}
 
+		/**
+		 * グループに所属するサウンドのミュート状態を解除します.
+		 */
 		public function unmute():void
 		{
 			if (!_isMute)
@@ -268,13 +289,12 @@ package jp.hiiragi.managers.soundConductor
 //  Internal methods
 //
 //--------------------------------------------------------------------------
+
 		internal function addSoundController(soundController:SoundController):void
 		{
 			_soundControllerList.push(soundController);
 			soundController.addEventListener(SoundConductorEvent.STOPPED, soundStoppedHandler);
 		}
-
-
 
 //--------------------------------------------------------------------------
 //
@@ -299,7 +319,6 @@ package jp.hiiragi.managers.soundConductor
 //  Event handlers
 //
 //--------------------------------------------------------------------------
-
 
 		protected function soundStoppedHandler(event:SoundConductorEvent):void
 		{

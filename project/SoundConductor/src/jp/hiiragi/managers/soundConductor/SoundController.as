@@ -26,6 +26,9 @@ package jp.hiiragi.managers.soundConductor
 //  Other metadata
 //--------------------------------------
 
+	/**
+	 * 再生中のサウンドを制御するためのコントローラクラスです.
+	 */
 	public class SoundController extends EventDispatcher implements ISoundController
 	{
 //--------------------------------------------------------------------------
@@ -62,6 +65,7 @@ package jp.hiiragi.managers.soundConductor
 		 * コンストラクタです.
 		 * <p>外部からのインスタンス化は出来ません。</p>
 		 * @param playingData
+		 * @private
 		 */
 		public function SoundController(playingData:AbstractPlayingData)
 		{
@@ -106,6 +110,10 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _enabled:Boolean;
 
+		/**
+		 * 現在サウンドが有効であるかを取得します.
+		 * @return
+		 */
 		internal function get enabled():Boolean  { return _enabled; }
 
 //--------------------------------------------------------------------------

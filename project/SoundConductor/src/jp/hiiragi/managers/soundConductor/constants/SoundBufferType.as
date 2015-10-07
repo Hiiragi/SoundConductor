@@ -1,10 +1,10 @@
 package jp.hiiragi.managers.soundConductor.constants
 {
-	import flash.errors.IllegalOperationError;
+	import jp.hiiragi.managers.soundConductor.error.SoundConductorError;
+	import jp.hiiragi.managers.soundConductor.error.SoundConductorErrorType;
 
 	/**
-	 * <code>SoundBufferType</code> クラスは、SoundGenerator 機能で扱うバッファ値に関する定数値の列挙です。
-	 * @author
+	 * <code>SoundBufferType</code> クラスは、SoundGenerator 機能で扱うバッファ値に関する定数値の列挙です.
 	 */
 	public class SoundBufferType
 	{
@@ -37,6 +37,7 @@ package jp.hiiragi.managers.soundConductor.constants
 		 * 内部で定数を列挙する際のファクトリーメソッドです。
 		 * @param value Enum値です。
 		 * @return
+		 * @private
 		 */
 		protected static function create(value:* = null):SoundBufferType
 		{
@@ -65,7 +66,7 @@ package jp.hiiragi.managers.soundConductor.constants
 			}
 			else
 			{
-				throw new IllegalOperationError("This class is emurated Enum.");
+				throw new SoundConductorError(SoundConductorErrorType.ERROR_10002);
 			}
 		}
 
@@ -80,7 +81,7 @@ package jp.hiiragi.managers.soundConductor.constants
 		private var _value:*;
 
 		/**
-		 * Enumの値を取得します。
+		 * サウンドのバッファの値を取得します。
 		 * @return
 		 */
 		public function get value():*  { return _value; }

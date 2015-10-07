@@ -83,6 +83,10 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private static var _useSharedSoundGenerator:Boolean;
 
+		/**
+		 * 共用の SoundGenerator を使用するかどうかを取得します.
+		 * @return
+		 */
 		public static function get useSharedSoundGenerator():Boolean  { return _useSharedSoundGenerator; }
 
 		//----------------------------------
@@ -90,6 +94,10 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private static var _isMute:Boolean;
 
+		/**
+		 * ミュート状態かを取得します.
+		 * @return
+		 */
 		public static function get isMute():Boolean  { return _isMute; }
 
 		//----------------------------------
@@ -97,6 +105,10 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private static var _masterVolumeController:ParameterController;
 
+		/**
+		 * マスターボリュームのコントローラを取得します.
+		 * @return
+		 */
 		internal static function get masterVolumeController():ParameterController  { return _masterVolumeController; }
 
 
@@ -127,6 +139,9 @@ package jp.hiiragi.managers.soundConductor
 		 */
 		public static function initialize(useSharedSoundGenerator:Boolean = false, bufferType:SoundBufferType = null):void
 		{
+			if (_isInitialized)
+				throw new SoundConductorError(SoundConductorErrorType.ERROR_10011);
+
 			_soundBufferSize = bufferType;
 			_useSharedSoundGenerator = useSharedSoundGenerator;
 
@@ -179,7 +194,7 @@ package jp.hiiragi.managers.soundConductor
 				return null;
 			}
 
-			var soundId:SoundId = new SoundId();
+			var soundId:SoundId = SoundId.create();
 
 			var sound:Sound;
 			var soundByteArray:ByteArray;
@@ -300,8 +315,41 @@ package jp.hiiragi.managers.soundConductor
 				}
 			}
 
+			// 登録されている場合、allowMultiple と allowInterrupt を調べる
+			if (registeredSoundData != null)
+			{
+				// 同時再生不可かどうか
+				if (!registeredSoundData.allowMultiple)
+				{
+					// 現在再生されているかを調べる
+					var alreadyPlayingSound:AbstractPlayingData;
+					for each (var playingSoundData:AbstractPlayingData in _playingSoundDataList)
+					{
+						if (playingSoundData.soundId == playInfo.soundId)
+						{
+							alreadyPlayingSound = playingSoundData;
+							break;
+						}
+					}
+
+					// 既に同一サウンドが再生されている
+					if (alreadyPlayingSound != null)
+					{
+						// 同時再生不可、且つ、割り込み可であれば、現在再生しているものを停止して、新しく再生
+						if (registeredSoundData.allowInterrupt)
+						{
+							alreadyPlayingSound.stop();
+						}
+						// 同時再生不可、且つ、割り込み不可であれば、再生しない。（エラー）
+						else
+						{
+							throw new SoundConductorError(SoundConductorErrorType.ERROR_10204);
+						}
+					}
+				}
+			}
 			// 登録されていない場合はエラー
-			if (registeredSoundData == null)
+			else
 			{
 				throw new SoundConductorError(SoundConductorErrorType.ERROR_10110);
 			}

@@ -1,6 +1,6 @@
 package jp.hiiragi.managers.soundConductor.error
 {
-	import flash.errors.IllegalOperationError;
+
 
 	/**
 	 * <code>SoundConductorErrorType</code> クラスは、定数値の列挙です。
@@ -28,6 +28,9 @@ package jp.hiiragi.managers.soundConductor.error
 
 		/** このクラスを使用するには初期化を行う必要が有ります。 */
 		public static const ERROR_10010:SoundConductorErrorType = create(10010, "このクラスを使用するには初期化を行う必要が有ります。");
+
+		/** このクラスは既に初期化されています。 */
+		public static const ERROR_10011:SoundConductorErrorType = create(10011, "このクラスは既に初期化されています。");
 
 		/** このメソッドは、抽象メソッドとして設計されています。サブクラスにてオーバーライドして使用してください。 */
 		public static const ERROR_10020:SoundConductorErrorType = create(10020, "このメソッドは、抽象メソッドとして設計されています。サブクラスにてオーバーライドして使用してください。 ");
@@ -61,6 +64,8 @@ package jp.hiiragi.managers.soundConductor.error
 		/** 指定されたオブジェクトには soundTransform プロパティが存在しません。 */
 		public static const ERROR_10203:SoundConductorErrorType = create(10203, "指定されたオブジェクトには soundTransform プロパティが存在しません。");
 
+		/** 指定されたサウンドは複数再生不可であり、割り込み不可の設定になっているため、再生できません。 */
+		public static const ERROR_10204:SoundConductorErrorType = create(10204, "指定されたサウンドは複数再生不可であり、割り込み不可の設定になっているため、再生できません。");
 
 //--------------------------------------------------------------------------
 //
@@ -78,6 +83,7 @@ package jp.hiiragi.managers.soundConductor.error
 		 * 内部で定数を列挙する際のファクトリーメソッドです。
 		 * @param value Enum値です。
 		 * @return
+		 * @private
 		 */
 		protected static function create(id:int, message:String):SoundConductorErrorType
 		{
@@ -93,8 +99,6 @@ package jp.hiiragi.managers.soundConductor.error
 //
 //--------------------------------------------------------------------------
 		/**
-		 * コンストラクタです。外部からはインスタンス化できません。
-		 * @param value Enum値です。
 		 * @private
 		 */
 		public function SoundConductorErrorType(id:int, message:String)
@@ -107,7 +111,7 @@ package jp.hiiragi.managers.soundConductor.error
 			}
 			else
 			{
-				throw new IllegalOperationError("This class is emurated Enum.");
+				throw new SoundConductorError(SoundConductorErrorType.ERROR_10002);
 			}
 		}
 
@@ -117,18 +121,18 @@ package jp.hiiragi.managers.soundConductor.error
 //
 //--------------------------------------------------------------------------
 		//----------------------------------
-		//  value
+		//  id
 		//----------------------------------
 		private var _id:int;
 
 		/**
-		 * Enum の値を取得します.
+		 * エラーの ID を取得します.
 		 * @return
 		 */
 		public function get id():int  { return _id; }
 
 		//----------------------------------
-		//  value
+		//  message
 		//----------------------------------
 		private var _message:String;
 

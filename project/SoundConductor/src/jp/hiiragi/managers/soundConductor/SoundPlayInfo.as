@@ -17,7 +17,7 @@ package jp.hiiragi.managers.soundConductor
 
 		/**
 		 * コンストラクタです.
-		 * @param soundId
+		 * @param soundId 再生したいサウンドを <code>SoundConductor</code> に登録した際に受け取る <code>SoundId</code> です.
 		 */
 		public function SoundPlayInfo(soundId:SoundId)
 		{
@@ -34,6 +34,10 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _soundId:SoundId;
 
+		/**
+		 * コンストラクタで指定した <code>SoundId</code> を取得します.
+		 * @return
+		 */
 		public function get soundId():SoundId  { return _soundId; }
 
 		//----------------------------------
@@ -56,7 +60,7 @@ package jp.hiiragi.managers.soundConductor
 
 		/**
 		 * サウンドのループ回数を取得・設定します.
-		 * 指定には、<code>int</code> の正の整数か、<code>SoundLoopType</code> の定数を使用します.
+		 * <p>指定には、<code>int</code> の正の整数か、<code>SoundLoopType</code> の定数を使用します.</p>
 		 * @return
 		 */
 		public function get loops():int  { return _loops; }

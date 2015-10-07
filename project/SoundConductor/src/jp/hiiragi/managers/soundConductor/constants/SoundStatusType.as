@@ -1,10 +1,10 @@
 package jp.hiiragi.managers.soundConductor.constants
 {
-	import flash.errors.IllegalOperationError;
+	import jp.hiiragi.managers.soundConductor.error.SoundConductorError;
+	import jp.hiiragi.managers.soundConductor.error.SoundConductorErrorType;
 
 	/**
-	 * <code>SoundStatusType</code> クラスは、定数値の列挙です。
-	 * @author
+	 * <code>SoundStatusType</code> クラスは、定数値の列挙です.
 	 */
 	public class SoundStatusType
 	{
@@ -48,6 +48,7 @@ package jp.hiiragi.managers.soundConductor.constants
 		 * 内部で定数を列挙する際のファクトリーメソッドです。
 		 * @param value Enum値です。
 		 * @return
+		 * @private
 		 */
 		protected static function create(value:* = null):SoundStatusType
 		{
@@ -64,7 +65,7 @@ package jp.hiiragi.managers.soundConductor.constants
 //--------------------------------------------------------------------------
 		/**
 		 * コンストラクタです。外部からはインスタンス化できません。
-		 * @param value Enum値です。
+		 * @param value Enum 値です。
 		 * @private
 		 */
 		public function SoundStatusType(value:* = null)
@@ -76,7 +77,7 @@ package jp.hiiragi.managers.soundConductor.constants
 			}
 			else
 			{
-				throw new IllegalOperationError("This class is emurated Enum.");
+				throw new SoundConductorError(SoundConductorErrorType.ERROR_10002);
 			}
 		}
 
@@ -91,7 +92,7 @@ package jp.hiiragi.managers.soundConductor.constants
 		private var _value:*;
 
 		/**
-		 * Enumの値を取得します。
+		 * Enum の値を取得します。
 		 * @return
 		 */
 		public function get value():*  { return _value; }

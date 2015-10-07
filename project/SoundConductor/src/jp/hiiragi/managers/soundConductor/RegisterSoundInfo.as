@@ -14,10 +14,10 @@ package jp.hiiragi.managers.soundConductor
 
 		/**
 		 * コンストラクタです.
-		 * @param sound	再生する音源を指定します。指定できる音源は、 "リンケージの文字列"、"<code>Sound</code> クラスを拡張した音源クラス"、"<code>Sound</code> オブジェクト"、"PCM の <code>ByteArray</code>" です。
+		 * @param sound	再生する音源を指定します。指定できる音源は、 "リンケージの文字列"、"<code>Sound</code> クラスを継承した音源クラス"、"<code>Sound</code> オブジェクト"、"PCM の <code>ByteArray</code>" です。
 		 * @param createPCMByteArray	<code>sound</code> の引数が <code>ByteArray</code> 以外だった場合に、その音源から PCM の <code>ByteArray</code> を生成するかどうかを指定します。
-		 * @param allowMultiple	登録した音源を複数同時再生できるかどうかを指定します。（現在未実装です）
-		 * @param allowInterrupt	登録した音源が複数同時再生しない場合において、追加で再生をしようとした場合に、現在なってる音を止めて新しく鳴らすかどうかを指定します。（現在未実装です）
+		 * @param allowMultiple	登録した音源を複数同時再生できるかどうかを指定します。
+		 * @param allowInterrupt	<code>allowMultiple</code> が <code>false</code> （複数同時再生しない）の場合において、追加で再生をしようとした際に、現在鳴っている音を止めて新しく鳴らすかどうかを指定します。
 		 */
 		public function RegisterSoundInfo(sound:*, createPCMByteArray:Boolean = false, allowMultiple:Boolean = true, allowInterrupt:Boolean = true)
 		{
@@ -40,7 +40,7 @@ package jp.hiiragi.managers.soundConductor
 
 		/**
 		 * コンストラクタで指定した音源を取得します.
-		 * 指定できる音源は、 "リンケージの文字列"、"<code>Sound</code> クラスを拡張した音源クラス"、"<code>Sound</code> オブジェクト"、"PCM の <code>ByteArray</code>" です。
+		 * 指定できる音源は、 "リンケージの文字列"、"<code>Sound</code> クラスを継承した音源クラス"、"<code>Sound</code> オブジェクト"、"PCM の <code>ByteArray</code>" です。
 		 * @return
 		 */
 		public function get sound():*  { return _sound; }
@@ -64,7 +64,7 @@ package jp.hiiragi.managers.soundConductor
 		private var _allowMultiple:Boolean = true;
 
 		/**
-		 * 音源を複数同時再生できるかどうかを取得します。
+		 * 音源を複数同時再生できるかどうかを取得します.
 		 * @return
 		 */
 		public function get allowMultiple():Boolean  { return _allowMultiple; }
@@ -75,7 +75,7 @@ package jp.hiiragi.managers.soundConductor
 		private var _allowInterrupt:Boolean = true;
 
 		/**
-		 * 登録した音源が複数同時再生しない場合において、追加で再生をしようとした場合に、現在なってる音を止めて新しく鳴らすかどうかを取得します。
+		 * <code>allowMultiple</code> が <code>false</code> （複数同時再生しない）の場合において、追加で再生をしようとした際に、現在鳴っている音を止めて新しく鳴らすかどうかを指定します.
 		 * @return
 		 */
 		public function get allowInterrupt():Boolean  { return _allowInterrupt; }
