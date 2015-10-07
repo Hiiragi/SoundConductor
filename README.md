@@ -10,7 +10,6 @@ sound manager for ActionScript 3.
 このライブラリは開発中であり、幾つかの未実装機能が存在します。
 
 - `seek()`
-- `weakReference`
 
 また、テストケースがそこまで無いため、不安定な挙動やバグを起こす可能性があります。
 

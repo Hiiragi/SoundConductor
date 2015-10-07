@@ -290,8 +290,9 @@ package jp.hiiragi.managers.soundConductor
 
 			var len:int;
 			var i:int;
+			var playingSoundData:AbstractPlayingData
 
-			// SharedSoundGenerator を使わない設定をした上で鳴らそうとした場合、エラーを出す。
+			// SharedSoundGenerator を使わない設定をした上で、その機構を使って鳴らそうとした場合、エラーを出す。
 			if (!_useSharedSoundGenerator && playInfo.soundPlayType == SoundPlayType.SHARED_SOUND_GENERATOR)
 			{
 				throw new SoundConductorError(SoundConductorErrorType.ERROR_10202);
@@ -300,7 +301,10 @@ package jp.hiiragi.managers.soundConductor
 			// サウンドを再生できるかどうか調べる。
 			var playable:Boolean = checkPlayable();
 			if (!playable)
+			{
 				return null;
+			}
+
 
 			var registeredSoundData:RegisteredSoundData;
 
@@ -323,7 +327,7 @@ package jp.hiiragi.managers.soundConductor
 				{
 					// 現在再生されているかを調べる
 					var alreadyPlayingSound:AbstractPlayingData;
-					for each (var playingSoundData:AbstractPlayingData in _playingSoundDataList)
+					for each (playingSoundData in _playingSoundDataList)
 					{
 						if (playingSoundData.soundId == playInfo.soundId)
 						{
@@ -697,12 +701,11 @@ package jp.hiiragi.managers.soundConductor
 			else
 			{
 				// 空きが無い場合、weak 状態で再生されているサウンドを即停止させる。
-				var len:int = _playingSoundDataList.length;
-				for (var i:int = 0; i < len; i++)
+				for each (var playingData:AbstractPlayingData in _playingSoundDataList)
 				{
-					if (_playingSoundDataList[i].weakReference)
+					if (playingData.weakReference)
 					{
-						_playingSoundDataList[i].stop();
+						playingData.stop();
 						return true;
 					}
 				}
