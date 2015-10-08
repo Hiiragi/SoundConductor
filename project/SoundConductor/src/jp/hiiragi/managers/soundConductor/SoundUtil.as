@@ -20,7 +20,6 @@ package jp.hiiragi.managers.soundConductor
 		/** 無音の <code>ByteArray</code> です. */
 		private static const SILENT_BYTE_ARRAY:ByteArray = new ByteArray();
 
-
 //--------------------------------------------------------------------------
 //
 //  Class variables

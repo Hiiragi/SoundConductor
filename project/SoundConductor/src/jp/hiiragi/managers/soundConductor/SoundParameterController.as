@@ -188,6 +188,15 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 
+		public function replaceSoundChannel(soundChannel:SoundChannel):void
+		{
+			var volume:Number = _soundChannel.soundTransform.volume;
+			var pan:Number = _soundChannel.soundTransform.pan;
+
+			_soundChannel = soundChannel;
+			soundChannel.soundTransform = new SoundTransform(volume, pan);
+		}
+
 		public function validateNow():void
 		{
 			// マスターボリュームとグループボリュームを適用する。

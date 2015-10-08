@@ -150,10 +150,14 @@ package jp.hiiragi.managers.soundConductor
 
 						bufferByteArray.position = 0;
 						if (bufferByteArray.length > 0)
+						{
 							bufferByteArrayList.push(bufferByteArray);
-
-						if (playingData.status == SoundStatusType.STOPPED)
+						}
+						else if (bufferByteArray.length == 0 || playingData.status == SoundStatusType.STOPPED)
+						{
 							removePlayingData(playingData);
+							playingData.dispose();
+						}
 					}
 
 

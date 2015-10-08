@@ -128,6 +128,7 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 
+
 		/**
 		 * サウンドの再生状態を取得します.
 		 * @return
@@ -199,14 +200,11 @@ package jp.hiiragi.managers.soundConductor
 		}
 
 		/**
-		 * サウンドのシークを行います（現在未実装です)
+		 * サウンドのシークを行います
 		 * @param timeByMS
-		 * @private
 		 */
 		public function seek(timeByMS:Number):void
 		{
-			throw new Error("seek() is not implemented.");
-
 			checkEnabled();
 			_playingData.seek(timeByMS);
 		}

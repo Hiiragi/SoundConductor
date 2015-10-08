@@ -8,6 +8,15 @@ package jp.hiiragi.managers.soundConductor
 
 	internal class AbstractPlayingDataForSoundGenerator extends AbstractPlayingData
 	{
+//--------------------------------------------------------------------------
+//
+//  Class constants
+//
+//--------------------------------------------------------------------------
+		/**
+		 * ミリ秒からバイト数に変換する係数です (44.1 * 8 = 352.8).<p>
+		 */
+		private static const COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE:Number = 44.1 * 8;
 
 //--------------------------------------------------------------------------
 //
@@ -22,11 +31,11 @@ package jp.hiiragi.managers.soundConductor
 
 				_soundByteArray = registeredSoundData.soundByteArray;
 
-				_startByteIndex = _currentByteIndex = playInfo.startTimeByMS * 352.8; // 352.8 = 44.1 * 8
-				_loopStartByteIndex = playInfo.loopStartTimeByMS * 352.8;
-				_loopEndByteIndex = (playInfo.loopEndTimeByMS == 0) ? _soundByteArray.length : playInfo.loopEndTimeByMS * 352.8;
+				_startByteIndex = _currentByteIndex = playInfo.startTimeByMS * COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
+				_loopStartByteIndex = playInfo.loopStartTimeByMS * COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
+				_loopEndByteIndex = (playInfo.loopEndTimeByMS == 0) ? _soundByteArray.length : playInfo.loopEndTimeByMS * COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
 
-				totalLength = Math.floor(_soundByteArray.length / 352.8);
+				totalLength = Math.floor(_soundByteArray.length / COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE);
 			}
 			else
 			{
@@ -78,6 +87,12 @@ package jp.hiiragi.managers.soundConductor
 			volumeController.setValue(pausedVolume, fadeInTimeByMS, fadeInEasing);
 		}
 
+		override protected function seek_internal(timeByMS:Number):void
+		{
+			_currentByteIndex = timeByMS * COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
+			setCurrentPosition();
+		}
+
 //--------------------------------------------------------------------------
 //
 //  Service methods
@@ -100,7 +115,7 @@ package jp.hiiragi.managers.soundConductor
 				byteArray.writeBytes(SoundUtil.getSilentByteArray(length), 0, length);
 			}
 
-			var remainLength:uint;
+			var remainLength:Number;
 			if (loops == SoundLoopType.NO_LOOP || (loops != SoundLoopType.INFINITE_LOOP && loops == currentLoopCount))
 			{
 				remainLength = _soundByteArray.length - _currentByteIndex;
@@ -116,11 +131,15 @@ package jp.hiiragi.managers.soundConductor
 				{
 					// 残りがない（最終切り出し）
 					writeSoundBytes(byteArray, _soundByteArray, _currentByteIndex, remainLength);
+					_currentByteIndex = _soundByteArray.length;
 				}
 			}
 			else
 			{
 				remainLength = _loopEndByteIndex - _currentByteIndex;
+				if (remainLength < 0)
+					remainLength = 0;
+
 				// ループ地点を超えるか
 				if (remainLength > length)
 				{
@@ -141,8 +160,7 @@ package jp.hiiragi.managers.soundConductor
 
 			// ポジションを最初に戻す
 			byteArray.position = 0;
-
-			currentPosition = Math.floor(_currentByteIndex / 352.8); // 352.8 = 44100 * 8 / 1000
+			setCurrentPosition();
 //			trace(_currentByteIndex + " / " + _soundByteArray.length);
 			byteArray = writeSoundByteArrayFinished(byteArray);
 
@@ -172,6 +190,11 @@ package jp.hiiragi.managers.soundConductor
 			{
 				target.writeBytes(source, offset, length);
 			}
+		}
+
+		private function setCurrentPosition():void
+		{
+			currentPosition = Math.floor(_currentByteIndex / COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE);
 		}
 
 //--------------------------------------------------------------------------

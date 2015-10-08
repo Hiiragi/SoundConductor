@@ -131,7 +131,8 @@ package jp.hiiragi.managers.soundConductor
 
 		override protected function seek_internal(timeByMS:Number):void
 		{
-
+			_soundChannel.stop();
+			executePlaySoundProcess(timeByMS);
 		}
 
 		override protected function resume_internal(fadeInTimeByMS:Number, fadeInEasing:Function):void
@@ -160,9 +161,10 @@ package jp.hiiragi.managers.soundConductor
 
 		override public function dispose():void
 		{
-			super.dispose();
 			_soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundCompleteHandler);
 			_soundChannel.stop();
+
+			super.dispose();
 		}
 
 //--------------------------------------------------------------------------
@@ -189,7 +191,8 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 
-		private function executePlaySoundProcess(startPosition:int, volume:Number, pan:Number, fadeInTimeByMS:Number = 0, fadeInEasing:Function = null):void
+		private function executePlaySoundProcess(startPosition:int, volume:Number = 1, pan:Number = 0
+												 , fadeInTimeByMS:Number = 0, fadeInEasing:Function = null):void
 		{
 			// まずは最大音量で鳴らす（Sound.play() で初回に設定された音量が内部的に 1 となる仕様らしいため）
 			_soundChannel = _sound.play(startPosition, 0, new SoundTransform(1, pan));
@@ -203,19 +206,29 @@ package jp.hiiragi.managers.soundConductor
 			}
 
 			setSoundChannel(_soundChannel);
-			setVolumeController(new SoundParameterController(SoundParameterType.VOLUME, _soundChannel, masterVolumeController, groupVolumeController));
-			setPanController(new SoundParameterController(SoundParameterType.PAN, _soundChannel));
 
-			if (volume == 1)
+			if (volumeController != null)
 			{
-				// 音は最大音量のままなので、マスターボリュームとグループボリュームを適用させるのみにする
-				SoundParameterController(volumeController).validateNow();
+				SoundParameterController(volumeController).replaceSoundChannel(_soundChannel);
+				SoundParameterController(panController).replaceSoundChannel(_soundChannel);
 			}
 			else
 			{
-				// 音の変更があるので、通常通りセットする
-				volumeController.setValue(volume);
+				setVolumeController(new SoundParameterController(SoundParameterType.VOLUME, _soundChannel, masterVolumeController, groupVolumeController));
+				setPanController(new SoundParameterController(SoundParameterType.PAN, _soundChannel));
+
+				if (volume == 1)
+				{
+					// 音は最大音量のままなので、マスターボリュームとグループボリュームを適用させるのみにする
+					SoundParameterController(volumeController).validateNow();
+				}
+				else
+				{
+					// 音の変更があるので、通常通りセットする
+					volumeController.setValue(volume);
+				}
 			}
+
 
 			var enabled:Boolean = validateEnabled();
 
@@ -256,6 +269,7 @@ package jp.hiiragi.managers.soundConductor
 			if (loops == SoundLoopType.NO_LOOP || (loops != SoundLoopType.INFINITE_LOOP && currentLoopCount >= loops))
 			{
 				// 終了
+				dispose();
 			}
 			else if (loops == SoundLoopType.INFINITE_LOOP || currentLoopCount < loops)
 			{
