@@ -29,7 +29,7 @@ package jp.hiiragi.managers.soundConductor
 	/**
 	 * 再生中のサウンドを制御するためのコントローラクラスです.
 	 */
-	public class SoundController extends EventDispatcher implements ISoundController
+	public class SoundController extends EventDispatcher
 	{
 //--------------------------------------------------------------------------
 //
@@ -116,6 +116,69 @@ package jp.hiiragi.managers.soundConductor
 		 */
 		internal function get enabled():Boolean  { return _enabled; }
 
+		//----------------------------------
+		//  status
+		//----------------------------------
+		/**
+		 * サウンドの再生状態を取得します.
+		 * @return
+		 */
+		public function get status():SoundStatusType
+		{
+			checkEnabled();
+			return _playingData.status;
+		}
+
+		//----------------------------------
+		//  volume
+		//----------------------------------
+		/**
+		 * サウンドのボリュームを取得します.
+		 * @return
+		 */
+		public function get volume():Number
+		{
+			checkEnabled();
+			return _playingData.getVolume();
+		}
+
+		//----------------------------------
+		//  pan
+		//----------------------------------
+		/**
+		 * サウンドの定位を取得します.
+		 * @return
+		 */
+		public function get pan():Number
+		{
+			checkEnabled();
+			return _playingData.getPan();
+		}
+
+		//----------------------------------
+		//  currentPosition
+		//----------------------------------
+		/**
+		 * 現在の再生中の場所を取得します.
+		 * @return
+		 */
+		public function get currentPosition():Number
+		{
+			return _playingData.getCurrentPosition();
+		}
+
+		//----------------------------------
+		//  totalLength
+		//----------------------------------
+		/**
+		 * サウンドの再生する長さを取得します.
+		 * @return
+		 */
+		public function get totalLength():Number
+		{
+			return _playingData.getTotalLength();
+		}
+
 //--------------------------------------------------------------------------
 //
 //  Namespace methods
@@ -128,54 +191,6 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 
-
-		/**
-		 * サウンドの再生状態を取得します.
-		 * @return
-		 */
-		public function getStatus():SoundStatusType
-		{
-			checkEnabled();
-			return _playingData.status;
-		}
-
-		/**
-		 * サウンドのボリュームを取得します.
-		 * @return
-		 */
-		public function getVolume():Number
-		{
-			checkEnabled();
-			return _playingData.getVolume();
-		}
-
-		/**
-		 * サウンドの定位を取得します.
-		 * @return
-		 */
-		public function getPan():Number
-		{
-			checkEnabled();
-			return _playingData.getPan();
-		}
-
-		/**
-		 * 現在の再生中の場所を取得します.
-		 * @return
-		 */
-		public function getCurrentPosition():Number
-		{
-			return _playingData.getCurrentPosition();
-		}
-
-		/**
-		 * サウンドの再生する長さを取得します.
-		 * @return
-		 */
-		public function getTotalLength():Number
-		{
-			return _playingData.getTotalLength();
-		}
 
 		/**
 		 * サウンドの一時停止を行います.

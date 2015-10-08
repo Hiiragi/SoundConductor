@@ -7,10 +7,10 @@ package jp.hiiragi.managers.soundConductor
 		function pause(fadeOutTimeByMS:Number = 0, fadeOutEasing:Function = null):void;
 		function resume(fadeInTimeByMS:Number = 0, fadeInEasing:Function = null):void;
 		function stop(fadeOutTimeByMS:Number = 0, fadeOutEasing:Function = null):void;
-		function setVolume(value:Number, easingTimeByMS:Number = 0, easing:Function = null):void;
 		function getVolume():Number;
-		function setPan(value:Number, easingTimeByMS:Number = 0, easing:Function = null):void;
+		function setVolume(value:Number, easingTimeByMS:Number = 0, easing:Function = null):void;
 		function getPan():Number;
+		function setPan(value:Number, easingTimeByMS:Number = 0, easing:Function = null):void;
 		function mute():void;
 		function unmute():void;
 	}
