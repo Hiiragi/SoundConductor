@@ -27,6 +27,8 @@ package jp.hiiragi.managers.soundConductor.events
 		public static const MUTE:String = "mute";
 		/** サウンドがミュート状態を解除されたことを表します.  */
 		public static const UNMUTE:String = "unmute";
+		/** サウンドがループしたことを表します.  */
+		public static const LOOP:String = "loop";
 
 //--------------------------------------------------------------------------
 //

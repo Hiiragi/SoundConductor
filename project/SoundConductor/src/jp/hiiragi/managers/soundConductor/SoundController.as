@@ -17,6 +17,7 @@ package jp.hiiragi.managers.soundConductor
 	[Event(name = "stopped", type = "jp.hiiragi.managers.soundConductor.events.SoundConductorEvent")]
 	[Event(name = "mute", type = "jp.hiiragi.managers.soundConductor.events.SoundConductorEvent")]
 	[Event(name = "unmute", type = "jp.hiiragi.managers.soundConductor.events.SoundConductorEvent")]
+	[Event(name = "loop", type = "jp.hiiragi.managers.soundConductor.events.SoundConductorEvent")]
 
 //--------------------------------------
 //  Styles
@@ -178,6 +179,31 @@ package jp.hiiragi.managers.soundConductor
 		{
 			return _playingData.getTotalLength();
 		}
+
+		//----------------------------------
+		//  currentLoopCount
+		//----------------------------------
+		/**
+		 * 現在のループ回数を取得します.
+		 * @return
+		 */
+		public function get currentLoopCount():int
+		{
+			return _playingData.currentLoopCount;
+		}
+
+		//----------------------------------
+		//  loops
+		//----------------------------------
+		/**
+		 * 指定されているループ回数を取得します.
+		 * @return
+		 */
+		public function get loops():int
+		{
+			return _playingData.loops;
+		}
+
 
 //--------------------------------------------------------------------------
 //

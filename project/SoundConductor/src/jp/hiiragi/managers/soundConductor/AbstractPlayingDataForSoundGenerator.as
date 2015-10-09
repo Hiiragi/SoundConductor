@@ -5,6 +5,7 @@ package jp.hiiragi.managers.soundConductor
 	import jp.hiiragi.managers.soundConductor.constants.SoundLoopType;
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorError;
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorErrorType;
+	import jp.hiiragi.managers.soundConductor.events.SoundConductorEvent;
 
 	internal class AbstractPlayingDataForSoundGenerator extends AbstractPlayingData
 	{
@@ -155,6 +156,7 @@ package jp.hiiragi.managers.soundConductor
 					writeSoundBytes(byteArray, _soundByteArray, _loopStartByteIndex, lengthFromStartPoint);
 					_currentByteIndex = _loopStartByteIndex + (lengthFromStartPoint);
 					incrementCurrentLoopCount();
+					dispatchEvent(new SoundConductorEvent(SoundConductorEvent.LOOP, soundContoller));
 				}
 			}
 

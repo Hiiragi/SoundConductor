@@ -20,6 +20,7 @@ package jp.hiiragi.managers.soundConductor
 	[Event(name = "stopped", type = "jp.hiiragi.managers.soundConductor.events.SoundConductorEvent")]
 	[Event(name = "mute", type = "jp.hiiragi.managers.soundConductor.events.SoundConductorEvent")]
 	[Event(name = "unmute", type = "jp.hiiragi.managers.soundConductor.events.SoundConductorEvent")]
+	[Event(name = "loop", type = "jp.hiiragi.managers.soundConductor.events.SoundConductorEvent")]
 
 //--------------------------------------
 //  Styles

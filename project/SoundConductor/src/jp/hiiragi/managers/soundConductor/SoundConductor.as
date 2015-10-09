@@ -399,6 +399,7 @@ package jp.hiiragi.managers.soundConductor
 			playingData.addEventListener(SoundConductorEvent.STOPPED, receiveEventFromPlayingData);
 			playingData.addEventListener(SoundConductorEvent.MUTE, receiveEventFromPlayingData);
 			playingData.addEventListener(SoundConductorEvent.UNMUTE, receiveEventFromPlayingData);
+			playingData.addEventListener(SoundConductorEvent.LOOP, receiveEventFromPlayingData);
 
 			playingData.play();
 
@@ -750,6 +751,7 @@ package jp.hiiragi.managers.soundConductor
 				playingData.removeEventListener(SoundConductorEvent.STOPPED, receiveEventFromPlayingData);
 				playingData.removeEventListener(SoundConductorEvent.MUTE, receiveEventFromPlayingData);
 				playingData.removeEventListener(SoundConductorEvent.UNMUTE, receiveEventFromPlayingData);
+				playingData.removeEventListener(SoundConductorEvent.LOOP, receiveEventFromPlayingData);
 
 				var index:int = _playingSoundDataList.indexOf(playingData);
 				_playingSoundDataList.splice(index, 1);

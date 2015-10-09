@@ -7,6 +7,7 @@ package jp.hiiragi.managers.soundConductor
 
 	import jp.hiiragi.managers.soundConductor.constants.SoundLoopType;
 	import jp.hiiragi.managers.soundConductor.constants.SoundStatusType;
+	import jp.hiiragi.managers.soundConductor.events.SoundConductorEvent;
 
 //--------------------------------------
 //  Events
@@ -274,6 +275,7 @@ package jp.hiiragi.managers.soundConductor
 			else if (loops == SoundLoopType.INFINITE_LOOP || currentLoopCount < loops)
 			{
 				incrementCurrentLoopCount();
+				dispatchEvent(new SoundConductorEvent(SoundConductorEvent.LOOP, soundContoller));
 
 				// 再度再生
 				executePlaySoundProcess(startTimeByMS, currentVolume, currentPan);
