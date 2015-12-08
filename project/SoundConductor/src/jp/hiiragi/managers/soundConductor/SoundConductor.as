@@ -159,14 +159,15 @@ package jp.hiiragi.managers.soundConductor
 		 *
 		 * @param bufferType	 SoundGenerator 機能で扱われるサウンドのバッファを保持する量を設定します。
 		 * <code>useSharedSoundGenerator</code> が <code>false</code> の場合、この値を設定する必要はありません。
-		 * 設定には <code>SoundBufferType</code> クラスの定数を使用してください。デフォルトは <code>null</code> です。
+		 * 設定には <code>SoundBufferType</code> クラスの定数を使用してください。<code>null</code> の場合は、<code>SoundBufferType.BUFFER_SIZE_4096</code> が適用されます。
+		 * デフォルトは <code>null</code> です。
 		 */
 		public static function initialize(useSharedSoundGenerator:Boolean = false, bufferType:SoundBufferType = null):void
 		{
 			if (_isInitialized)
 				throw new SoundConductorError(SoundConductorErrorType.ERROR_10011);
 
-			_soundBufferSize = bufferType;
+			_soundBufferSize = bufferType || SoundBufferType.BUFFER_SIZE_4096;
 			_useSharedSoundGenerator = useSharedSoundGenerator;
 
 			if (!SoundUtil.checkPlayable())
