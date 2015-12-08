@@ -43,6 +43,8 @@ package jp.hiiragi.managers.soundConductor
 		 */
 		private static const COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE:Number = 44.1 * 8;
 
+		private static const BIT_MASK:int = int.MAX_VALUE - 7;
+
 //--------------------------------------------------------------------------
 //
 //  Constructor
@@ -59,6 +61,10 @@ package jp.hiiragi.managers.soundConductor
 				_startByteIndex = _currentByteIndex = playInfo.startTimeByMS * COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
 				_loopStartByteIndex = playInfo.loopStartTimeByMS * COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
 				_loopEndByteIndex = (playInfo.loopEndTimeByMS == 0) ? _soundByteArray.length : playInfo.loopEndTimeByMS * COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
+
+				_startByteIndex &= BIT_MASK;
+				_loopStartByteIndex &= BIT_MASK;
+				_loopEndByteIndex &= BIT_MASK;
 
 				totalLength = Math.floor(_soundByteArray.length / COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE);
 			}
@@ -178,7 +184,7 @@ package jp.hiiragi.managers.soundConductor
 					var lengthFromStartPoint:uint = length - remainLength;
 					writeSoundBytes(byteArray, _soundByteArray, _currentByteIndex, remainLength);
 					writeSoundBytes(byteArray, _soundByteArray, _loopStartByteIndex, lengthFromStartPoint);
-					_currentByteIndex = _loopStartByteIndex + (lengthFromStartPoint);
+					_currentByteIndex = _loopStartByteIndex + lengthFromStartPoint;
 					incrementCurrentLoopCount();
 					dispatchEvent(new SoundConductorEvent(SoundConductorEvent.LOOP, soundContoller));
 				}
