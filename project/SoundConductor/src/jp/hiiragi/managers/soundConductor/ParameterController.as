@@ -84,6 +84,7 @@ package jp.hiiragi.managers.soundConductor
 			if (!_tweening && value == currentValue)
 			{
 				// 値は変わらないので、何もしない
+				dispatchEvent(new Event(Event.COMPLETE));
 			}
 			else
 			{
