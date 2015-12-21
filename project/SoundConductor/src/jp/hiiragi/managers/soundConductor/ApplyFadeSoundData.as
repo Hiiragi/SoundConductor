@@ -3,7 +3,7 @@ package jp.hiiragi.managers.soundConductor
 	import flash.media.SoundChannel;
 
 
-	public class ApplyFadeSoundData
+	internal class ApplyFadeSoundData
 	{
 
 //--------------------------------------------------------------------------
