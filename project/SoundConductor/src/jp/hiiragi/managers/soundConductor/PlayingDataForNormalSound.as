@@ -223,6 +223,12 @@ package jp.hiiragi.managers.soundConductor
 			_soundChannel = _sound.play(startPosition, 0, new SoundTransform(1, pan));
 			_soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundCompleteHandler);
 
+			var initVolume:Number = volume;
+			if (fadeInTimeByMS > 0)
+			{
+				initVolume = 0;
+			}
+
 			// コントローラ設定
 			var groupVolumeController:ParameterController;
 			if (soundGroupController != null)
@@ -241,19 +247,18 @@ package jp.hiiragi.managers.soundConductor
 			{
 				setVolumeController(new SoundParameterController(SoundParameterType.VOLUME, _soundChannel, masterVolumeController, groupVolumeController));
 				setPanController(new SoundParameterController(SoundParameterType.PAN, _soundChannel));
-
-				if (volume == 1)
-				{
-					// 音は最大音量のままなので、マスターボリュームとグループボリュームを適用させるのみにする
-					SoundParameterController(volumeController).validateNow();
-				}
-				else
-				{
-					// 音の変更があるので、通常通りセットする
-					volumeController.setValue(volume);
-				}
 			}
 
+			if (initVolume == 1)
+			{
+				// 音は最大音量のままなので、マスターボリュームとグループボリュームを適用させるのみにする
+				SoundParameterController(volumeController).validateNow();
+			}
+			else
+			{
+				// 音の変更があるので、通常通りセットする
+				volumeController.setValue(volume, fadeInTimeByMS, fadeInEasing);
+			}
 
 			var enabled:Boolean = validateEnabled();
 
