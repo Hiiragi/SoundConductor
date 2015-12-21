@@ -31,6 +31,7 @@ package jp.hiiragi.managers.soundConductor
 		function get value():Number;
 		function get enabled():Boolean;
 		function setValue(value:Number, easingTimeByMS:Number = 0, easing:Function = null):void;
+		function getInternalValue():Number;
 		function setEnabled(enabled:Boolean):void;
 		function dispose():void;
 	}

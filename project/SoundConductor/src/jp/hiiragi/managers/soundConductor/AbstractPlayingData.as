@@ -492,7 +492,7 @@ package jp.hiiragi.managers.soundConductor
 		{
 			if (_status == SoundStatusType.PLAYING)
 			{
-				_pausedVolume = _volumeController.value;
+				_pausedVolume = _volumeController.getInternalValue();
 				_volumeController.addEventListener(Event.COMPLETE, onPauseCompleteHandler);
 				_volumeController.setValue(0, fadeOutTimeByMS, fadeOutEasing);
 

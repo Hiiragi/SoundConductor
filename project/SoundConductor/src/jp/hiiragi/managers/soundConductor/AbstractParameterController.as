@@ -202,6 +202,12 @@ package jp.hiiragi.managers.soundConductor
 
 //--------------------------------------------------------------------------
 //
+//  Namespace methods
+//
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+//
 //  Overridden methods
 //
 //--------------------------------------------------------------------------
@@ -242,6 +248,11 @@ package jp.hiiragi.managers.soundConductor
 		public function setValue(value:Number, easingTimeByMS:Number = 0, easing:Function = null):void
 		{
 			throw new SoundConductorError(SoundConductorErrorType.ERROR_10020);
+		}
+
+		public function getInternalValue():Number
+		{
+			return _value;
 		}
 
 		/**
