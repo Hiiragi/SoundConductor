@@ -186,7 +186,10 @@ package jp.hiiragi.managers.soundConductor
 			if (_soundParameterType == SoundParameterType.VOLUME)
 			{
 				var volume:Number = value;
-				volume *= _masterVolumeController.value;
+
+				if (_masterVolumeController != null)
+					volume *= _masterVolumeController.value;
+
 				if (_groupVolumeController != null)
 					volume *= _groupVolumeController.value;
 
