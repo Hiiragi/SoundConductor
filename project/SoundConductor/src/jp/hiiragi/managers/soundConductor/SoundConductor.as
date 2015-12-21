@@ -80,6 +80,8 @@ package jp.hiiragi.managers.soundConductor
 
 		private static var _groupList:Vector.<SoundGroupController>;
 
+		private static var _applyingFadeSoundChannelList:Vector.<ApplyFadeSoundData>;
+
 		private static var _sharedSoundGeneratorEngine:SoundGeneratorEngine;
 
 		private static var _isInitialized:Boolean;
@@ -185,6 +187,8 @@ package jp.hiiragi.managers.soundConductor
 			_registeredSoundList = new Vector.<RegisteredSoundData>();
 			_playingSoundDataList = new Vector.<AbstractPlayingData>();
 			_groupList = new Vector.<SoundGroupController>();
+
+			_applyingFadeSoundChannelList = new Vector.<ApplyFadeSoundData>();
 
 			_isInitialized = true;
 		}
@@ -515,15 +519,15 @@ package jp.hiiragi.managers.soundConductor
 		 * <p>このメソッドを通して再生することにより、<code>SoundConductor</code> が管理しているマスターボリュームとグループボリュームの恩恵を得ることが出来ます。
 		 * グループを指定した場合、そのグループのミュート状態も適用されます。</p>
 		 * <p>ミュート状態はボリュームを <code>0</code> にすることで再現しているため、ミュートの解除はボリュームを上げることで対応する必要が有ります。</p>
-		 * @param sound
-		 * @param groupName
-		 * @param startTime
-		 * @param loops
-		 * @param volume
-		 * @param pan
+		 * @param sound	再生させる <code>Sound</code> オブジェクトです。
+		 * @param groupName	適用するグループの文字列です。
+		 * @param startTime		再生の始点をミリ秒単位で指定します。
+		 * @param loops	ループ回数を指定します。通常のサウンド再生のため、<code>SoundLoopType</code> は使用しません。
+		 * @param volume	再生するボリュームを設定します。
+		 * @param pan		再生する定位を設定します。
 		 * @return 再生した <code>Sound</code> から生成される <code>SoundChannel</code> クラスです。何らかの問題で再生されなかった場合は <code>null</code> が返ります。
 		 */
-		public static function playSoundObject(sound:Sound, groupName:String = "", startTime:Number = 0, loops:int = 0, volume:Number = 1, pan:Number = 0):SoundChannel
+		public static function playSoundObject(sound:Sound, groupName:String = "", startTimeByMS:Number = 0, loops:int = 0, volume:Number = 1, pan:Number = 0):SoundChannel
 		{
 			var playable:Boolean = checkPlayable();
 
@@ -533,10 +537,39 @@ package jp.hiiragi.managers.soundConductor
 			volume *= getMasterVolume();
 			volume = applyGroupVolume(volume, groupName);
 
-			var soundChannel:SoundChannel = sound.play(startTime, loops);
+			var soundChannel:SoundChannel = sound.play(startTimeByMS, loops);
 			soundChannel.soundTransform = new SoundTransform(volume, pan);
 
 			return soundChannel;
+		}
+
+
+		/**
+		 * <code>Sound</code> オブジェクトに対して、音量のフェードを適用します.
+		 *
+		 * @param soundChannel	再生している <code>SoundChannel</code> オブジェクトを設定します。
+		 * @param fadeTo	<code>0</code> から <code>1</code> の範囲で音量の到達地点を設定します。
+		 * @param timeByMS	指定した音量に到達するまでの時間をミリ秒で設定します。
+		 * @param easing	フェードのイージングを設定します。<code>null</code> を指定した場合、リニアなイージングが適用されます。指定には、<code>Ease24</code> を使用してください。
+		 * デフォルトは <code>null</code> です。
+		 * @param callback	フェードが完了した際のコールバック関数を設定します。デフォルトは <code>null</code> です。
+		 * @param stopWhenCompleted	フェードが完了したときにサウンドを停止するかを指定します。主にフェードアウトの際に利用します。
+		 * デフォルトは <code>false</code> です。
+		 */
+		public static function applyFadeToSoundObject(soundChannel:SoundChannel, fadeTo:Number, timeByMS:Number, easing:Function = null, callback:Function = null, stopWhenCompleted:Boolean = false):void
+		{
+			if (fadeTo < 0)
+				fadeTo = 0;
+			else if (fadeTo > 1)
+				fadeTo = 1;
+
+			var controller:SoundParameterController = new SoundParameterController(SoundParameterType.VOLUME, soundChannel, null, null);
+			controller.addEventListener(Event.COMPLETE, fadeCompleteHandler);
+
+			var data:ApplyFadeSoundData = new ApplyFadeSoundData(controller, soundChannel, stopWhenCompleted, callback);
+			_applyingFadeSoundChannelList.push(data);
+
+			controller.setValue(fadeTo, timeByMS, easing);
 		}
 
 
@@ -758,6 +791,7 @@ package jp.hiiragi.managers.soundConductor
 			return volume;
 		}
 
+
 //--------------------------------------------------------------------------
 //
 //  Class Event handlers
@@ -786,6 +820,41 @@ package jp.hiiragi.managers.soundConductor
 			dispatchEvent(event);
 		}
 
+		/**
+		 * <code>applyFadeToSoundObject</code> を利用した際に、フェード実行完了後に発火するイベントハンドラです.
+		 * @param event
+		 */
+		private static function fadeCompleteHandler(event:Event):void
+		{
+			var completedController:SoundParameterController = SoundParameterController(event.target);
+			completedController.removeEventListener(Event.COMPLETE, fadeCompleteHandler);
+
+			var len:int = _applyingFadeSoundChannelList.length;
+
+			for (var i:int = 0; i < len; i++)
+			{
+				var data:ApplyFadeSoundData = _applyingFadeSoundChannelList[i];
+
+				if (data.controller == completedController)
+				{
+					// 停止
+					if (data.stopSoundWhenCompleted)
+					{
+						data.soundChannel.stop();
+					}
+					// コールバック
+					if (data.callback != null)
+					{
+						data.callback();
+					}
+
+					_applyingFadeSoundChannelList.splice(i, 1);
+					break;
+				}
+			}
+
+			completedController.dispose();
+		}
 
 //--------------------------------------------------------------------------
 //
@@ -875,9 +944,10 @@ package jp.hiiragi.managers.soundConductor
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Helper class: ClassName
+//
+////////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////////////////////////////
-//
-//  Helper class: IDCreator
-//
-////////////////////////////////////////////////////////////////////////////////
+
