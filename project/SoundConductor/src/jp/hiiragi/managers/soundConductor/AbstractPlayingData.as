@@ -708,9 +708,11 @@ package jp.hiiragi.managers.soundConductor
 		 */
 		private function validateUnmutable():Boolean
 		{
-			// マスターのミュート状態と、（グループに所属している場合は）グループのミュート状態を見て、音を出せる状態であれば出す
-
-			var unmutable:Boolean = !SoundConductor.isMute;
+			// 下記の条件を満たした場合、ミュート解除可能（実質はコントローラの有効化が可能）とみなす
+			// ・マスターボリュームがミュートされていない
+			// ・自身がミュートされていない
+			// ・グループボリュームがアサインされている場合、それがミュートされていない
+			var unmutable:Boolean = !_isMute && !SoundConductor.isMute;
 			if (_soundGroupController != null)
 			{
 				unmutable = !_soundGroupController.isMute;
