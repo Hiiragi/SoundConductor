@@ -126,6 +126,8 @@ package jp.hiiragi.managers.soundConductor
 			}
 
 			super(initValue, minValue, maxValue);
+
+			valueChanged();
 		}
 
 
