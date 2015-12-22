@@ -84,6 +84,7 @@ package jp.hiiragi.managers.soundConductor
 			if (!_tweening && value == currentValue)
 			{
 				// 値は変わらないので、何もしない
+				dispatchEvent(new Event(Event.CHANGE));
 				dispatchEvent(new Event(Event.COMPLETE));
 			}
 			else
@@ -158,7 +159,8 @@ package jp.hiiragi.managers.soundConductor
 			if (t < _d)
 			{
 				// トゥイーン続行
-				setValue_internal(_easing(t, _b, _c, _d));
+				var calcuratedValue:Number = _easing(t, _b, _c, _d);
+				setValue_internal(calcuratedValue);
 				dispatchEvent(new Event(Event.CHANGE));
 			}
 			else
@@ -168,6 +170,7 @@ package jp.hiiragi.managers.soundConductor
 
 				_ticker.removeEventListener(Event.ENTER_FRAME, update);
 				_tweening = false;
+				dispatchEvent(new Event(Event.CHANGE));
 				dispatchEvent(new Event(Event.COMPLETE));
 			}
 
