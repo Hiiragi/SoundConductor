@@ -24,6 +24,7 @@
 
 package jp.hiiragi.managers.soundConductor
 {
+	import flash.media.SoundTransform;
 
 //--------------------------------------
 //  Events
@@ -134,6 +135,7 @@ package jp.hiiragi.managers.soundConductor
 		override protected function play_internal():void
 		{
 			_soundGenerator.addPlayingData(this);
+			_soundGenerator.soundChannel.soundTransform = new SoundTransform(initVolume, initPan);
 
 			var groupVolumeController:ParameterController;
 			if (soundGroupController != null)
