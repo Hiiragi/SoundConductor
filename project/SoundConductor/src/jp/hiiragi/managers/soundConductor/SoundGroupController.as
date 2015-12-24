@@ -261,8 +261,7 @@ package jp.hiiragi.managers.soundConductor
 		 */
 		public function stop(fadeOutTimeByMS:Number = 0, fadeOutEasing:Function = null):void
 		{
-			var len:int = _soundControllerList.length;
-			for (var i:int = 0; i < len; i++)
+			for (var i:int = _soundControllerList.length - 1; i >= 0; i--)
 			{
 				_soundControllerList[i].stop(fadeOutTimeByMS, fadeOutEasing);
 			}
