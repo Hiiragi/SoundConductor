@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600"
+			   creationComplete="application1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import spark.components.Alert;
+			
+			import jp.hiiragi.managers.soundConductor.RegisterSoundInfo;
+			import jp.hiiragi.managers.soundConductor.SoundConductor;
+			import jp.hiiragi.managers.soundConductor.SoundController;
+			import jp.hiiragi.managers.soundConductor.SoundId;
+			import jp.hiiragi.managers.soundConductor.SoundPlayInfo;
+			import jp.hiiragi.managers.soundConductor.constants.SoundLoopType;
+			import jp.hiiragi.managers.soundConductor.constants.SoundPlayType;
+			import jp.hiiragi.managers.soundConductor.events.SoundConductorEvent;
+			
+			[Embed(source="Battle-forHonor.mp3", mimeType="audio/mpeg")]
+			private static const BGM_01:Class;
+			
+			[Embed(source="Battle-forHonor_loop.ogg", mimeType="application/octet-stream")]
+			private static const BGM_02:Class;
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+				SoundConductor.initialize(true);
+				
+				var bgmSound:Sound = new BGM_01();
+				var registerData:RegisterSoundInfo = new RegisterSoundInfo(bgmSound, true);
+				_soundId = SoundConductor.registerSound(registerData);
+				
+				var oggSound:ByteArray = new BGM_02();
+				registerData = new RegisterSoundInfo(oggSound);
+				_oggSoundId = SoundConductor.registerSound(registerData);
+				
+				systemManager.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onUncaughtErrorHandler);
+			}
+			
+			private var _soundId:SoundId;
+			private var _oggSoundId:SoundId;
+			
+			private var _soundControllerForNormalLoop:SoundController;
+			private var _normalLoopSound:Sound;
+			
+			protected function normalPlayButtonClickHandler(event:MouseEvent):void
+			{
+				if (_soundControllerForNormalLoop == null)
+				{
+					var playData:SoundPlayInfo = new SoundPlayInfo(_soundId);
+					playData.soundPlayType = SoundPlayType.NORMAL_SOUND_ARCHITECT;
+					playData.loops = SoundLoopType.INFINITE_LOOP;
+					playData.volume = normalLoopVolumeSlider.value;
+					_soundControllerForNormalLoop = SoundConductor.play(playData);
+					normalSoundSlider.minimum = 0;
+					normalSoundSlider.maximum = _soundControllerForNormalLoop.totalLength;
+					
+					_soundControllerForNormalLoop.addEventListener(SoundConductorEvent.STOPPED, onNormalLoopCompleteHandler);
+					addEventListener(Event.ENTER_FRAME, normalLoopEnterFrameHandler);
+				}
+				
+			}
+			
+			protected function normalStopButtonClickHandler(event:MouseEvent):void
+			{
+				if (_soundControllerForNormalLoop != null)
+				{
+					stopNormalLoop();
+				}
+			}
+			
+			private function stopNormalLoop():void
+			{
+				removeEventListener(Event.ENTER_FRAME, normalLoopEnterFrameHandler);
+				_soundControllerForNormalLoop.removeEventListener(SoundConductorEvent.STOPPED, onNormalLoopCompleteHandler);
+				_soundControllerForNormalLoop.stop();
+				_soundControllerForNormalLoop = null;
+			}
+			
+			private var _soundControllerForInfiniteLoop:SoundController;
+			
+			protected function inifiniteLoopPlayButtonClickHandler(event:MouseEvent):void
+			{
+				if (_soundControllerForInfiniteLoop == null)
+				{
+					var playData:SoundPlayInfo = new SoundPlayInfo(_oggSoundId);
+					//					var playData:SoundPlayInfo = new SoundPlayInfo(_soundId);
+					playData.soundPlayType = SoundPlayType.SINGLE_SOUND_GENERATOR;
+					playData.loops = SoundLoopType.INFINITE_LOOP;
+					playData.startTimeByMS = 0;
+					playData.loopStartTimeByMS = 3278;
+					playData.loopEndTimeByMS = 51258;
+					playData.volume = infiniteLoopVolumeSlider.value;
+					_soundControllerForInfiniteLoop = SoundConductor.play(playData);
+					
+					inifiniteLoopSoundSlider.minimum = 0;
+					inifiniteLoopSoundSlider.maximum = _soundControllerForInfiniteLoop.totalLength;
+					
+					_soundControllerForInfiniteLoop.addEventListener(SoundConductorEvent.STOPPED, infiniteLoopStoppedHandler);
+					addEventListener(Event.ENTER_FRAME, inifiniteLoopEnterFrameHandler);
+				}
+			}
+			
+			protected function inifiniteLoopStopButtonClickHandler(event:MouseEvent):void
+			{
+				if (_soundControllerForInfiniteLoop != null)
+				{
+					stopInifiniteLoop();
+				}
+			}
+			
+			protected function normalLoopEnterFrameHandler(event:Event):void
+			{
+				normalSoundSlider.value = _soundControllerForNormalLoop.currentPosition;
+			}
+			
+			protected function onNormalLoopCompleteHandler(event:SoundConductorEvent):void
+			{
+				stopNormalLoop();
+			}
+			
+			protected function inifiniteLoopEnterFrameHandler(event:Event):void
+			{
+				inifiniteLoopSoundSlider.value = _soundControllerForInfiniteLoop.currentPosition;
+			}
+			
+			protected function infiniteLoopStoppedHandler(event:SoundConductorEvent):void
+			{
+				stopInifiniteLoop();
+			}
+			
+			private function stopInifiniteLoop():void
+			{
+				_soundControllerForInfiniteLoop.removeEventListener(SoundConductorEvent.STOPPED, infiniteLoopStoppedHandler);
+				removeEventListener(Event.ENTER_FRAME, inifiniteLoopEnterFrameHandler);
+				_soundControllerForInfiniteLoop.stop();
+				_soundControllerForInfiniteLoop = null;
+			}
+			
+			protected function linkbutton1_clickHandler(event:MouseEvent):void
+			{
+				navigateToURL(new URLRequest('http://wingless-seraph.net/'), "_blank");
+			}
+			
+			protected function onUncaughtErrorHandler(event:UncaughtErrorEvent):void
+			{
+				var message:String;
+				
+				if (event.error is Error)
+				{
+					message = Error(event.error).message;
+				}
+				else if (event.error is ErrorEvent)
+				{
+					message = ErrorEvent(event.error).text;
+				}
+				else
+				{
+					message = event.error.toString();
+				}
+				
+				Alert.show(message);
+			}
+			
+			protected function masterVolumeSlider_changeHandler(event:Event):void
+			{
+				SoundConductor.setMasterVolume(masterVolumeSlider.value);
+			}
+			
+			protected function checkbox1_changeHandler(event:Event):void
+			{
+				if (muteCheckBox.selected)
+					SoundConductor.muteAll();
+				else
+					SoundConductor.unmuteAll();
+			}
+			
+			protected function linkbutton2_clickHandler(event:MouseEvent):void
+			{
+				navigateToURL(new URLRequest('https://github.com/Hiiragi/SoundConductor'), "_blank");
+			}
+			
+			protected function normalLoopVolumeSlider_changeHandler(event:Event):void
+			{
+				if (_soundControllerForNormalLoop != null)
+				{
+					_soundControllerForNormalLoop.setVolume(normalLoopVolumeSlider.value);
+				}
+				
+			}
+			
+			protected function infiniteLoopVolumeSlider_changeHandler(event:Event):void
+			{
+				if (_soundControllerForInfiniteLoop != null)
+				{
+					_soundControllerForInfiniteLoop.setVolume(infiniteLoopVolumeSlider.value);
+				}
+			}
+			
+			protected function normalLoopMuteCheckBox_changeHandler(event:Event):void
+			{
+				if (normalLoopMuteCheckBox.selected)
+					_soundControllerForNormalLoop.mute();
+				else
+					_soundControllerForNormalLoop.unmute();
+			}
+			
+			protected function inifiniteLoopMuteCheckBox_changeHandler(event:Event):void
+			{
+				if (inifiniteLoopMuteCheckBox.selected)
+					_soundControllerForInfiniteLoop.mute();
+				else
+					_soundControllerForInfiniteLoop.unmute();
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 非ビジュアルエレメント (サービス、値オブジェクトなど) をここに配置 -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout gap="5" />
+	</s:layout>
+	
+	<s:Panel width="100%" height="130" title="Master">
+		<s:layout>
+			<s:VerticalLayout gap="5" />
+		</s:layout>
+		
+		<s:HGroup padding="10" verticalAlign="middle">
+			<s:Label text="master volume" />
+			<s:HSlider id="masterVolumeSlider" minimum="0" maximum="1" stepSize="0.01" value="1"
+					   width="200" change="masterVolumeSlider_changeHandler(event)" />
+			<s:CheckBox id="muteCheckBox" label="mute" change="checkbox1_changeHandler(event)" />
+		</s:HGroup>
+		
+		<mx:LinkButton label="Music : Battle for Honor (composed by ユーフルカ)" click="linkbutton1_clickHandler(event)" color="0x3333FF" />
+		<mx:LinkButton label="SoundConductor's initinite loop demo" click="linkbutton2_clickHandler(event)" color="0x3333FF" />
+	</s:Panel>
+	
+	<s:Panel width="100%" title="Normal loop">
+		<s:layout>
+			<s:VerticalLayout gap="5" />
+		</s:layout>
+		
+		<s:HGroup padding="10" verticalAlign="middle">
+			<s:HSlider id="normalSoundSlider" width="200" />
+			<s:Button label="play" click="normalPlayButtonClickHandler(event)" />
+			<s:Button label="stop" click="normalStopButtonClickHandler(event)" />
+			<s:Label text="volume"/>
+			<s:HSlider id="normalLoopVolumeSlider" minimum="0" maximum="1" stepSize="0.01" value="1"
+					   width="200" change="normalLoopVolumeSlider_changeHandler(event)" />
+			<s:CheckBox id="normalLoopMuteCheckBox" label="mute" change="normalLoopMuteCheckBox_changeHandler(event)" />
+		</s:HGroup>
+		
+		
+		<s:TextArea editable="false" width="100%">
+			<s:text>
+				var playData:SoundPlayInfo = new SoundPlayInfo(_soundId);{'\n'}
+				playData.soundPlayType = SoundPlayType.NORMAL_SOUND_ARCHITECT;{'\n'}
+				playData.loops = SoundLoopType.INFINITE_LOOP;{'\n'}
+				_soundControllerForNormalLoop = SoundConductor.play(playData);{'\n'}
+			</s:text>
+		</s:TextArea>
+	</s:Panel>
+	
+	<s:Panel width="100%" title="Infinite loop with intro">
+		<s:layout>
+			<s:VerticalLayout gap="5" />
+		</s:layout>
+		
+		<s:HGroup padding="10" verticalAlign="middle">
+			<s:HSlider id="inifiniteLoopSoundSlider" width="200" />
+			<s:Button label="play" click="inifiniteLoopPlayButtonClickHandler(event)" />
+			<s:Button label="stop" click="inifiniteLoopStopButtonClickHandler(event)" />
+			<s:Label text="volume"/>
+			<s:HSlider id="infiniteLoopVolumeSlider"  minimum="0" maximum="1" stepSize="0.01" value="1"
+					   width="200" change="infiniteLoopVolumeSlider_changeHandler(event)" />
+			<s:CheckBox id="inifiniteLoopMuteCheckBox" label="mute" change="inifiniteLoopMuteCheckBox_changeHandler(event)" />
+		</s:HGroup>
+		
+		<s:TextArea editable="false" width="100%">
+			<s:text>
+				var playData:SoundPlayInfo = new SoundPlayInfo(soundId);{'\n'}
+				playData.soundPlayType = SoundPlayType.SINGLE_SOUND_GENERATOR;{'\n'}
+				playData.loops = SoundLoopType.INFINITE_LOOP;{'\n'}
+				playData.startTimeByMS = 0;{'\n'}
+				playData.loopStartTimeByMS = 3278;{'\n'}
+				playData.loopEndTimeByMS = 51258;{'\n'}
+				_soundController = SoundConductor.play(playData);{'\n'}
+			</s:text>
+		</s:TextArea>
+	</s:Panel>
+	
+	
+</s:Application>
