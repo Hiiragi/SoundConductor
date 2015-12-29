@@ -123,6 +123,10 @@ package jp.hiiragi.managers.soundConductor
 		{
 			if (this["constructor"] != AbstractPlayingData)
 			{
+				_playInfo = playInfo;
+				_registeredSoundData = registeredSoundData;
+				_soundGroupController = soundGroupController;
+
 				_soundId = playInfo.soundId;
 				_startTimeByMS = playInfo.startTimeByMS;
 				_loops = playInfo.loops;
@@ -133,9 +137,6 @@ package jp.hiiragi.managers.soundConductor
 
 				_allowMultiple = registeredSoundData.allowMultiple;
 				_allowInterrupt = registeredSoundData.allowInterrupt;
-
-				_soundGroupController = soundGroupController;
-
 
 				_status = SoundStatusType.READY;
 				_masterVolumeController = SoundConductor.masterVolumeController;
@@ -175,6 +176,20 @@ package jp.hiiragi.managers.soundConductor
 //  Properties
 //
 //--------------------------------------------------------------------------
+		//----------------------------------
+		//  playInfo
+		//----------------------------------
+		private var _playInfo:SoundPlayInfo;
+
+		protected function get playInfo():SoundPlayInfo  { return _playInfo; }
+
+		//----------------------------------
+		//  registeredSoundData
+		//----------------------------------
+		private var _registeredSoundData:RegisteredSoundData;
+
+		protected function get registeredSoundData():RegisteredSoundData  { return _registeredSoundData; }
+
 		//----------------------------------
 		//  soundContoller
 		//----------------------------------

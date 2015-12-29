@@ -406,7 +406,23 @@ package jp.hiiragi.managers.soundConductor
 
 			// PlayingData 作成
 			var playingData:AbstractPlayingData;
-			if (playInfo.soundPlayType == SoundPlayType.NORMAL_SOUND_ARCHITECT)
+			if (registeredSoundData.soundByteArray != null && SoundUtil.checkOggFormat(registeredSoundData.soundByteArray))
+			{
+				// ogg は途中からの再生は出来ないようにする
+				playInfo.startTimeByMS = 0;
+
+				if (playInfo.soundPlayType == SoundPlayType.NORMAL_SOUND_ARCHITECT)
+				{
+				}
+				else if (playInfo.soundPlayType == SoundPlayType.SINGLE_SOUND_GENERATOR)
+				{
+					playingData = new PlayingDataForOggSingleSoundGenerator(playInfo, registeredSoundData, groupController);
+				}
+				else if (playInfo.soundPlayType == SoundPlayType.SHARED_SOUND_GENERATOR)
+				{
+				}
+			}
+			else if (playInfo.soundPlayType == SoundPlayType.NORMAL_SOUND_ARCHITECT)
 			{
 				playingData = new PlayingDataForNormalSound(playInfo, registeredSoundData, groupController);
 			}

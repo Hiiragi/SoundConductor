@@ -2,6 +2,10 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="jp.hiiragi.managers.soundConductor.ApplyFadeSoundData"/>
+    <classEntry path="jp.hiiragi.managers.soundConductor.PlayingOggDataForSharedSoundGenerator"/>
+    <classEntry path="jp.hiiragi.managers.soundConductor.IPlayingDataForSoundGenerator"/>
+    <classEntry path="jp.hiiragi.managers.soundConductor.AbstractPlayingOggDataForSoundGenerator"/>
+    <classEntry path="jp.hiiragi.managers.soundConductor.PlayingDataForOggSingleSoundGenerator"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

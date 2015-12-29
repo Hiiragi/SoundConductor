@@ -38,7 +38,7 @@ package jp.hiiragi.managers.soundConductor
 
 		/**
 		 * コンストラクタです.
-		 * @param sound	再生する音源を指定します。指定できる音源は、 "リンケージの文字列"、"<code>Sound</code> クラスを継承した音源クラス"、"<code>Sound</code> オブジェクト"、"PCM の <code>ByteArray</code>" です。
+		 * @param sound	再生する音源を指定します。指定できる音源は、 "リンケージの文字列"、"<code>Sound</code> クラスを継承した音源クラス"、"<code>Sound</code> オブジェクト"、"PCM 或いは Ogg の <code>ByteArray</code>" です。
 		 * @param createPCMByteArray	<code>sound</code> の引数が <code>ByteArray</code> 以外だった場合に、その音源から PCM の <code>ByteArray</code> を生成するかどうかを指定します。
 		 * @param allowMultiple	登録した音源を複数同時再生できるかどうかを指定します。
 		 * @param allowInterrupt	<code>allowMultiple</code> が <code>false</code> （複数同時再生しない）の場合において、追加で再生をしようとした際に、現在鳴っている音を止めて新しく鳴らすかどうかを指定します。
@@ -64,7 +64,7 @@ package jp.hiiragi.managers.soundConductor
 
 		/**
 		 * コンストラクタで指定した音源を取得します.
-		 * 指定できる音源は、 "リンケージの文字列"、"<code>Sound</code> クラスを継承した音源クラス"、"<code>Sound</code> オブジェクト"、"PCM の <code>ByteArray</code>" です。
+		 * 指定できる音源は、 "リンケージの文字列"、"<code>Sound</code> クラスを継承した音源クラス"、"<code>Sound</code> オブジェクト"、"PCM 或いは Ogg の <code>ByteArray</code>" です。
 		 * @return
 		 */
 		public function get sound():*  { return _sound; }
@@ -75,7 +75,7 @@ package jp.hiiragi.managers.soundConductor
 		private var _createPCMByteArray:Boolean = false;
 
 		/**
-		 * <code>sound</code> の引数が PCM の <code>ByteArray</code> 以外だった場合に、その音源から PCM の <code>ByteArray</code> を生成するかどうかを取得します.
+		 * <code>sound</code> の引数が <code>ByteArray</code> 以外だった場合に、その音源から PCM の <code>ByteArray</code> を生成するかどうかを取得します.
 		 * <p><code>sound</code> の引数が <code>ByteArray</code> だった場合は無視されます.</p>
 		 * <p>デフォルトは <code>false</code> です.</p>
 		 * @return

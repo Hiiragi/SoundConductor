@@ -31,19 +31,15 @@ package jp.hiiragi.managers.soundConductor
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorErrorType;
 	import jp.hiiragi.managers.soundConductor.events.SoundConductorEvent;
 
-	internal class AbstractPlayingDataForSoundGenerator extends AbstractPlayingData
+	internal class AbstractPlayingDataForSoundGenerator extends AbstractPlayingData implements IPlayingDataForSoundGenerator
 	{
 //--------------------------------------------------------------------------
 //
 //  Class constants
 //
 //--------------------------------------------------------------------------
-		/**
-		 * ミリ秒からバイト数に変換する係数です (44.1 * 8 = 352.8).<p>
-		 */
-		private static const COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE:Number = 44.1 * 8;
 
-		private static const BIT_MASK:int = int.MAX_VALUE - 7;
+
 
 //--------------------------------------------------------------------------
 //
@@ -58,15 +54,15 @@ package jp.hiiragi.managers.soundConductor
 
 				_soundByteArray = registeredSoundData.soundByteArray;
 
-				_startByteIndex = _currentByteIndex = playInfo.startTimeByMS * COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
-				_loopStartByteIndex = playInfo.loopStartTimeByMS * COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
-				_loopEndByteIndex = (playInfo.loopEndTimeByMS == 0) ? _soundByteArray.length : playInfo.loopEndTimeByMS * COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
+				_startByteIndex = _currentByteIndex = playInfo.startTimeByMS * SoundUtil.COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
+				_loopStartByteIndex = playInfo.loopStartTimeByMS * SoundUtil.COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
+				_loopEndByteIndex = (playInfo.loopEndTimeByMS == 0) ? _soundByteArray.length : playInfo.loopEndTimeByMS * SoundUtil.COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
 
-				_startByteIndex &= BIT_MASK;
-				_loopStartByteIndex &= BIT_MASK;
-				_loopEndByteIndex &= BIT_MASK;
+				_startByteIndex &= SoundUtil.BIT_MASK;
+				_loopStartByteIndex &= SoundUtil.BIT_MASK;
+				_loopEndByteIndex &= SoundUtil.BIT_MASK;
 
-				totalLength = Math.floor(_soundByteArray.length / COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE);
+				totalLength = Math.floor(_soundByteArray.length / SoundUtil.COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE);
 			}
 			else
 			{
@@ -82,8 +78,6 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		//  valiableName
 		//----------------------------------
-		private var _soundByteArray:ByteArray;
-
 		private var _startByteIndex:uint;
 		private var _currentByteIndex:uint;
 		private var _loopStartByteIndex:uint;
@@ -104,9 +98,13 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 		//----------------------------------
-		//  propertyName
+		//  soundByteArray
 		//----------------------------------
+		private var _soundByteArray:ByteArray;
 
+		protected function get soundByteArray():ByteArray  { return _soundByteArray; }
+
+		protected function set soundByteArray(value:ByteArray):void  { _soundByteArray = value; }
 
 //--------------------------------------------------------------------------
 //
@@ -120,7 +118,7 @@ package jp.hiiragi.managers.soundConductor
 
 		override protected function seek_internal(timeByMS:Number):void
 		{
-			_currentByteIndex = timeByMS * COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
+			_currentByteIndex = timeByMS * SoundUtil.COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
 			setCurrentPosition();
 		}
 
@@ -226,7 +224,7 @@ package jp.hiiragi.managers.soundConductor
 
 		private function setCurrentPosition():void
 		{
-			currentPosition = Math.floor(_currentByteIndex / COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE);
+			currentPosition = Math.floor(_currentByteIndex / SoundUtil.COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE);
 		}
 
 //--------------------------------------------------------------------------
