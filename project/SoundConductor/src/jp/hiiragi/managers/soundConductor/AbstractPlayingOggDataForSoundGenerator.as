@@ -1,11 +1,11 @@
 package jp.hiiragi.managers.soundConductor
 {
 	import com.jac.ogg.OggManager;
-
+	
 	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.utils.ByteArray;
-
+	
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorError;
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorErrorType;
 
@@ -102,18 +102,18 @@ package jp.hiiragi.managers.soundConductor
 
 				_oggManager = new OggManager();
 				_oggManager.initDecoder(registeredSoundData.soundByteArray);
-
+				
 				_tempBuffer = new ByteArray();
-				totalLength = Math.floor(SoundUtil.calcurateOggLength(registeredSoundData.soundByteArray, _oggManager.audioInfo.sampleRate) / SoundUtil.COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE);
+				totalLength = Math.floor(SoundUtil.calcurateOggLength(registeredSoundData.soundByteArray, _oggManager.audioInfo.sampleRate) / SoundUtil.COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE) * 1000;
 				soundByteArray = new ByteArray();
-
-				for (var i:int = 0; i < 30; i++)
+				
+				for (var i:int = 0; i < 60; i++)
 				{
 					writeDecodedSampleData();
 				}
-
+				
 				_ticker = new Shape();
-				_ticker.addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
+				_ticker.addEventListener(Event.ENTER_FRAME, onDecodeEnterFrameHandler);
 			}
 			else
 			{
@@ -121,28 +121,6 @@ package jp.hiiragi.managers.soundConductor
 			}
 		}
 
-		private var _tempBuffer:ByteArray;
-
-		protected function onEnterFrameHandler(event:Event):void
-		{
-			writeDecodedSampleData();
-		}
-
-		private function writeDecodedSampleData():void
-		{
-			_tempBuffer.length = 0;
-			var result:Object = _oggManager.getSampleData(4096, _tempBuffer);
-
-			if (_tempBuffer.length > 0)
-			{
-				var offset:int = soundByteArray.length == 0 ? 0 : soundByteArray.length - 1;
-				soundByteArray.writeBytes(_tempBuffer);
-			}
-			else
-			{
-				_ticker.removeEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
-			}
-		}
 
 //--------------------------------------------------------------------------
 //
@@ -154,6 +132,8 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _oggManager:OggManager;
 
+		private var _tempBuffer:ByteArray;
+		
 		private var _ticker:Shape;
 
 //--------------------------------------------------------------------------
@@ -180,6 +160,22 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 
+		override public function dispose():void
+		{
+			if (_ticker.hasEventListener(Event.ENTER_FRAME))
+			{
+				_oggManager.cancel();
+				_ticker.removeEventListener(Event.ENTER_FRAME, onDecodeEnterFrameHandler);
+			}
+			
+			_oggManager.decodedBytes.clear();
+			_oggManager.encodedBytes.clear();
+			_oggManager.wavBytes.clear();
+			
+			_tempBuffer.clear();
+			
+			super.dispose();
+		}
 //--------------------------------------------------------------------------
 //
 //  Service methods
@@ -216,6 +212,37 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 
+		private function writeDecodedSampleData():void
+		{
+			if (!registeredSoundData.decodeOggCompleted)
+			{
+				_tempBuffer.length = 0;
+				var result:Object = _oggManager.getSampleData(4096, _tempBuffer);
+				
+				if (result["position"] < result["length"])
+				{
+					soundByteArray.writeBytes(_tempBuffer);
+				}
+				else
+				{
+					registeredSoundData.setDecodedSoundByteArray(soundByteArray);
+					finalizeOggDecode();
+				}
+			}
+			// 別の PlayingData で同じ Ogg のデコードをしていたのが終わった場合に、こちらも読み込み済みの soundByteArray に切り替える
+			else
+			{
+				finalizeOggDecode();
+			}
+		}
+		
+		private function finalizeOggDecode():void
+		{
+			_ticker.removeEventListener(Event.ENTER_FRAME, onDecodeEnterFrameHandler);
+			soundByteArray.clear();
+			soundByteArray = registeredSoundData.soundByteArray;
+		}
+		
 //--------------------------------------------------------------------------
 //
 //  Overridden Event handlers
@@ -228,6 +255,11 @@ package jp.hiiragi.managers.soundConductor
 //
 //--------------------------------------------------------------------------
 
+		private function onDecodeEnterFrameHandler(event:Event):void
+		{
+			writeDecodedSampleData();
+		}
+		
 	}
 }
 

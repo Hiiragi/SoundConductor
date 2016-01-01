@@ -6,6 +6,7 @@
     <classEntry path="jp.hiiragi.managers.soundConductor.IPlayingDataForSoundGenerator"/>
     <classEntry path="jp.hiiragi.managers.soundConductor.AbstractPlayingOggDataForSoundGenerator"/>
     <classEntry path="jp.hiiragi.managers.soundConductor.PlayingDataForOggSingleSoundGenerator"/>
+    <classEntry path="jp.hiiragi.managers.soundConductor.PlayingDataForOggSharedSoundGenerator"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

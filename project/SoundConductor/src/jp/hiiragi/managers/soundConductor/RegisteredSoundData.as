@@ -101,6 +101,11 @@ package jp.hiiragi.managers.soundConductor
 			_soundByteArray = soundByteArray;
 			_allowMultiple = allowMultiple;
 			_allowInterrupt = allowInterrupt;
+			
+			if (soundByteArray != null && SoundUtil.checkOggFormat(soundByteArray))
+			{
+				_isOggFormat = true;
+			}
 		}
 
 //--------------------------------------------------------------------------
@@ -161,7 +166,21 @@ package jp.hiiragi.managers.soundConductor
 
 		public function get allowInterrupt():Boolean  { return _allowInterrupt; }
 
+		//----------------------------------
+		//  isOggFormat
+		//----------------------------------
+		private var _isOggFormat:Boolean;
+		
+		public function get isOggFormat():Boolean { return _isOggFormat; }
+		
+		//----------------------------------
+		//  decodeOggCompleted
+		//----------------------------------
+		private var _decodeOggCompleted:Boolean;
 
+		public function get decodeOggCompleted():Boolean { return _decodeOggCompleted; }
+		
+		
 //--------------------------------------------------------------------------
 //
 //  Overridden methods
@@ -179,7 +198,18 @@ package jp.hiiragi.managers.soundConductor
 //  Public methods
 //
 //--------------------------------------------------------------------------
-
+		
+		public function setDecodedSoundByteArray(decodedByteArray:ByteArray):void
+		{
+			_decodeOggCompleted = true;
+			
+			// clone
+			var decodeCompletedByteArray:ByteArray = new ByteArray();
+			decodeCompletedByteArray.writeBytes(decodedByteArray);
+			
+			_soundByteArray = decodeCompletedByteArray;
+		}
+		
 //--------------------------------------------------------------------------
 //
 //  Protected methods

@@ -24,6 +24,8 @@
 
 package jp.hiiragi.managers.soundConductor
 {
+	import com.jac.ogg.OggManager;
+	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.media.Sound;
@@ -31,7 +33,7 @@ package jp.hiiragi.managers.soundConductor
 	import flash.media.SoundTransform;
 	import flash.utils.ByteArray;
 	import flash.utils.getDefinitionByName;
-
+	
 	import jp.hiiragi.managers.soundConductor.constants.SoundBufferType;
 	import jp.hiiragi.managers.soundConductor.constants.SoundPlayType;
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorError;
@@ -169,6 +171,9 @@ package jp.hiiragi.managers.soundConductor
 			if (_isInitialized)
 				throw new SoundConductorError(SoundConductorErrorType.ERROR_10011);
 
+			// 一回ここで OggManager を生成することによって OggManager 全体の初期化が走る
+			var oggManager:OggManager = new OggManager();
+			
 			_soundBufferSize = bufferType || SoundBufferType.BUFFER_SIZE_4096;
 			_useSharedSoundGenerator = useSharedSoundGenerator;
 
@@ -413,6 +418,7 @@ package jp.hiiragi.managers.soundConductor
 
 				if (playInfo.soundPlayType == SoundPlayType.NORMAL_SOUND_ARCHITECT)
 				{
+					throw new SoundConductorError(SoundConductorErrorType.ERROR_10205);
 				}
 				else if (playInfo.soundPlayType == SoundPlayType.SINGLE_SOUND_GENERATOR)
 				{
@@ -420,6 +426,7 @@ package jp.hiiragi.managers.soundConductor
 				}
 				else if (playInfo.soundPlayType == SoundPlayType.SHARED_SOUND_GENERATOR)
 				{
+					playingData = new PlayingDataForOggSharedSoundGenerator(playInfo, registeredSoundData, groupController, _sharedSoundGeneratorEngine);
 				}
 			}
 			else if (playInfo.soundPlayType == SoundPlayType.NORMAL_SOUND_ARCHITECT)
