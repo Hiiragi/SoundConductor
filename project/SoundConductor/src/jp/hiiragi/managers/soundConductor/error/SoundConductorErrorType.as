@@ -91,6 +91,9 @@ package jp.hiiragi.managers.soundConductor.error
 		/** 指定されたサウンドは複数再生不可であり、割り込み不可の設定になっているため、再生できません。 */
 		public static const ERROR_10204:SoundConductorErrorType = create(10204, "指定されたサウンドは複数再生不可であり、割り込み不可の設定になっているため、再生できません。");
 
+		/** Ogg Vorbis は SoundPlayType.NORMAL_SOUND_ARCHITECT では再生できません。 */
+		public static const ERROR_10205:SoundConductorErrorType = create(10205, "Ogg Vorbis は SoundPlayType.NORMAL_SOUND_ARCHITECT では再生できません。");
+		
 //--------------------------------------------------------------------------
 //
 //  Class variables
