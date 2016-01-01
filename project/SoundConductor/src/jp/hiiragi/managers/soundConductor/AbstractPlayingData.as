@@ -425,7 +425,7 @@ package jp.hiiragi.managers.soundConductor
 		 * ミュート中かを取得します.
 		 * @return
 		 */
-		protected function get isMute():Boolean  { return _isMute; }
+		public function get isMute():Boolean  { return _isMute; }
 
 		//----------------------------------
 		//  currentPosition
