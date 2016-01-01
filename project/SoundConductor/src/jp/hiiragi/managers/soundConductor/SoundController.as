@@ -25,7 +25,7 @@
 package jp.hiiragi.managers.soundConductor
 {
 	import flash.events.EventDispatcher;
-
+	
 	import jp.hiiragi.managers.soundConductor.constants.SoundStatusType;
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorError;
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorErrorType;
@@ -228,6 +228,11 @@ package jp.hiiragi.managers.soundConductor
 			return _playingData.loops;
 		}
 
+		
+		public function get isMute():Boolean
+		{
+			return _playingData.isMute;
+		}
 
 //--------------------------------------------------------------------------
 //
