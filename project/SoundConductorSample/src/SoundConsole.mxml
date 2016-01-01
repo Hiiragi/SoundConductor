@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%">
+	
+	<s:layout>
+		<s:VerticalLayout gap="5" />
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import jp.hiiragi.managers.soundConductor.SoundConductor;
+			import jp.hiiragi.managers.soundConductor.SoundController;
+			import jp.hiiragi.managers.soundConductor.SoundId;
+			import jp.hiiragi.managers.soundConductor.SoundPlayInfo;
+			import jp.hiiragi.managers.soundConductor.constants.SoundPlayType;
+			import jp.hiiragi.managers.soundConductor.events.SoundConductorEvent;
+			
+			public var soundId:SoundId;
+			public var playInfo:SoundPlayInfo;
+			
+			private var _soundController:SoundController;
+			
+			protected function muteCheckBox_changeHandler(event:Event):void
+			{
+				if (_soundController != null)
+				{
+					if (_soundController.isMute)
+					{
+						_soundController.unmute();
+					}
+					else
+					{
+						_soundController.mute();
+					}
+				}
+			}
+			
+			protected function volumeSlider_changeHandler(event:Event):void
+			{
+				if (_soundController != null)
+				{
+					_soundController.setVolume(volumeSlider.value);
+				}
+			}
+			
+			protected function playButtonClickHandler(event:MouseEvent):void
+			{
+				if (_soundController == null)
+				{		
+					if (soundPlayTypeRadioButtonGroup.selectedValue == SoundPlayType.SINGLE_SOUND_GENERATOR.value)
+					{
+						playInfo.soundPlayType = SoundPlayType.SINGLE_SOUND_GENERATOR;
+					}
+					else if (soundPlayTypeRadioButtonGroup.selectedValue == SoundPlayType.SHARED_SOUND_GENERATOR.value)
+					{
+						playInfo.soundPlayType = SoundPlayType.SHARED_SOUND_GENERATOR;
+					}
+					else
+					{
+						playInfo.soundPlayType = SoundPlayType.NORMAL_SOUND_ARCHITECT;
+					}
+					
+					playInfo.volume = volumeSlider.value;
+					_soundController= SoundConductor.play(playInfo);
+					seekSlider.minimum = 0;
+					seekSlider.maximum = _soundController.totalLength;
+					
+					_soundController.addEventListener(SoundConductorEvent.STOPPED, onLoopCompleteHandler);
+					addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
+				}
+			}
+			
+			protected function stopButtonClickHandler(event:MouseEvent):void
+			{
+				stop();
+			}
+			
+			protected function onEnterFrameHandler(event:Event):void
+			{
+				seekSlider.value = _soundController.currentPosition;
+			}
+			
+			private function stop():void
+			{
+				if (_soundController != null)
+				{
+					removeEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
+					
+					_soundController.removeEventListener(SoundConductorEvent.STOPPED, onLoopCompleteHandler);
+					_soundController.stop();
+					_soundController = null;
+				}
+			}
+			
+			protected function onLoopCompleteHandler(event:Event):void
+			{
+				stop();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:RadioButtonGroup id="soundPlayTypeRadioButtonGroup" />
+	</fx:Declarations>
+	
+	<s:HGroup padding="10" verticalAlign="middle">
+		<s:HSlider id="seekSlider" width="200" />
+		<s:Button label="play" click="playButtonClickHandler(event)" />
+		<s:Button label="stop" click="stopButtonClickHandler(event)" />
+		<s:Label text="volume"/>
+		<s:HSlider id="volumeSlider" minimum="0" maximum="1" stepSize="0.01" value="1"
+				   width="200" change="volumeSlider_changeHandler(event)" />
+		<s:CheckBox id="muteCheckBox" label="mute" change="muteCheckBox_changeHandler(event)" />
+	</s:HGroup>
+	
+	
+	<s:RadioButton group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.NORMAL_SOUND_ARCHITECT.value}" selected="true" />
+	<s:RadioButton group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.SINGLE_SOUND_GENERATOR.value}" />
+	<s:RadioButton group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.SHARED_SOUND_GENERATOR.value}" />
+	
+</s:Panel>
