@@ -546,11 +546,15 @@ package jp.hiiragi.managers.soundConductor
 				}
 				else
 				{
+					if (fadeOutTimeByMS > 0)
+					{
+						_status = SoundStatusType.STOPPING;
+						dispatchEvent(new SoundConductorEvent(SoundConductorEvent.STOPPING, _soundContoller));
+					}
+					
 					_volumeController.addEventListener(Event.COMPLETE, onStopCompleteHandler);
 					_volumeController.setValue(0, fadeOutTimeByMS, fadeOutEasing);
 
-					_status = SoundStatusType.STOPPING;
-					dispatchEvent(new SoundConductorEvent(SoundConductorEvent.STOPPING, _soundContoller));
 				}
 			}
 		}
@@ -767,6 +771,7 @@ package jp.hiiragi.managers.soundConductor
 		 */
 		private function onStopCompleteHandler(event:Event):void
 		{
+			
 			volumeController.removeEventListener(Event.COMPLETE, onStopCompleteHandler);
 			dispose();
 		}

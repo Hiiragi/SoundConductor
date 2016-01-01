@@ -139,6 +139,8 @@ package jp.hiiragi.managers.soundConductor
 			if (!_tweening && value == this.value)
 			{
 				// 値は変わらないので、何もしない
+				dispatchEvent(new Event(Event.CHANGE));
+				dispatchEvent(new Event(Event.COMPLETE));
 			}
 			else
 			{
@@ -148,6 +150,7 @@ package jp.hiiragi.managers.soundConductor
 					setValue_internal(value);
 					valueChanged();
 					dispatchEvent(new Event(Event.CHANGE));
+					dispatchEvent(new Event(Event.COMPLETE));
 				}
 				else
 				{

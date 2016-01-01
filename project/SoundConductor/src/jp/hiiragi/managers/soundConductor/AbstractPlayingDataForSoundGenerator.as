@@ -25,8 +25,9 @@
 package jp.hiiragi.managers.soundConductor
 {
 	import flash.utils.ByteArray;
-
+	
 	import jp.hiiragi.managers.soundConductor.constants.SoundLoopType;
+	import jp.hiiragi.managers.soundConductor.constants.SoundStatusType;
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorError;
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorErrorType;
 	import jp.hiiragi.managers.soundConductor.events.SoundConductorEvent;
@@ -143,6 +144,11 @@ package jp.hiiragi.managers.soundConductor
 			{
 				byteArray.writeBytes(SoundUtil.getSilentByteArray(length), 0, length);
 			}
+			// すでに再生が停止していた場合、長さが 0 の ByteArray を返す。
+			else if (status == SoundStatusType.STOPPED)
+			{
+				return byteArray;
+			}
 
 			var remainLength:Number;
 			if (loops == SoundLoopType.NO_LOOP || (loops != SoundLoopType.INFINITE_LOOP && loops == currentLoopCount))
@@ -218,6 +224,7 @@ package jp.hiiragi.managers.soundConductor
 		{
 			if (!isMute)
 			{
+//				trace(offset + " / " + source.length);
 				target.writeBytes(source, offset, length);
 			}
 		}
