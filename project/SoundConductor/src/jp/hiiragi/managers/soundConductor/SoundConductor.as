@@ -25,7 +25,7 @@
 package jp.hiiragi.managers.soundConductor
 {
 	import com.jac.ogg.OggManager;
-	
+
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.media.Sound;
@@ -33,7 +33,7 @@ package jp.hiiragi.managers.soundConductor
 	import flash.media.SoundTransform;
 	import flash.utils.ByteArray;
 	import flash.utils.getDefinitionByName;
-	
+
 	import jp.hiiragi.managers.soundConductor.constants.SoundBufferType;
 	import jp.hiiragi.managers.soundConductor.constants.SoundPlayType;
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorError;
@@ -173,7 +173,7 @@ package jp.hiiragi.managers.soundConductor
 
 			// 一回ここで OggManager を生成することによって OggManager 全体の初期化が走る
 			var oggManager:OggManager = new OggManager();
-			
+
 			_soundBufferSize = bufferType || SoundBufferType.BUFFER_SIZE_4096;
 			_useSharedSoundGenerator = useSharedSoundGenerator;
 
@@ -215,11 +215,136 @@ package jp.hiiragi.managers.soundConductor
 		}
 
 		/**
-		 * 音を登録します。
-		 * @param registerSoundInfo
+		 * <code>Sound</code> オブジェクトを登録します。
+		 * @param sound	登録する <code>Sound</code> オブジェクトを指定します。
+		 * @param createPCMByteArray	<code>Sound</code> オブジェクトから PCM の <code>ByteArray</code> を生成するかどうかを指定します。
+		 * @param allowMultiple	登録した音源を複数同時再生できるかどうかを指定します。
+		 * @param allowInterrupt	<code>allowMultiple</code> が <code>false</code> （複数同時再生しない）の場合において、追加で再生をしようとした際に、現在鳴っている音を止めて新しく鳴らすかどうかを指定します。
 		 * @return 登録された音に紐付く <code>SoundId</code> オブジェクトです
 		 */
-		public static function registerSound(registerSoundInfo:RegisterSoundInfo):SoundId
+		public static function registerSound(sound:Sound, createPCMByteArray:Boolean = false, allowMultiple:Boolean = true, allowInterrupt:Boolean = true):SoundId
+		{
+			checkInitialize();
+
+			if (!SoundUtil.checkPlayable())
+			{
+				return null;
+			}
+
+			var soundId:SoundId = SoundId.create();
+			var soundByteArray:ByteArray;
+
+			if (createPCMByteArray)
+			{
+				soundByteArray = new ByteArray();
+				sound.extract(soundByteArray, sound.length * 44.1);
+				soundByteArray.position = 0;
+			}
+
+			var registeredSoundData:RegisteredSoundData = new RegisteredSoundData(soundId, sound, soundByteArray, allowMultiple, allowInterrupt);
+
+			_registeredSoundList.push(registeredSoundData);
+			return soundId;
+		}
+
+		/**
+		 * PCM の <code>ByteArray</code> オブジェクトを登録します。
+		 * @param sound	PCM の <code>ByteArray</code> オブジェクトを指定します。
+		 * @param createSoundObject	PCM の <code>ByteArray</code> オブジェクトから <code>Sound</code> オブジェクトを生成するかどうかを指定します。
+		 * @param allowMultiple	登録した音源を複数同時再生できるかどうかを指定します。
+		 * @param allowInterrupt	<code>allowMultiple</code> が <code>false</code> （複数同時再生しない）の場合において、追加で再生をしようとした際に、現在鳴っている音を止めて新しく鳴らすかどうかを指定します。
+		 * @return 登録された音に紐付く <code>SoundId</code> オブジェクトです
+		 */
+		public static function registerPCMBinary(pcmBinary:ByteArray, createSoundObject:Boolean = false, allowMultiple:Boolean = true, allowInterrupt:Boolean = true):SoundId
+		{
+			checkInitialize();
+
+			if (!SoundUtil.checkPlayable())
+			{
+				return null;
+			}
+
+			var soundId:SoundId = SoundId.create();
+			var soundByteArray:ByteArray;
+			var sound:Sound;
+
+			pcmBinary.position = 0;
+
+			if (createSoundObject)
+			{
+				sound = new Sound();
+				sound.loadPCMFromByteArray(pcmBinary,pcmBinary.bytesAvailable);
+			}
+
+			var registeredSoundData:RegisteredSoundData = new RegisteredSoundData(soundId, sound, pcmBinary, allowMultiple, allowInterrupt);
+
+			_registeredSoundList.push(registeredSoundData);
+			return soundId;
+		}
+
+		/**
+		 * 音を登録します。
+		 * @param sound	再生する音源を指定します。指定できる音源は、 "リンケージの文字列"、"<code>Sound</code> クラスを継承した音源クラス"です。
+		 * @param createPCMByteArray	<code>sound</code> の引数が <code>ByteArray</code> 以外だった場合に、その音源から PCM の <code>ByteArray</code> を生成するかどうかを指定します。
+		 * @param allowMultiple	登録した音源を複数同時再生できるかどうかを指定します。
+		 * @param allowInterrupt	<code>allowMultiple</code> が <code>false</code> （複数同時再生しない）の場合において、追加で再生をしようとした際に、現在鳴っている音を止めて新しく鳴らすかどうかを指定します。
+		 * @return 登録された音に紐付く <code>SoundId</code> オブジェクトです
+		 */
+		public static function registerSoundClass(soundClass:*, createPCMByteArray:Boolean = false, allowMultiple:Boolean = true, allowInterrupt:Boolean = true):SoundId
+		{
+			checkInitialize();
+
+			if (!SoundUtil.checkPlayable())
+			{
+				return null;
+			}
+
+			var soundId:SoundId = SoundId.create();
+			var soundTarget:Sound;
+			var soundByteArray:ByteArray;
+
+			if (soundClass is String && String(soundClass).length > 0)
+			{
+				var definitionName:String = String(soundClass);
+				var definitionClass:Class = getDefinitionByName(definitionName) as Class;
+				soundTarget = new definitionClass();
+
+				if (soundTarget == null)
+				{
+					throw new SoundConductorError(SoundConductorErrorType.ERROR_10100);
+				}
+				else if (!(soundTarget is Sound))
+				{
+					throw new SoundConductorError(SoundConductorErrorType.ERROR_10101)
+				}
+			}
+			else if (soundClass is Class)
+			{
+				soundTarget = new soundClass() as Sound;
+
+				if (soundTarget == null)
+				{
+					throw new SoundConductorError(SoundConductorErrorType.ERROR_10102);
+				}
+			}
+			else
+			{
+				throw new SoundConductorError(SoundConductorErrorType.ERROR_10103);
+			}
+
+			if (createPCMByteArray)
+			{
+				soundByteArray = new ByteArray();
+				soundTarget.extract(soundByteArray, soundTarget.length * 44.1);
+			}
+
+			var registeredSoundData:RegisteredSoundData = new RegisteredSoundData(soundId, soundTarget, soundByteArray, allowMultiple, allowInterrupt);
+
+			_registeredSoundList.push(registeredSoundData);
+			return soundId;
+		}
+
+		public static function registerOggBinary(oggBinary:ByteArray, allowMultiple:Boolean = true, allowInterrupt:Boolean = true):SoundId
 		{
 			checkInitialize();
 
@@ -230,63 +355,10 @@ package jp.hiiragi.managers.soundConductor
 
 			var soundId:SoundId = SoundId.create();
 
-			var sound:Sound;
-			var soundByteArray:ByteArray;
-
-			if (registerSoundInfo.sound is String && String(registerSoundInfo.sound).length > 0)
-			{
-				var definitionName:String = String(registerSoundInfo.sound);
-				var definitionClass:Class = getDefinitionByName(definitionName) as Class;
-				sound = new definitionClass();
-				if (sound == null)
-				{
-					throw new SoundConductorError(SoundConductorErrorType.ERROR_10100);
-				}
-				else if (!(sound is Sound))
-				{
-					throw new SoundConductorError(SoundConductorErrorType.ERROR_10101)
-				}
-			}
-			else if (registerSoundInfo.sound is Class)
-			{
-				sound = new registerSoundInfo.sound() as Sound;
-
-				if (sound == null)
-				{
-					throw new SoundConductorError(SoundConductorErrorType.ERROR_10102);
-				}
-
-				validateCreatePCMByteArray();
-			}
-			else if (registerSoundInfo.sound is ByteArray)
-			{
-				soundByteArray = registerSoundInfo.sound;
-			}
-			else if (registerSoundInfo.sound is Sound && registerSoundInfo.sound != null)
-			{
-				sound = registerSoundInfo.sound;
-
-				validateCreatePCMByteArray();
-			}
-			else
-			{
-				throw new SoundConductorError(SoundConductorErrorType.ERROR_10103);
-			}
-
-
-			var registeredSoundData:RegisteredSoundData = new RegisteredSoundData(soundId, sound, soundByteArray, registerSoundInfo.allowMultiple, registerSoundInfo.allowInterrupt);
+			var registeredSoundData:RegisteredOggSoundData = new RegisteredOggSoundData(soundId, oggBinary, allowMultiple, allowInterrupt);
 
 			_registeredSoundList.push(registeredSoundData);
 			return soundId;
-
-			function validateCreatePCMByteArray():void
-			{
-				if (registerSoundInfo.createPCMByteArray)
-				{
-					soundByteArray = new ByteArray();
-					sound.extract(soundByteArray, sound.length * 44.1);
-				}
-			}
 		}
 
 		/**
@@ -303,10 +375,11 @@ package jp.hiiragi.managers.soundConductor
 			var len:int = _registeredSoundList.length;
 			for (var i:int = 0; i < len; i++)
 			{
-				if (_registeredSoundList[i].soundId == soundId)
+				var registeredSoundData:RegisteredSoundData = _registeredSoundList[i];
+				if (registeredSoundData.soundId == soundId)
 				{
-
 					_registeredSoundList.splice(i, 1);
+					registeredSoundData.dispose();
 				}
 			}
 		}
@@ -411,26 +484,13 @@ package jp.hiiragi.managers.soundConductor
 
 			// PlayingData 作成
 			var playingData:AbstractPlayingData;
-			if (registeredSoundData.soundByteArray != null && SoundUtil.checkOggFormat(registeredSoundData.soundByteArray))
+			if (playInfo.soundPlayType == SoundPlayType.NORMAL_SOUND_ARCHITECT)
 			{
-				// ogg は途中からの再生は出来ないようにする
-				playInfo.startTimeByMS = 0;
-
-				if (playInfo.soundPlayType == SoundPlayType.NORMAL_SOUND_ARCHITECT)
+				if (registeredSoundData is RegisteredOggSoundData)
 				{
 					throw new SoundConductorError(SoundConductorErrorType.ERROR_10205);
 				}
-				else if (playInfo.soundPlayType == SoundPlayType.SINGLE_SOUND_GENERATOR)
-				{
-					playingData = new PlayingDataForOggSingleSoundGenerator(playInfo, registeredSoundData, groupController);
-				}
-				else if (playInfo.soundPlayType == SoundPlayType.SHARED_SOUND_GENERATOR)
-				{
-					playingData = new PlayingDataForOggSharedSoundGenerator(playInfo, registeredSoundData, groupController, _sharedSoundGeneratorEngine);
-				}
-			}
-			else if (playInfo.soundPlayType == SoundPlayType.NORMAL_SOUND_ARCHITECT)
-			{
+				
 				playingData = new PlayingDataForNormalSound(playInfo, registeredSoundData, groupController);
 			}
 			else if (playInfo.soundPlayType == SoundPlayType.SINGLE_SOUND_GENERATOR)

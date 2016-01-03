@@ -9,12 +9,10 @@
 			
 			import spark.components.Alert;
 			
-			import jp.hiiragi.managers.soundConductor.RegisterSoundInfo;
 			import jp.hiiragi.managers.soundConductor.SoundConductor;
 			import jp.hiiragi.managers.soundConductor.SoundId;
 			import jp.hiiragi.managers.soundConductor.SoundPlayInfo;
 			import jp.hiiragi.managers.soundConductor.constants.SoundLoopType;
-			import jp.hiiragi.managers.soundConductor.constants.SoundPlayType;
 			
 			[Embed(source="Battle-forHonor.mp3", mimeType="audio/mpeg")]
 			private static const BGM_01:Class;
@@ -27,8 +25,7 @@
 				SoundConductor.initialize(true);
 				
 				var bgmSound:Sound = new BGM_01();
-				var registerData:RegisterSoundInfo = new RegisterSoundInfo(bgmSound, true);
-				var normalSoundId:SoundId = SoundConductor.registerSound(registerData);
+				var normalSoundId:SoundId = SoundConductor.registerSound(bgmSound, true);
 				var normalPlayInfo:SoundPlayInfo = new SoundPlayInfo(normalSoundId);
 				normalPlayInfo.loops = SoundLoopType.INFINITE_LOOP;
 				normalPlayInfo.startTimeByMS = 0;
@@ -36,8 +33,7 @@
 				normalPlayInfo.loopEndTimeByMS = 51258;
 				
 				var oggSound:ByteArray = new BGM_02();
-				registerData = new RegisterSoundInfo(oggSound);
-				var oggSoundId:SoundId = SoundConductor.registerSound(registerData);
+				var oggSoundId:SoundId = SoundConductor.registerOggBinary(oggSound, true);
 				var oggPlayInfo:SoundPlayInfo = new SoundPlayInfo(oggSoundId);
 				oggPlayInfo.loops = SoundLoopType.INFINITE_LOOP;
 				oggPlayInfo.startTimeByMS = 0;

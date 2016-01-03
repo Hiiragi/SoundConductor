@@ -4,9 +4,7 @@
     <classEntry path="jp.hiiragi.managers.soundConductor.ApplyFadeSoundData"/>
     <classEntry path="jp.hiiragi.managers.soundConductor.PlayingOggDataForSharedSoundGenerator"/>
     <classEntry path="jp.hiiragi.managers.soundConductor.IPlayingDataForSoundGenerator"/>
-    <classEntry path="jp.hiiragi.managers.soundConductor.AbstractPlayingOggDataForSoundGenerator"/>
-    <classEntry path="jp.hiiragi.managers.soundConductor.PlayingDataForOggSingleSoundGenerator"/>
-    <classEntry path="jp.hiiragi.managers.soundConductor.PlayingDataForOggSharedSoundGenerator"/>
+    <classEntry path="jp.hiiragi.managers.soundConductor.RegisteredOggSoundData"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

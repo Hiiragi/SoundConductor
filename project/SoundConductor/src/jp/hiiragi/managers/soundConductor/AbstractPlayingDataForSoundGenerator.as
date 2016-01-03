@@ -25,7 +25,7 @@
 package jp.hiiragi.managers.soundConductor
 {
 	import flash.utils.ByteArray;
-	
+
 	import jp.hiiragi.managers.soundConductor.constants.SoundLoopType;
 	import jp.hiiragi.managers.soundConductor.constants.SoundStatusType;
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorError;
@@ -63,7 +63,15 @@ package jp.hiiragi.managers.soundConductor
 				_loopStartByteIndex &= SoundUtil.BIT_MASK;
 				_loopEndByteIndex &= SoundUtil.BIT_MASK;
 
-				totalLength = Math.floor(_soundByteArray.length / SoundUtil.COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE);
+				if (registeredSoundData is RegisteredOggSoundData)
+				{
+					totalLength = RegisteredOggSoundData(registeredSoundData).totalLength;
+				}
+				else
+				{
+					totalLength = Math.floor(_soundByteArray.length / SoundUtil.COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE);
+				}
+
 			}
 			else
 			{
@@ -248,3 +256,5 @@ package jp.hiiragi.managers.soundConductor
 
 	}
 }
+
+
