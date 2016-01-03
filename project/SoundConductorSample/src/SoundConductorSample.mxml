@@ -12,7 +12,6 @@
 			import jp.hiiragi.managers.soundConductor.SoundConductor;
 			import jp.hiiragi.managers.soundConductor.SoundId;
 			import jp.hiiragi.managers.soundConductor.SoundPlayInfo;
-			import jp.hiiragi.managers.soundConductor.constants.SoundLoopType;
 			
 			[Embed(source="Battle-forHonor.mp3", mimeType="audio/mpeg")]
 			private static const BGM_01:Class;
@@ -37,7 +36,6 @@
 				oggPlayInfo.startTimeByMS = 0;
 				oggPlayInfo.loopStartTimeByMS = 3278;
 				oggPlayInfo.loopEndTimeByMS = 51258;
-				
 				
 				
 				var console:SoundConsole = new SoundConsole();
@@ -126,7 +124,7 @@
 		</s:HGroup>
 		
 		<mx:LinkButton label="Music : Battle for Honor (composed by ユーフルカ)" click="linkbutton1_clickHandler(event)" color="0x3333FF" />
-		<mx:LinkButton label="SoundConductor's initinite loop demo" click="linkbutton2_clickHandler(event)" color="0x3333FF" />
+		<mx:LinkButton label="SoundConductor's demo" click="linkbutton2_clickHandler(event)" color="0x3333FF" />
 	</s:Panel>
 	
 
