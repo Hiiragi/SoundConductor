@@ -72,6 +72,7 @@ package jp.hiiragi.managers.soundConductor
 		/**
 		 * サウンドの開始時間をミリ秒で取得・設定します.
 		 * @return
+		 * @default 0
 		 */
 		public function get startTimeByMS():Number  { return _startTimeByMS; }
 
@@ -86,6 +87,7 @@ package jp.hiiragi.managers.soundConductor
 		 * サウンドのループ回数を取得・設定します.
 		 * <p>指定には、<code>int</code> の正の整数か、<code>SoundLoopType</code> の定数を使用します.</p>
 		 * @return
+		 * @default SoundLoopType.NO_LOOP
 		 */
 		public function get loops():int  { return _loops; }
 
@@ -99,6 +101,7 @@ package jp.hiiragi.managers.soundConductor
 		/**
 		 * サウンドのループ開始時間をミリ秒で取得・設定します.
 		 * @return
+		 * @default 0
 		 */
 		public function get loopStartTimeByMS():Number  { return _loopStartTimeByMS; }
 
@@ -125,6 +128,7 @@ package jp.hiiragi.managers.soundConductor
 		/**
 		 * アサインするグループ名を取得・設定します.
 		 * @return
+		 * @default ""
 		 */
 		public function get groupName():String  { return _groupName; }
 
@@ -138,6 +142,7 @@ package jp.hiiragi.managers.soundConductor
 		/**
 		 * 再生する際のボリュームを取得・設定します.
 		 * @return
+		 * @default 1
 		 */
 		public function get volume():Number  { return _volume; }
 
@@ -151,6 +156,7 @@ package jp.hiiragi.managers.soundConductor
 		/**
 		 * 再生する際の定位を取得・設定します.
 		 * @return
+		 * @default 0
 		 */
 		public function get pan():Number  { return _pan; }
 
@@ -164,6 +170,7 @@ package jp.hiiragi.managers.soundConductor
 		/**
 		 * 音源の再生タイプを取得・設定します.
 		 * @return
+		 * @default SoundPlayType.NORMAL_SOUND_ARCHITECT
 		 */
 		public function get soundPlayType():SoundPlayType  { return _soundPlayType; }
 
@@ -175,8 +182,9 @@ package jp.hiiragi.managers.soundConductor
 		private var _weakReference:Boolean = false;
 
 		/**
-		 * 再生可能な同時発音数をオーバーした際に、強制的に音を停止し、サウンドチャンネルを譲るかどうかを取得・設定します（この機能は未実装です）.
+		 * 再生可能な同時発音数をオーバーした際に、強制的に音を停止し、サウンドチャンネルを譲るかどうかを取得・設定します.
 		 * @return
+		 * @default false
 		 */
 		public function get weakReference():Boolean  { return _weakReference; }
 

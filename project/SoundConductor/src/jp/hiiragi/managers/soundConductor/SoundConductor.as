@@ -148,7 +148,7 @@ package jp.hiiragi.managers.soundConductor
 
 //--------------------------------------------------------------------------
 //
-//  Class Public methods
+//  Class Public methods - 初期化関連
 //
 //--------------------------------------------------------------------------
 
@@ -158,7 +158,7 @@ package jp.hiiragi.managers.soundConductor
 		 * <p>使用する際には必ずこのメソッドを実行して初期化してください。</p>
 		 *
 		 * @param useSharedSoundGenerator	SoundGenerator 機能を使用するかを指定します。
-		 * この値を <code>true</code> にすると、サウンド再生方式の種類として <code>SoundPlayType.SINGLE_SOUND_GENERATOR</code> と <code>SoundPlayType.SHARED_SOUND_GENERATOR</code> が使用できるようになります。
+		 * この値を <code>true</code> にすると、サウンド再生方式の種類として <code>SoundPlayType.SHARED_SOUND_GENERATOR</code> が使用できるようになります。
 		 * デフォルトは <code>false</code> です。
 		 *
 		 * @param bufferType	 SoundGenerator 機能で扱われるサウンドのバッファを保持する量を設定します。
@@ -213,6 +213,12 @@ package jp.hiiragi.managers.soundConductor
 
 			_isInitialized = false;
 		}
+
+//--------------------------------------------------------------------------
+//
+//  Class Public methods - 登録関連
+//
+//--------------------------------------------------------------------------
 
 		/**
 		 * <code>Sound</code> オブジェクトを登録します。
@@ -283,7 +289,7 @@ package jp.hiiragi.managers.soundConductor
 		}
 
 		/**
-		 * 音を登録します。
+		 * サウンドのクラス、或いはリンケージの文字列を指定して音を登録します。
 		 * @param sound	再生する音源を指定します。指定できる音源は、 "リンケージの文字列"、"<code>Sound</code> クラスを継承した音源クラス"です。
 		 * @param createPCMByteArray	<code>sound</code> の引数が <code>ByteArray</code> 以外だった場合に、その音源から PCM の <code>ByteArray</code> を生成するかどうかを指定します。
 		 * @param allowMultiple	登録した音源を複数同時再生できるかどうかを指定します。
@@ -344,9 +350,21 @@ package jp.hiiragi.managers.soundConductor
 			return soundId;
 		}
 
+		/**
+		 * Ogg Vorbis の <code>ByteArray</code> オブジェクトを登録します。
+		 * @param oggBinary	Ogg Vorbis の <code>ByteArray</code> オブジェクトを指定します。
+		 * @param allowMultiple	登録した音源を複数同時再生できるかどうかを指定します。
+		 * @param allowInterrupt	<code>allowMultiple</code> が <code>false</code> （複数同時再生しない）の場合において、追加で再生をしようとした際に、現在鳴っている音を止めて新しく鳴らすかどうかを指定します。
+		 * @return 登録された音に紐付く <code>SoundId</code> オブジェクトです
+		 */
 		public static function registerOggBinary(oggBinary:ByteArray, allowMultiple:Boolean = true, allowInterrupt:Boolean = true):SoundId
 		{
 			checkInitialize();
+
+			if (!SoundUtil.checkOggFormat(oggBinary))
+			{
+				throw new SoundConductorError(SoundConductorErrorType.ERROR_10206);
+			}
 
 			if (!SoundUtil.checkPlayable())
 			{
@@ -369,21 +387,34 @@ package jp.hiiragi.managers.soundConductor
 		{
 			checkInitialize();
 
-			// TODO : 該当する soundId のサウンドがなっている場合、速攻止める必要が有る。
+			// 該当する soundId のサウンドがなっている場合、速攻止める必要が有る。
+			var i:int;
+			for (i = _playingSoundDataList.length - 1; i >= 0; i--)
+			{
+				var playingData:AbstractPlayingData = _playingSoundDataList[i];
+				if (playingData.soundId == soundId)
+				{
+					playingData.stop();
+				}
+			}
 
 			// 配列から削除
-			var len:int = _registeredSoundList.length;
-			for (var i:int = 0; i < len; i++)
+			for each (var registeredSoundData:RegisteredSoundData in _registeredSoundList)
 			{
-				var registeredSoundData:RegisteredSoundData = _registeredSoundList[i];
 				if (registeredSoundData.soundId == soundId)
 				{
 					_registeredSoundList.splice(i, 1);
 					registeredSoundData.dispose();
+					break;
 				}
 			}
 		}
 
+//--------------------------------------------------------------------------
+//
+//  Class Public methods - 再生関連
+//
+//--------------------------------------------------------------------------
 		/**
 		 * 音を再生します。
 		 * @param playInfo
@@ -490,7 +521,7 @@ package jp.hiiragi.managers.soundConductor
 				{
 					throw new SoundConductorError(SoundConductorErrorType.ERROR_10205);
 				}
-				
+
 				playingData = new PlayingDataForNormalSound(playInfo, registeredSoundData, groupController);
 			}
 			else if (playInfo.soundPlayType == SoundPlayType.SINGLE_SOUND_GENERATOR)
@@ -596,12 +627,17 @@ package jp.hiiragi.managers.soundConductor
 			_registeredSoundList.length = 0;
 		}
 
+//--------------------------------------------------------------------------
+//
+//  Class Public methods - 登録を行わない再生関連
+//
+//--------------------------------------------------------------------------
 		/**
 		 * <code>Sound</code> オブジェクトを通常の再生方法で再生します.
 		 *
-		 * <p>このメソッドを通して再生することにより、<code>SoundConductor</code> が管理しているマスターボリュームとグループボリュームの恩恵を得ることが出来ます。
-		 * グループを指定した場合、そのグループのミュート状態も適用されます。</p>
+		 * <p>このメソッドを通して再生することにより、<code>SoundConductor</code> が管理しているマスターボリュームと（指定があれば）グループボリュームの恩恵（ボリュームとミュート状態）を得ることが出来ます。</p>
 		 * <p>ミュート状態はボリュームを <code>0</code> にすることで再現しているため、ミュートの解除はボリュームを上げることで対応する必要が有ります。</p>
+		 *
 		 * @param sound	再生させる <code>Sound</code> オブジェクトです。
 		 * @param groupName	適用するグループの文字列です。
 		 * @param startTime		再生の始点をミリ秒単位で指定します。
@@ -655,6 +691,33 @@ package jp.hiiragi.managers.soundConductor
 			controller.setValue(fadeTo, timeByMS, easing);
 		}
 
+		/**
+		 * <code>soundTransform</code> プロパティが存在する指定したオブジェクトにマスターボリュームと、（指定があれば）グループボリュームを適用します.
+		 * <p>グループ名を指定した場合、そのグループのボリュームも適用します。</p>
+		 * @param object	<code>soundTransform</code> プロパティが存在するオブジェクト（ MovieClip 等）を指定します。
+		 * @param groupName
+		 */
+		public static function setVolumeToObject(object:*, groupName:String = ""):void
+		{
+			checkInitialize();
+
+			if (object.hasOwnProperty("soundTransform"))
+			{
+				var volume:Number = 1;
+
+				volume *= getMasterVolume();
+				volume = applyGroupVolume(volume, groupName);
+
+				var soundTransform:SoundTransform = object["soundTransform"];
+				var pan:int = soundTransform.pan;
+
+				object["soundTransform"] = new SoundTransform(volume, pan);
+			}
+			else
+			{
+				throw new SoundConductorError(SoundConductorErrorType.ERROR_10203);
+			}
+		}
 
 //--------------------------------------------------------------------------
 //
@@ -758,33 +821,6 @@ package jp.hiiragi.managers.soundConductor
 			masterVolumeController.setValue(volume, easingTimeByMS, easing);
 		}
 
-		/**
-		 * <code>soundTransform</code> プロパティが存在する指定したオブジェクトにマスターボリュームを適用します.
-		 * <p>グループ名を指定した場合、そのグループのボリュームも適用します。</p>
-		 * @param object
-		 * @param groupName
-		 */
-		public static function setVolumeToObject(object:*, groupName:String = ""):void
-		{
-			checkInitialize();
-
-			if (object.hasOwnProperty("soundTransform"))
-			{
-				var volume:Number = 1;
-
-				volume *= getMasterVolume();
-				volume = applyGroupVolume(volume, groupName);
-
-				var soundTransform:SoundTransform = object["soundTransform"];
-				var pan:int = soundTransform.pan;
-
-				object["soundTransform"] = new SoundTransform(volume, pan);
-			}
-			else
-			{
-				throw new SoundConductorError(SoundConductorErrorType.ERROR_10203);
-			}
-		}
 
 //--------------------------------------------------------------------------
 //
@@ -880,7 +916,7 @@ package jp.hiiragi.managers.soundConductor
 //  Class Event handlers
 //
 //--------------------------------------------------------------------------
-		protected static function receiveEventFromPlayingData(event:SoundConductorEvent):void
+		private static function receiveEventFromPlayingData(event:SoundConductorEvent):void
 		{
 			var playingData:AbstractPlayingData = AbstractPlayingData(event.target);
 

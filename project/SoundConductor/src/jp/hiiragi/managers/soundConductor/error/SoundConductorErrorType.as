@@ -94,8 +94,8 @@ package jp.hiiragi.managers.soundConductor.error
 		/** Ogg Vorbis は SoundPlayType.NORMAL_SOUND_ARCHITECT では再生できません。 */
 		public static const ERROR_10205:SoundConductorErrorType = create(10205, "Ogg Vorbis は SoundPlayType.NORMAL_SOUND_ARCHITECT では再生できません。");
 
-		/** 指定された ByteArray は Ogg ではありません。 */
-		public static const ERROR_10206:SoundConductorErrorType = create(10206, "指定された ByteArray は Ogg フォーマットではありません。");
+		/** 指定された ByteArray は Ogg Vorbis フォーマットではありません。 */
+		public static const ERROR_10206:SoundConductorErrorType = create(10206, "指定された ByteArray は Ogg Vorbis フォーマットではありません。");
 
 //--------------------------------------------------------------------------
 //

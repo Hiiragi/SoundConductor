@@ -4,7 +4,6 @@ package jp.hiiragi.managers.soundConductor
 
 	import flash.display.Shape;
 	import flash.events.Event;
-	import flash.media.Sound;
 	import flash.utils.ByteArray;
 
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorError;
@@ -22,7 +21,7 @@ package jp.hiiragi.managers.soundConductor
 //  Other metadata
 //--------------------------------------
 
-	public class RegisteredOggSoundData extends RegisteredSoundData
+	internal class RegisteredOggSoundData extends RegisteredSoundData
 	{
 //--------------------------------------------------------------------------
 //
@@ -95,6 +94,14 @@ package jp.hiiragi.managers.soundConductor
 //  Constructor
 //
 //--------------------------------------------------------------------------
+
+		/**
+		 * コンストラクタです.
+		 * @param soundId
+		 * @param oggBinary
+		 * @param allowMultiple
+		 * @param allowInterrupt
+		 */		
 		public function RegisteredOggSoundData(soundId:SoundId, oggBinary:ByteArray, allowMultiple:Boolean=false, allowInterrupt:Boolean=false)
 		{
 			super(soundId, null, new ByteArray(), allowMultiple, allowInterrupt);
