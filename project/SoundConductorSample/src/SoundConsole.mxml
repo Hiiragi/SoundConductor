@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="180">
 	
 	<s:layout>
 		<s:VerticalLayout gap="5" />
@@ -62,12 +62,21 @@
 					}
 					
 					playInfo.volume = volumeSlider.value;
-					_soundController= SoundConductor.play(playInfo);
+					playInfo.loops = loopNumericStepper.value;
+					
+					_soundController = SoundConductor.play(playInfo, fadeInTimeNumericStepper.value);
 					seekSlider.minimum = 0;
 					seekSlider.maximum = _soundController.totalLength;
 					
 					_soundController.addEventListener(SoundConductorEvent.STOPPED, onLoopCompleteHandler);
 					addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
+					
+					
+					playButton.enabled = false;
+					pauseButton.enabled = true;
+					stopButton.enabled = true;
+					loopNumericStepper.enabled = false;
+					soundPlayTypeRadioButtonGroup.enabled = false;
 				}
 			}
 			
@@ -88,14 +97,40 @@
 					removeEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
 					
 					_soundController.removeEventListener(SoundConductorEvent.STOPPED, onLoopCompleteHandler);
-					_soundController.stop();
+					_soundController.stop(fadeOutTimeNumericStepper.value);
 					_soundController = null;
+					
+					playButton.enabled = true;
+					stopButton.enabled = false;
+					loopNumericStepper.enabled = true;
+					soundPlayTypeRadioButtonGroup.enabled = true;
 				}
 			}
 			
 			protected function onLoopCompleteHandler(event:Event):void
 			{
 				stop();
+			}
+			
+			protected function pauseButtonClickHandler(event:MouseEvent):void
+			{
+				if (_soundController != null)
+				{
+					_soundController.pause(fadeOutTimeNumericStepper.value);
+					pauseButton.enabled = false;
+					resumeButton.enabled = true;
+				}
+			}
+			
+			protected function resumeButtonClickHandler(event:MouseEvent):void
+			{
+				if (_soundController != null)
+				{
+					_soundController.resume(fadeInTimeNumericStepper.value);
+					pauseButton.enabled = true;
+					resumeButton.enabled = false;
+				}
+
 			}
 			
 		]]>
@@ -107,17 +142,40 @@
 	
 	<s:HGroup padding="10" verticalAlign="middle">
 		<s:HSlider id="seekSlider" width="200" />
-		<s:Button label="play" click="playButtonClickHandler(event)" />
-		<s:Button label="stop" click="stopButtonClickHandler(event)" />
+		<s:Button label="play" id="playButton" click="playButtonClickHandler(event)" />
+		<s:Button label="pause" id="pauseButton" click="pauseButtonClickHandler(event)" enabled="false" />
+		<s:Button label="resume" id="resumeButton" click="resumeButtonClickHandler(event)" enabled="false" />
+		<s:Button label="stop" id="stopButton" click="stopButtonClickHandler(event)" enabled="false" />
 		<s:Label text="volume"/>
 		<s:HSlider id="volumeSlider" minimum="0" maximum="1" stepSize="0.01" value="1"
 				   width="200" change="volumeSlider_changeHandler(event)" />
 		<s:CheckBox id="muteCheckBox" label="mute" change="muteCheckBox_changeHandler(event)" />
 	</s:HGroup>
 	
-	
-	<s:RadioButton group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.NORMAL_SOUND_ARCHITECT.value}" selected="true" />
-	<s:RadioButton group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.SINGLE_SOUND_GENERATOR.value}" />
-	<s:RadioButton group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.SHARED_SOUND_GENERATOR.value}" />
+	<s:HGroup>
+		<s:VGroup width="300">
+			<s:RadioButton group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.NORMAL_SOUND_ARCHITECT.value}" selected="true" />
+			<s:RadioButton group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.SINGLE_SOUND_GENERATOR.value}" />
+			<s:RadioButton group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.SHARED_SOUND_GENERATOR.value}" />
+		</s:VGroup>
+		
+		<s:VGroup>
+			<s:HGroup verticalAlign="middle">
+				<s:Label text="loops( -1 is inifinite loop )" />
+				<s:NumericStepper id="loopNumericStepper" minimum="-1" maximum="{int.MAX_VALUE}" value="-1" />
+			</s:HGroup>
+			<s:HGroup verticalAlign="middle">
+				<s:Label text="fadeInTimeByMS" />
+				<s:NumericStepper id="fadeInTimeNumericStepper" minimum="0" maximum="5000" value="0" />
+			</s:HGroup>
+			<s:HGroup verticalAlign="middle">
+				<s:Label text="fadeOutTimeByMS" />
+				<s:NumericStepper id="fadeOutTimeNumericStepper" minimum="0" maximum="5000" value="0" />
+			</s:HGroup>
+		</s:VGroup>
+
+	</s:HGroup>
+
+
 	
 </s:Panel>

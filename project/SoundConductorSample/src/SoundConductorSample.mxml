@@ -27,7 +27,6 @@
 				var bgmSound:Sound = new BGM_01();
 				var normalSoundId:SoundId = SoundConductor.registerSound(bgmSound, true);
 				var normalPlayInfo:SoundPlayInfo = new SoundPlayInfo(normalSoundId);
-				normalPlayInfo.loops = SoundLoopType.INFINITE_LOOP;
 				normalPlayInfo.startTimeByMS = 0;
 				normalPlayInfo.loopStartTimeByMS = 3278;
 				normalPlayInfo.loopEndTimeByMS = 51258;
@@ -35,7 +34,6 @@
 				var oggSound:ByteArray = new BGM_02();
 				var oggSoundId:SoundId = SoundConductor.registerOggBinary(oggSound, true);
 				var oggPlayInfo:SoundPlayInfo = new SoundPlayInfo(oggSoundId);
-				oggPlayInfo.loops = SoundLoopType.INFINITE_LOOP;
 				oggPlayInfo.startTimeByMS = 0;
 				oggPlayInfo.loopStartTimeByMS = 3278;
 				oggPlayInfo.loopEndTimeByMS = 51258;
