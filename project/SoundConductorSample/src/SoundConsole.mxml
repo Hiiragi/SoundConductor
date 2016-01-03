@@ -101,6 +101,8 @@
 					_soundController = null;
 					
 					playButton.enabled = true;
+					pauseButton.enabled = false;
+					resumeButton.enabled = false;
 					stopButton.enabled = false;
 					loopNumericStepper.enabled = true;
 					soundPlayTypeRadioButtonGroup.enabled = true;
