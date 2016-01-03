@@ -507,12 +507,15 @@ package jp.hiiragi.managers.soundConductor
 		{
 			if (_status == SoundStatusType.PLAYING)
 			{
+				if (fadeOutTimeByMS > 0)
+				{
+					_status = SoundStatusType.PAUSING;
+					dispatchEvent(new SoundConductorEvent(SoundConductorEvent.PAUSING, _soundContoller));
+				}
+
 				_pausedVolume = _volumeController.getInternalValue();
 				_volumeController.addEventListener(Event.COMPLETE, onPauseCompleteHandler);
 				_volumeController.setValue(0, fadeOutTimeByMS, fadeOutEasing);
-
-				_status = SoundStatusType.PAUSING;
-				dispatchEvent(new SoundConductorEvent(SoundConductorEvent.PAUSING, _soundContoller));
 			}
 		}
 
@@ -551,7 +554,7 @@ package jp.hiiragi.managers.soundConductor
 						_status = SoundStatusType.STOPPING;
 						dispatchEvent(new SoundConductorEvent(SoundConductorEvent.STOPPING, _soundContoller));
 					}
-					
+
 					_volumeController.addEventListener(Event.COMPLETE, onStopCompleteHandler);
 					_volumeController.setValue(0, fadeOutTimeByMS, fadeOutEasing);
 
@@ -771,7 +774,7 @@ package jp.hiiragi.managers.soundConductor
 		 */
 		private function onStopCompleteHandler(event:Event):void
 		{
-			
+
 			volumeController.removeEventListener(Event.COMPLETE, onStopCompleteHandler);
 			dispose();
 		}
@@ -785,3 +788,5 @@ package jp.hiiragi.managers.soundConductor
 //  Helper class: ClassName
 //
 ////////////////////////////////////////////////////////////////////////////////
+
+

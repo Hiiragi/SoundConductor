@@ -152,6 +152,12 @@ package jp.hiiragi.managers.soundConductor
 			{
 				byteArray.writeBytes(SoundUtil.getSilentByteArray(length), 0, length);
 			}
+			// 一時停止状態の場合、無音の ByteArray を書き込み、そのまま終了する（時間経過は行わない
+			else if (status == SoundStatusType.PAUSED)
+			{
+				byteArray.writeBytes(SoundUtil.getSilentByteArray(length), 0, length);
+				return byteArray;
+			}
 			// すでに再生が停止していた場合、長さが 0 の ByteArray を返す。
 			else if (status == SoundStatusType.STOPPED)
 			{
