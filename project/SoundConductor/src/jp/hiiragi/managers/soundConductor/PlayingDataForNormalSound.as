@@ -189,6 +189,11 @@ package jp.hiiragi.managers.soundConductor
 			_soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundCompleteHandler);
 			_soundChannel.stop();
 
+			if (volumeController != null)
+				volumeController.dispose();
+			if (panController != null)
+				panController.dispose();
+
 			super.dispose();
 		}
 
@@ -291,15 +296,10 @@ package jp.hiiragi.managers.soundConductor
 			var currentVolume:Number = volumeController.value;
 			var currentPan:Number = panController.value;
 
-			if (volumeController != null)
-				volumeController.dispose();
-			if (panController != null)
-				panController.dispose();
-
 			if (loops == SoundLoopType.NO_LOOP || (loops != SoundLoopType.INFINITE_LOOP && currentLoopCount >= loops))
 			{
 				// 終了
-				dispose();
+				stop();
 			}
 			else if (loops == SoundLoopType.INFINITE_LOOP || currentLoopCount < loops)
 			{
