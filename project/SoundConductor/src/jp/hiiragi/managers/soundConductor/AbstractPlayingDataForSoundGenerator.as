@@ -59,18 +59,25 @@ package jp.hiiragi.managers.soundConductor
 				_loopStartByteIndex = playInfo.loopStartTimeByMS * SoundUtil.COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
 				_loopEndByteIndex = (playInfo.loopEndTimeByMS == 0) ? _soundByteArray.length : playInfo.loopEndTimeByMS * SoundUtil.COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
 
-				_startByteIndex &= SoundUtil.BIT_MASK;
-				_loopStartByteIndex &= SoundUtil.BIT_MASK;
-				_loopEndByteIndex &= SoundUtil.BIT_MASK;
-
 				if (registeredSoundData is RegisteredOggSoundData)
 				{
-					totalLength = RegisteredOggSoundData(registeredSoundData).totalLength;
+					var registeredOggSoundData:RegisteredOggSoundData = RegisteredOggSoundData(registeredSoundData);
+					totalLength = registeredOggSoundData.totalLength;
+
+					if (registeredOggSoundData.hasLoopTag)
+					{
+						_loopStartByteIndex = registeredOggSoundData.loopStartByteIndex;
+						_loopEndByteIndex = registeredOggSoundData.loopEndByteIndex;
+					}
 				}
 				else
 				{
 					totalLength = Math.floor(_soundByteArray.length / SoundUtil.COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE);
 				}
+
+				_startByteIndex &= SoundUtil.BIT_MASK;
+				_loopStartByteIndex &= SoundUtil.BIT_MASK;
+				_loopEndByteIndex &= SoundUtil.BIT_MASK;
 
 			}
 			else

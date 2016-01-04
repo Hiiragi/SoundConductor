@@ -125,8 +125,8 @@ package jp.hiiragi.managers.soundConductor
 		 * @param oggBinary
 		 * @param allowMultiple
 		 * @param allowInterrupt
-		 */		
-		public function RegisteredOggSoundData(soundId:SoundId, oggBinary:ByteArray, allowMultiple:Boolean=false, allowInterrupt:Boolean=false)
+		 */
+		public function RegisteredOggSoundData(soundId:SoundId, oggBinary:ByteArray, allowMultiple:Boolean = false, allowInterrupt:Boolean = false)
 		{
 			super(soundId, null, new ByteArray(), allowMultiple, allowInterrupt);
 
@@ -142,6 +142,23 @@ package jp.hiiragi.managers.soundConductor
 			_tempBuffer = new ByteArray();
 			_totalLength = Math.floor(SoundUtil.calcurateOggLength(oggBinary, _oggManager.audioInfo.sampleRate));
 
+			var samplingRate:int = _oggManager.audioInfo.sampleRate;
+
+			// LOOPSTART と LOOPLENGTH のタグに対応
+			if (_oggManager.oggComments.hasOwnProperty("LOOPSTART") && _oggManager.oggComments.hasOwnProperty("LOOPLENGTH"))
+			{
+				_hasLoopTag = true;
+				_loopStartByteIndex = parseInt(_oggManager.oggComments["LOOPSTART"]) * 8;
+				_loopEndByteIndex = _loopStartByteIndex + parseInt(_oggManager.oggComments["LOOPLENGTH"]) * 8;
+			}
+			else
+			{
+				_hasLoopTag = false;
+				_loopStartByteIndex = -1;
+				_loopEndByteIndex = -1;
+			}
+
+			// init buffer
 			for (var i:int = 0; i < 60; i++)
 			{
 				writeDecodedSampleData();
@@ -150,6 +167,11 @@ package jp.hiiragi.managers.soundConductor
 			_ticker = new Shape();
 			_ticker.addEventListener(Event.ENTER_FRAME, onDecodeEnterFrameHandler);
 		}
+
+
+
+
+
 
 //--------------------------------------------------------------------------
 //
@@ -182,22 +204,42 @@ package jp.hiiragi.managers.soundConductor
 		//----------------------------------
 		private var _oggManager:OggManager;
 
-		public function get oggManager():OggManager { return _oggManager; }
+		public function get oggManager():OggManager  { return _oggManager; }
 
 		//----------------------------------
 		//  oggManager
 		//----------------------------------
 		private var _totalLength:uint;
 
-		public function get totalLength():uint { return _totalLength; }
-
+		public function get totalLength():uint  { return _totalLength; }
 
 		//----------------------------------
 		//  decodeOggCompleted
 		//----------------------------------
 		private var _decodeOggCompleted:Boolean;
 
-		public function get decodeOggCompleted():Boolean { return _decodeOggCompleted; }
+		public function get decodeOggCompleted():Boolean  { return _decodeOggCompleted; }
+
+		//----------------------------------
+		//  hasLoopTag
+		//----------------------------------
+		private var _hasLoopTag:Boolean;
+
+		public function get hasLoopTag():Boolean  { return _hasLoopTag; }
+
+		//----------------------------------
+		//  loopStartByteIndex
+		//----------------------------------
+		private var _loopStartByteIndex:Number;
+
+		public function get loopStartByteIndex():Number  { return _loopStartByteIndex; }
+
+		//----------------------------------
+		//  loopEndByteIndex
+		//----------------------------------
+		private var _loopEndByteIndex:Number;
+
+		public function get loopEndByteIndex():Number  { return _loopEndByteIndex; }
 
 //--------------------------------------------------------------------------
 //
@@ -270,7 +312,7 @@ package jp.hiiragi.managers.soundConductor
 			_tempBuffer.length = 0;
 			var result:Object = _oggManager.getSampleData(4096, _tempBuffer);
 
-			if (result["position"] < result["length"])
+			if (_tempBuffer.length > 0)
 			{
 				soundByteArray.writeBytes(_tempBuffer);
 			}

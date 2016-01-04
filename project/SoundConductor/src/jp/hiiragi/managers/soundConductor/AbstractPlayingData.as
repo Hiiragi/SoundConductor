@@ -774,7 +774,6 @@ package jp.hiiragi.managers.soundConductor
 		 */
 		private function onStopCompleteHandler(event:Event):void
 		{
-
 			volumeController.removeEventListener(Event.COMPLETE, onStopCompleteHandler);
 			dispose();
 		}
