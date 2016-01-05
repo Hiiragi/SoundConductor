@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<local:SoundConsole xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:local="*"
+					title="MP3"
+					creationComplete="soundconsole1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import jp.hiiragi.managers.soundConductor.RegisteredOggSoundData;
+			import jp.hiiragi.managers.soundConductor.RegisteredSoundData;
+			import jp.hiiragi.managers.soundConductor.SoundConductor;
+			import jp.hiiragi.managers.soundConductor.SoundId;
+			
+			protected function soundconsole1_creationCompleteHandler(event:FlexEvent):void
+			{
+				typeFilter = new FileFilter("MP3 File", "*.mp3");
+			}
+			
+			override protected function externalFileLoadCompleted(data:ByteArray):void
+			{
+				if (playInfo != null)
+				{
+					SoundConductor.unregisteredSound(playInfo.soundId);
+					
+					data.position = 0;
+					var sound:Sound = new Sound();
+					sound.loadCompressedDataFromByteArray(data, data.bytesAvailable);
+					var soundId:SoundId = SoundConductor.registerSound(sound, true);
+					var registeredSoundData:RegisteredSoundData = SoundConductor.getRegisteredSoundData(soundId);
+					playInfo.soundId = soundId;
+					
+					playInfo.loopStartTimeByMS = 0
+					playInfo.loopEndTimeByMS = 0
+				}
+				
+			}
+		]]>
+	</fx:Script>
+	
+</local:SoundConsole>

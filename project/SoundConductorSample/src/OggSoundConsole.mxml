@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<local:SoundConsole xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:local="*"
+					title="Ogg Vorbis"
+					creationComplete="soundconsole1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import jp.hiiragi.managers.soundConductor.RegisteredOggSoundData;
+			import jp.hiiragi.managers.soundConductor.SoundConductor;
+			import jp.hiiragi.managers.soundConductor.SoundId;
+			
+			
+			protected function soundconsole1_creationCompleteHandler(event:FlexEvent):void
+			{
+				typeFilter = new FileFilter("Ogg Vorbis File", "*.ogg");
+				normalSoundArchitectRadioButton.enabled = false;
+				singleSoundGeneratorRadioButton.selected = true;
+			}
+			
+			override protected function externalFileLoadCompleted(data:ByteArray):void
+			{
+				if (playInfo != null)
+				{
+					SoundConductor.unregisteredSound(playInfo.soundId);
+					
+					var soundId:SoundId = SoundConductor.registerOggBinary(data);
+					var registeredSoundData:RegisteredOggSoundData = RegisteredOggSoundData(SoundConductor.getRegisteredSoundData(soundId));
+					playInfo.soundId = soundId;
+					
+					if (registeredSoundData.hasLoopTag)
+					{
+						playInfo.loopStartTimeByMS = Math.floor(registeredSoundData.loopStartByteIndex / 44.1 / 8);
+						playInfo.loopEndTimeByMS = Math.floor(registeredSoundData.loopEndByteIndex / 44.1 / 8);
+					}
+					else
+					{
+						playInfo.loopStartTimeByMS = 0
+						playInfo.loopEndTimeByMS = 0
+					}
+				
+				}
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
+</local:SoundConsole>

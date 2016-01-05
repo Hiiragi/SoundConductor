@@ -38,16 +38,14 @@
 				oggPlayInfo.loopEndTimeByMS = 51258;
 				
 				
-				var console:SoundConsole = new SoundConsole();
-				console.title = "mp3";
+				var console:SoundConsole = new MP3SoundConsole();
+				addElement(console);
 				console.playInfo = normalPlayInfo;
+				
+				
+				console = new OggSoundConsole();
 				addElement(console);
-				
-				
-				console = new SoundConsole();
-				console.title = "Ogg Vorbis";
 				console.playInfo = oggPlayInfo;
-				addElement(console);
 				
 				
 				

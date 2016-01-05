@@ -11,17 +11,33 @@
 		<![CDATA[
 			import jp.hiiragi.managers.soundConductor.SoundConductor;
 			import jp.hiiragi.managers.soundConductor.SoundController;
-			import jp.hiiragi.managers.soundConductor.SoundId;
 			import jp.hiiragi.managers.soundConductor.SoundPlayInfo;
 			import jp.hiiragi.managers.soundConductor.constants.SoundPlayType;
+			import jp.hiiragi.managers.soundConductor.constants.SoundStatusType;
 			import jp.hiiragi.managers.soundConductor.events.SoundConductorEvent;
 			
-			public var soundId:SoundId;
-			public var playInfo:SoundPlayInfo;
+			private var _playInfo:SoundPlayInfo;
+
+			public function get playInfo():SoundPlayInfo
+			{
+				return _playInfo;
+			}
+
+			public function set playInfo(value:SoundPlayInfo):void
+			{
+				_playInfo = value;
+				setLoopTime();
+			}
+
+			public var typeFilter:FileFilter;
 			
 			private var _soundController:SoundController;
 			
-			protected function muteCheckBox_changeHandler(event:Event):void
+			
+			
+			
+			
+			private function muteCheckBox_changeHandler(event:Event):void
 			{
 				if (_soundController != null)
 				{
@@ -36,7 +52,7 @@
 				}
 			}
 			
-			protected function volumeSlider_changeHandler(event:Event):void
+			private function volumeSlider_changeHandler(event:Event):void
 			{
 				if (_soundController != null)
 				{
@@ -44,7 +60,7 @@
 				}
 			}
 			
-			protected function playButtonClickHandler(event:MouseEvent):void
+			private function playButtonClickHandler(event:MouseEvent):void
 			{
 				if (_soundController == null)
 				{		
@@ -72,20 +88,16 @@
 					addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
 					
 					
-					playButton.enabled = false;
-					pauseButton.enabled = true;
-					stopButton.enabled = true;
-					loopNumericStepper.enabled = false;
-					soundPlayTypeRadioButtonGroup.enabled = false;
+					switchComponentsEnabled(false);
 				}
 			}
 			
-			protected function stopButtonClickHandler(event:MouseEvent):void
+			private function stopButtonClickHandler(event:MouseEvent):void
 			{
 				stop();
 			}
 			
-			protected function onEnterFrameHandler(event:Event):void
+			private function onEnterFrameHandler(event:Event):void
 			{
 				seekSlider.value = _soundController.currentPosition;
 			}
@@ -97,24 +109,38 @@
 					removeEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
 					
 					_soundController.removeEventListener(SoundConductorEvent.STOPPED, onLoopCompleteHandler);
-					_soundController.stop(fadeOutTimeNumericStepper.value);
+					
+					if (_soundController.status == SoundStatusType.STOPPED)
+					{
+						finalize();
+					}
+					else
+					{
+						_soundController.stop(fadeOutTimeNumericStepper.value);
+						_soundController.addEventListener(SoundConductorEvent.STOPPED, onStopCompleteHandler);
+					}
+
+				}
+				
+				function onStopCompleteHandler(event:SoundConductorEvent):void
+				{
+					_soundController.removeEventListener(SoundConductorEvent.STOPPED, onStopCompleteHandler);
+					finalize();
+				}
+				function finalize():void
+				{
 					_soundController = null;
 					
-					playButton.enabled = true;
-					pauseButton.enabled = false;
-					resumeButton.enabled = false;
-					stopButton.enabled = false;
-					loopNumericStepper.enabled = true;
-					soundPlayTypeRadioButtonGroup.enabled = true;
+					switchComponentsEnabled(true);
 				}
 			}
 			
-			protected function onLoopCompleteHandler(event:Event):void
+			private function onLoopCompleteHandler(event:Event):void
 			{
 				stop();
 			}
 			
-			protected function pauseButtonClickHandler(event:MouseEvent):void
+			private function pauseButtonClickHandler(event:MouseEvent):void
 			{
 				if (_soundController != null)
 				{
@@ -124,7 +150,7 @@
 				}
 			}
 			
-			protected function resumeButtonClickHandler(event:MouseEvent):void
+			private function resumeButtonClickHandler(event:MouseEvent):void
 			{
 				if (_soundController != null)
 				{
@@ -133,6 +159,71 @@
 					resumeButton.enabled = false;
 				}
 
+			}
+			
+			private function loadSoundFileButton_clickHandler(event:MouseEvent):void
+			{
+				browseSoundFile();
+			}
+			
+			protected function browseSoundFile():void
+			{
+				if (typeFilter != null)
+				{
+					var that:SoundConsole = this;
+					var fileReference:FileReference = new FileReference();
+					fileReference.addEventListener(Event.SELECT, onSelectHandler);
+					fileReference.addEventListener(Event.COMPLETE, onCompleteHandler);
+					fileReference.addEventListener(Event.CANCEL, onCancelHandler);
+					fileReference.browse([typeFilter]);
+				}
+				
+				function onSelectHandler(event:Event):void
+				{
+					that.enabled = false;
+					fileReference.load();
+				}
+				function onCompleteHandler(event:Event):void
+				{
+					finalize();
+					externalFileLoadCompleted(fileReference.data);
+					setLoopTime();
+				}
+				function onCancelHandler(event:Event):void
+				{
+					finalize();
+				}
+				function finalize():void
+				{
+					that.enabled = true;
+					fileReference.removeEventListener(Event.SELECT, onSelectHandler);
+					fileReference.removeEventListener(Event.COMPLETE, onCompleteHandler);
+					fileReference.removeEventListener(Event.CANCEL, onCancelHandler);
+				}
+				
+			}
+			
+			protected function externalFileLoadCompleted(data:ByteArray):void
+			{
+				
+			}
+			
+			private function setLoopTime():void
+			{
+				loopStartTimeByMSNumericStepper.value = _playInfo.loopStartTimeByMS;
+				loopEndTimeByMSNumericStepper.value = _playInfo.loopEndTimeByMS;
+			}
+			
+			private function switchComponentsEnabled(enabled:Boolean):void
+			{
+				playButton.enabled = enabled;
+				pauseButton.enabled = !enabled;
+				stopButton.enabled = !enabled;
+				loadSoundFileButton.enabled = enabled;
+				loopNumericStepper.enabled = enabled;
+				loopStartTimeByMSNumericStepper.enabled = enabled;
+				loopEndTimeByMSNumericStepper.enabled = enabled;
+				soundPlayTypeRadioButtonGroup.enabled = enabled;
 			}
 			
 		]]>
@@ -152,20 +243,17 @@
 		<s:HSlider id="volumeSlider" minimum="0" maximum="1" stepSize="0.01" value="1"
 				   width="200" change="volumeSlider_changeHandler(event)" />
 		<s:CheckBox id="muteCheckBox" label="mute" change="muteCheckBox_changeHandler(event)" />
+		<s:Button label="load..." id="loadSoundFileButton" click="loadSoundFileButton_clickHandler(event)" />
 	</s:HGroup>
 	
 	<s:HGroup>
 		<s:VGroup width="300">
-			<s:RadioButton group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.NORMAL_SOUND_ARCHITECT.value}" selected="true" />
-			<s:RadioButton group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.SINGLE_SOUND_GENERATOR.value}" />
-			<s:RadioButton group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.SHARED_SOUND_GENERATOR.value}" />
+			<s:RadioButton id="normalSoundArchitectRadioButton" group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.NORMAL_SOUND_ARCHITECT.value}" selected="true" />
+			<s:RadioButton id="singleSoundGeneratorRadioButton" group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.SINGLE_SOUND_GENERATOR.value}" />
+			<s:RadioButton id="sharedSoundGeneratorRadioButton" group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.SHARED_SOUND_GENERATOR.value}" />
 		</s:VGroup>
 		
-		<s:VGroup>
-			<s:HGroup verticalAlign="middle">
-				<s:Label text="loops( -1 is inifinite loop )" />
-				<s:NumericStepper id="loopNumericStepper" minimum="-1" maximum="{int.MAX_VALUE}" value="-1" />
-			</s:HGroup>
+		<s:VGroup width="300">
 			<s:HGroup verticalAlign="middle">
 				<s:Label text="fadeInTimeByMS" />
 				<s:NumericStepper id="fadeInTimeNumericStepper" minimum="0" maximum="5000" value="0" />
@@ -176,6 +264,20 @@
 			</s:HGroup>
 		</s:VGroup>
 
+		<s:VGroup>
+			<s:HGroup verticalAlign="middle">
+				<s:Label text="loops( -1 is inifinite loop )" />
+				<s:NumericStepper id="loopNumericStepper" minimum="-1" maximum="{int.MAX_VALUE}" value="-1" />
+			</s:HGroup>
+			<s:HGroup verticalAlign="middle">
+				<s:Label text="loopStartTimeByMS" />
+				<s:NumericStepper id="loopStartTimeByMSNumericStepper" minimum="0" maximum="{int.MAX_VALUE}" value="0" />
+			</s:HGroup>
+			<s:HGroup verticalAlign="middle">
+				<s:Label text="loopEndTimeByMS" />
+				<s:NumericStepper id="loopEndTimeByMSNumericStepper" minimum="0" maximum="{int.MAX_VALUE}" value="0" />
+			</s:HGroup>
+		</s:VGroup>
 	</s:HGroup>
 
 
