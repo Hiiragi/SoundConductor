@@ -279,7 +279,7 @@ package jp.hiiragi.managers.soundConductor
 			if (createSoundObject)
 			{
 				sound = new Sound();
-				sound.loadPCMFromByteArray(pcmBinary,pcmBinary.bytesAvailable);
+				sound.loadPCMFromByteArray(pcmBinary, pcmBinary.bytesAvailable);
 			}
 
 			var registeredSoundData:RegisteredSoundData = new RegisteredSoundData(soundId, sound, pcmBinary, allowMultiple, allowInterrupt);
