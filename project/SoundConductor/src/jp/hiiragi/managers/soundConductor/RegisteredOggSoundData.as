@@ -32,10 +32,15 @@ package jp.hiiragi.managers.soundConductor
 
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorError;
 	import jp.hiiragi.managers.soundConductor.error.SoundConductorErrorType;
+	import jp.hiiragi.managers.soundConductor.events.OggDecodeEvent;
 
 //--------------------------------------
 //  Events
 //--------------------------------------
+
+	[Event(name = "progress", type = "jp.hiiragi.managers.soundConductor.events.OggDecodeEvent")]
+
+	[Event(name = "complete", type = "jp.hiiragi.managers.soundConductor.events.OggDecodeEvent")]
 
 //--------------------------------------
 //  Styles
@@ -134,6 +139,8 @@ package jp.hiiragi.managers.soundConductor
 			{
 				throw new SoundConductorError(SoundConductorErrorType.ERROR_10206);
 			}
+
+			_decodeOggCompleted = false;
 
 			_oggManager = new OggManager();
 			oggBinary.position = 0;
@@ -256,10 +263,6 @@ package jp.hiiragi.managers.soundConductor
 
 			_ticker = null;
 
-			if (_oggManager.isDecoding || _oggManager.isEncoding)
-			{
-				_oggManager.cancel();
-			}
 			_oggManager.decodedBytes.clear();
 			_oggManager.encodedBytes.clear();
 			_oggManager.wavBytes.clear();
@@ -312,13 +315,19 @@ package jp.hiiragi.managers.soundConductor
 			_tempBuffer.length = 0;
 			var result:Object = _oggManager.getSampleData(4096, _tempBuffer);
 
-			if (_tempBuffer.length > 0)
+			var position:Number = result["position"];
+			var length:Number = result["length"];
+
+			soundByteArray.writeBytes(_tempBuffer);
+
+			if (position < length)
 			{
-				soundByteArray.writeBytes(_tempBuffer);
+				dispatchEvent(new OggDecodeEvent(OggDecodeEvent.PROGRESS, position, length));
 			}
 			else
 			{
 				finalizeOggDecode();
+				dispatchEvent(new OggDecodeEvent(OggDecodeEvent.COMPLETE, position, length));
 			}
 		}
 

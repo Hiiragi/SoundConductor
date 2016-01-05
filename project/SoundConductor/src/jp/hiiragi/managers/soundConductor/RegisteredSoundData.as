@@ -24,6 +24,7 @@
 
 package jp.hiiragi.managers.soundConductor
 {
+	import flash.events.EventDispatcher;
 	import flash.media.Sound;
 	import flash.utils.ByteArray;
 
@@ -39,7 +40,7 @@ package jp.hiiragi.managers.soundConductor
 //  Other metadata
 //--------------------------------------
 
-	public class RegisteredSoundData
+	public class RegisteredSoundData extends EventDispatcher
 	{
 //--------------------------------------------------------------------------
 //
