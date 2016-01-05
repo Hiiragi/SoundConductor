@@ -45,7 +45,7 @@ package jp.hiiragi.managers.soundConductor
 //  Other metadata
 //--------------------------------------
 
-	internal class RegisteredOggSoundData extends RegisteredSoundData
+	public class RegisteredOggSoundData extends RegisteredSoundData
 	{
 //--------------------------------------------------------------------------
 //

@@ -39,7 +39,7 @@ package jp.hiiragi.managers.soundConductor
 //  Other metadata
 //--------------------------------------
 
-	internal class RegisteredSoundData
+	public class RegisteredSoundData
 	{
 //--------------------------------------------------------------------------
 //
