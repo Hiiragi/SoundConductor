@@ -379,6 +379,25 @@ package jp.hiiragi.managers.soundConductor
 			return soundId;
 		}
 
+
+		/**
+		 * 登録されたサウンドデータを取得します.
+		 * @param soundId
+		 * @return
+		 */
+		public static function getRegisteredSoundData(soundId:SoundId):RegisteredSoundData
+		{
+			for each (var registeredSoundData:RegisteredSoundData in _registeredSoundList)
+			{
+				if (registeredSoundData.soundId == soundId)
+				{
+					return registeredSoundData;
+				}
+			}
+
+			return null;
+		}
+
 		/**
 		 * 登録した音を、登録解除します.
 		 * @param soundId
