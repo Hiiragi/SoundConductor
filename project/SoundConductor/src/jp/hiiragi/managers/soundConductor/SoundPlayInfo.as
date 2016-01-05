@@ -64,6 +64,8 @@ package jp.hiiragi.managers.soundConductor
 		 */
 		public function get soundId():SoundId  { return _soundId; }
 
+		public function set soundId(value:SoundId):void  { _soundId = value; }
+
 		//----------------------------------
 		//  startTimeByMS
 		//----------------------------------
