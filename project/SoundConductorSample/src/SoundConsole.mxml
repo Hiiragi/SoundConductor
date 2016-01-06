@@ -116,8 +116,8 @@
 					}
 					else
 					{
-						_soundController.stop(fadeOutTimeNumericStepper.value);
 						_soundController.addEventListener(SoundConductorEvent.STOPPED, onStopCompleteHandler);
+						_soundController.stop(fadeOutTimeNumericStepper.value);
 					}
 
 				}
