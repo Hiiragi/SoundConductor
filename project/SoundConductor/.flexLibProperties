@@ -7,6 +7,8 @@
     <classEntry path="jp.hiiragi.managers.soundConductor.RegisteredOggSoundData"/>
     <classEntry path="jp.hiiragi.managers.soundConductor.events.OggDecodeEvent"/>
   </includeClasses>
-  <includeResources/>
+  <includeResources>
+    <resourceEntry destPath="License.txt" sourcePath="License.txt"/>
+  </includeResources>
   <namespaceManifests/>
 </flexLibProperties>
