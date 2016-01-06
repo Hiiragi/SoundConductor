@@ -320,7 +320,7 @@ package jp.hiiragi.managers.soundConductor
 
 			soundByteArray.writeBytes(_tempBuffer);
 
-			if (position < length)
+			if (_tempBuffer.length > 0)
 			{
 				dispatchEvent(new OggDecodeEvent(OggDecodeEvent.PROGRESS, position, length));
 			}
