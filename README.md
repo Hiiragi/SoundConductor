@@ -4,7 +4,7 @@ sound manager for ActionScript 3.
 - Licence : MIT Licence.
 - Version : 0.2
 
-** 執筆中 **
+**執筆中**
 
 ## 注意
 このライブラリは開発中であり、テストケースがまだ少ないため、不安定な挙動やバグを起こす可能性があります。
@@ -24,6 +24,11 @@ sound manager for ActionScript 3.
 - `SoundConductor` にて管理されていない `SoundChannel` や `MovieClip` などに対してのボリュームの適用
 
 主にゲームなどの「サウンドを常用的に扱うコンテンツ」に特化したライブラリとなっています。
+
+## サンプル
+[SoundConductorSample](https://dl.dropboxusercontent.com/u/37111207/SoundConductorSample/SoundConductorSample.html)  
+このサンプルは、リポジトリにも入っていますので、御参考ください。
+外部の MP3 と Ogg Vorbis ファイルを読み込めますので、お好きなファイルをお試しください。
 
 ## 使い方
 ### 前知識
