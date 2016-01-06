@@ -107,8 +107,8 @@ package jp.hiiragi.managers.soundConductor
 
 		public function dispose():void
 		{
-			_soundList.length = 0;
 			_soundChannel.stop();
+			_soundList.length = 0;
 		}
 
 //--------------------------------------------------------------------------

@@ -600,9 +600,6 @@ package jp.hiiragi.managers.soundConductor
 		{
 			_volumeController.dispose();
 			_panController.dispose();
-
-			_status = SoundStatusType.STOPPED;
-			dispatchEvent(new SoundConductorEvent(SoundConductorEvent.STOPPED, _soundContoller));
 		}
 
 //--------------------------------------------------------------------------
@@ -775,7 +772,9 @@ package jp.hiiragi.managers.soundConductor
 		private function onStopCompleteHandler(event:Event):void
 		{
 			volumeController.removeEventListener(Event.COMPLETE, onStopCompleteHandler);
-			dispose();
+
+			_status = SoundStatusType.STOPPED;
+			dispatchEvent(new SoundConductorEvent(SoundConductorEvent.STOPPED, _soundContoller));
 		}
 	}
 }

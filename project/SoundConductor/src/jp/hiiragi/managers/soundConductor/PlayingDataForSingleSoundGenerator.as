@@ -132,6 +132,15 @@ package jp.hiiragi.managers.soundConductor
 //  Overridden methods
 //
 //--------------------------------------------------------------------------
+
+		override public function dispose():void
+		{
+			_soundGenerator.dispose();
+			_soundGenerator = null;
+
+			super.dispose();
+		}
+
 		override protected function play_internal():void
 		{
 			_soundGenerator.addPlayingData(this);
