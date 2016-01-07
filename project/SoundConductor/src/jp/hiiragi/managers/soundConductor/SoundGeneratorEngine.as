@@ -154,6 +154,7 @@ package jp.hiiragi.managers.soundConductor
 //  Event handlers
 //
 //--------------------------------------------------------------------------
+
 		private function onSampleDataEvent(event:SampleDataEvent):void
 		{
 			var i:int = 0;
@@ -179,6 +180,7 @@ package jp.hiiragi.managers.soundConductor
 
 					if (playingData.status == SoundStatusType.PAUSED)
 					{
+						// 何もしない
 					}
 					else
 					{
@@ -195,9 +197,6 @@ package jp.hiiragi.managers.soundConductor
 							playingData.dispose();
 						}
 					}
-
-
-
 				}
 			}
 
@@ -228,7 +227,6 @@ package jp.hiiragi.managers.soundConductor
 					event.data.writeFloat(leftValue);
 					event.data.writeFloat(rightValue);
 				}
-
 			}
 
 		}
