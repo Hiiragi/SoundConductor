@@ -171,7 +171,7 @@ package jp.hiiragi.managers.soundConductor
 			if (_isInitialized)
 				throw new SoundConductorError(SoundConductorErrorType.ERROR_10011);
 
-			// 一回ここで OggManager を生成することによって OggManager 全体の初期化が走る
+			// 一回ここで OggManager を生成することによって OggManager 全体の初期化が走る（実際には使用しない
 			var oggManager:OggManager = new OggManager();
 
 			_soundBufferSize = bufferType || SoundBufferType.BUFFER_SIZE_4096;
@@ -210,6 +210,9 @@ package jp.hiiragi.managers.soundConductor
 				_sharedSoundGeneratorEngine.dispose();
 				_sharedSoundGeneratorEngine = null;
 			}
+
+			_masterVolumeController.dispose();
+			_masterVolumeController = null;
 
 			_isInitialized = false;
 		}
@@ -644,6 +647,13 @@ package jp.hiiragi.managers.soundConductor
 
 			stopAll(0);
 			_registeredSoundList.length = 0;
+			_groupList.length = 0;
+
+			for each (var fadeController:SoundParameterController in _applyingFadeSoundChannelList)
+			{
+				fadeController.removeEventListener(Event.COMPLETE, fadeCompleteHandler);
+			}
+			_applyingFadeSoundChannelList.length = 0;
 		}
 
 //--------------------------------------------------------------------------
@@ -694,7 +704,7 @@ package jp.hiiragi.managers.soundConductor
 		 * @param stopWhenCompleted	フェードが完了したときにサウンドを停止するかを指定します。主にフェードアウトの際に利用します。
 		 * デフォルトは <code>false</code> です。
 		 */
-		public static function applyFadeToSoundObject(soundChannel:SoundChannel, fadeTo:Number, timeByMS:Number, easing:Function = null, callback:Function = null, stopWhenCompleted:Boolean = false):void
+		public static function applyFadeToSoundChannel(soundChannel:SoundChannel, fadeTo:Number, timeByMS:Number, easing:Function = null, callback:Function = null, stopWhenCompleted:Boolean = false):void
 		{
 			if (fadeTo < 0)
 				fadeTo = 0;
