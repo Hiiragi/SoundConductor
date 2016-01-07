@@ -25,9 +25,11 @@
 package jp.hiiragi.managers.soundConductor
 {
 	import flash.events.SampleDataEvent;
+	import flash.events.TimerEvent;
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
 	import flash.utils.ByteArray;
+	import flash.utils.Timer;
 
 	import jp.hiiragi.managers.soundConductor.constants.SoundStatusType;
 
@@ -104,11 +106,21 @@ package jp.hiiragi.managers.soundConductor
 		}
 
 
-
 		public function dispose():void
 		{
-			_soundChannel.stop();
-			_soundList.length = 0;
+			// onSampleDataEvent との兼ね合いからか、1 フレーム以上待たないと FlashPlayer がクラッシュする
+			var timer:Timer = new Timer(1, 1);
+			timer.addEventListener(TimerEvent.TIMER_COMPLETE, onTimerCompleteHandler);
+			timer.start();
+
+			function onTimerCompleteHandler(event:TimerEvent):void
+			{
+				timer.removeEventListener(TimerEvent.TIMER_COMPLETE, onTimerCompleteHandler);
+
+				_sound.removeEventListener(SampleDataEvent.SAMPLE_DATA, onSampleDataEvent);
+				_soundChannel.stop();
+				_soundList.length = 0;
+			}
 		}
 
 //--------------------------------------------------------------------------
