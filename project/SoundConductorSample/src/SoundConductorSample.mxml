@@ -37,18 +37,16 @@
 				oggPlayInfo.loopStartTimeByMS = 3278;
 				oggPlayInfo.loopEndTimeByMS = 51258;
 				
-				
 				var console:SoundConsole = new MP3SoundConsole();
 				addElement(console);
 				console.playInfo = normalPlayInfo;
-				
 				
 				console = new OggSoundConsole();
 				addElement(console);
 				console.playInfo = oggPlayInfo;
 				
-				
-				
+				SoundConductor.setMasterVolume(0.5);
+				masterVolumeSlider.value = SoundConductor.getMasterVolume();
 				
 				systemManager.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onUncaughtErrorHandler);
 			}

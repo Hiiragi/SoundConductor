@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="180">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="230">
 	
 	<s:layout>
 		<s:VerticalLayout gap="5" />
@@ -35,7 +35,11 @@
 			
 			
 			
-			
+			public function dispose():void
+			{
+				_soundController = null;
+				_playInfo = null;
+			}
 			
 			private function muteCheckBox_changeHandler(event:Event):void
 			{
@@ -100,6 +104,7 @@
 			private function onEnterFrameHandler(event:Event):void
 			{
 				seekSlider.value = _soundController.currentPosition;
+				currentLoopTextInput.text = _soundController.currentLoopCount + "/" + _soundController.loops;
 			}
 			
 			private function stop():void
@@ -226,6 +231,14 @@
 				soundPlayTypeRadioButtonGroup.enabled = enabled;
 			}
 			
+			protected function seekSlider_changeHandler(event:Event):void
+			{
+				if (_soundController != null)
+				{
+					_soundController.seek(seekSlider.value);
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -234,7 +247,7 @@
 	</fx:Declarations>
 	
 	<s:HGroup padding="10" verticalAlign="middle">
-		<s:HSlider id="seekSlider" width="200" />
+		<s:HSlider id="seekSlider" width="200" change="seekSlider_changeHandler(event)" />
 		<s:Button label="play" id="playButton" click="playButtonClickHandler(event)" />
 		<s:Button label="pause" id="pauseButton" click="pauseButtonClickHandler(event)" enabled="false" />
 		<s:Button label="resume" id="resumeButton" click="resumeButtonClickHandler(event)" enabled="false" />
@@ -247,13 +260,13 @@
 	</s:HGroup>
 	
 	<s:HGroup>
-		<s:VGroup width="300">
+		<s:VGroup width="200">
 			<s:RadioButton id="normalSoundArchitectRadioButton" group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.NORMAL_SOUND_ARCHITECT.value}" selected="true" />
 			<s:RadioButton id="singleSoundGeneratorRadioButton" group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.SINGLE_SOUND_GENERATOR.value}" />
 			<s:RadioButton id="sharedSoundGeneratorRadioButton" group="{soundPlayTypeRadioButtonGroup}" label="{SoundPlayType.SHARED_SOUND_GENERATOR.value}" />
 		</s:VGroup>
 		
-		<s:VGroup width="300">
+		<s:VGroup width="200">
 			<s:HGroup verticalAlign="middle">
 				<s:Label text="fadeInTimeByMS" />
 				<s:NumericStepper id="fadeInTimeNumericStepper" minimum="0" maximum="5000" value="0" />
@@ -264,20 +277,29 @@
 			</s:HGroup>
 		</s:VGroup>
 
-		<s:VGroup>
+		<s:VGroup width="300">
 			<s:HGroup verticalAlign="middle">
 				<s:Label text="loops( -1 is inifinite loop )" />
-				<s:NumericStepper id="loopNumericStepper" minimum="-1" maximum="{int.MAX_VALUE}" value="-1" />
+				<s:NumericStepper id="loopNumericStepper" minimum="-1" maximum="{int.MAX_VALUE}" value="-1" width="100" />
 			</s:HGroup>
 			<s:HGroup verticalAlign="middle">
 				<s:Label text="loopStartTimeByMS" />
-				<s:NumericStepper id="loopStartTimeByMSNumericStepper" minimum="0" maximum="{int.MAX_VALUE}" value="0" />
+				<s:NumericStepper id="loopStartTimeByMSNumericStepper" minimum="0" maximum="{int.MAX_VALUE}" value="0"  width="100" />
 			</s:HGroup>
 			<s:HGroup verticalAlign="middle">
 				<s:Label text="loopEndTimeByMS" />
-				<s:NumericStepper id="loopEndTimeByMSNumericStepper" minimum="0" maximum="{int.MAX_VALUE}" value="0" />
+				<s:NumericStepper id="loopEndTimeByMSNumericStepper" minimum="0" maximum="{int.MAX_VALUE}" value="0"  width="100" />
 			</s:HGroup>
 		</s:VGroup>
+		
+		<s:VGroup width="200">
+			<s:HGroup verticalAlign="middle">
+				<s:Label text="current loops" />
+				<s:TextInput id="currentLoopTextInput" editable="false" />
+			</s:HGroup>
+		</s:VGroup>
+
+		
 	</s:HGroup>
 
 
