@@ -134,7 +134,11 @@ package jp.hiiragi.managers.soundConductor
 
 		override protected function seek_internal(timeByMS:Number):void
 		{
-			_currentByteIndex = timeByMS * SoundUtil.COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
+			var targetByteIndex:uint = timeByMS * SoundUtil.COEFFICIENT_OF_CONVERT_FROM_MS_TO_BYTE;
+
+			// 未デコード部分にシークした場合は、現在の最終箇所の 1 秒前の場所にシークする
+			_currentByteIndex = (soundByteArray.length > targetByteIndex) ? targetByteIndex : soundByteArray.length - 44100;
+			_currentByteIndex &= SoundUtil.BIT_MASK;
 			setCurrentPosition();
 		}
 
