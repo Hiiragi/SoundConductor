@@ -146,7 +146,7 @@ var soundController:SoundController = SoundConductor.play(playInfo);
 MovieClip などは、その中のコンテンツにサウンドを適用し、再生することが可能です。これに対して `SoundConductor` で管理されている音量を適用したい場合は、`SoundConductor.setVolumeToObject()` を使用してください。`SoundConductor.playSoundObject()` と同様、`SoundConductor` で管理されているマスターボリュームと、場合によってはグループのボリュームを適用することが出来ます。
 
 ### SoundChannel に対する音量のフェードの適用
-指定する `SoundChannnel` に対して音量のフェードを適用する `SoundConductor.applyFadeToSoundObject()` も用意されています。
+指定する `SoundChannnel` に対して音量のフェードを適用する `SoundConductor.applyFadeToSoundChannel()` も用意されています。
 
 ### 弱参照のサウンド再生
 Flash には最大同時発音数の制限があります。それを超えた場合、追加しようとしたサウンドは再生できません。どれか一つを停止する必要があります。
