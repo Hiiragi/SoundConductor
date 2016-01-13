@@ -293,8 +293,8 @@ package jp.hiiragi.managers.soundConductor
 		{
 			_soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundCompleteHandler);
 
-			var currentVolume:Number = volumeController.value;
-			var currentPan:Number = panController.value;
+			var currentVolume:Number = volumeController.getInternalValue();
+			var currentPan:Number = panController.getInternalValue();
 
 			if (loops == SoundLoopType.NO_LOOP || (loops != SoundLoopType.INFINITE_LOOP && currentLoopCount >= loops))
 			{
