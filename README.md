@@ -15,7 +15,7 @@ sound manager for ActionScript 3.
 主に、以下の機能が実装されています。
 
 - SoundGenerator 機能を使用した、始点・終点を指定した無限ループ機能
-- Ogg Vorbis 再生機能
+- Ogg Vorbis 再生機能（有効化する必要があります）
  - RPGツクールVX などで使用されている埋め込みループタグ（LOOPSTART と LOOPLENGTH）の対応
 - サウンドのグルーピング機能
 - ボリュームのフェードイン・アウト
@@ -48,12 +48,14 @@ sound manager for ActionScript 3.
 **このライブラリは、必ず初期化する必要があります。**
 
 ```
-SoundConductor.initialize(true, SoundBufferType.BUFFER_SIZE_4096);
+SoundConductor.initialize(true, SoundBufferType.BUFFER_SIZE_4096, true);
 ```
 
-第1引数は、「SHARED_SOUND_GENERATOR 用の SoundGenerator を駆動させるかどうか」を指定します。`true` にすると、この時点でサウンドチャンネルをひとつ占有することになります。デフォルトは `false` です。これは、必ずしも SHARED_SOUND_GENERATOR を使うとは限らないためです。SHARED_SOUND_GENERATOR については後述します。
+第 1 引数は、「SHARED_SOUND_GENERATOR 用の SoundGenerator を駆動させるかどうか」を指定します。`true` にすると、この時点でサウンドチャンネルをひとつ占有することになります。デフォルトは `false` です。これは、必ずしも SHARED_SOUND_GENERATOR を使うとは限らないためです。SHARED_SOUND_GENERATOR については後述します。
 
-第2引数は、SoundGenerator 機能を使用する際のバッファサイズを指定します。第1引数が `false` であれば指定しなくても良いです。
+第 2 引数は、SoundGenerator 機能を使用する際のバッファサイズを指定します。第1引数が `false` であれば指定しなくても良いです。
+
+第 3 引数は、Ogg Vorbisの再生を有効にするかどうかを指定します。デフォルトは `false` です。これは、Ogg Vorbis を扱うためのサードパーティのライブラリの初期化が少々重いため、Ogg Vorbis を使わない人にとっては不要な苦痛となりえるからです。
 
 ### イントロ付き無限ループ機能
 このライブラリの目玉といえる機能です。主にゲームなどの「コンテンツの BGM 」で使える機能です。
@@ -73,9 +75,9 @@ public static function registerOggBinary(oggBinary:ByteArray, allowMultiple:Bool
 
 `SoundConductor.registerSound()` と `SoundConductor.registerSoundClass()` にある `createPCMByteArray` を `true` にすると、`Sound` オブジェクトから PCM の `ByteArray` を作成します。無限ループは SoundGenerator 機能を使用するため、このパラメータは `true` にする必要があります。（この処理は少々重いことに注意してください）
 
-逆に、`SoundConductor.registerPCMBinary()` の `createSoundObject` は、PCM の `ByteArray` から `Sound` オブジェクトを生成します。
+逆に、`SoundConductor.registerPCMBinary()` の `createSoundObject` は、PCM の `ByteArray` から `Sound` オブジェクトを生成するかどうかを指定できます。
 
-`SoundConductor.registerOggBinary()` は、デコードする際に PCM の `ByteArray` へと強制的に変換されるので、特に指定はありません。
+`SoundConductor.registerOggBinary()` は、デコードする際に PCM の `ByteArray` へと強制的に変換されるので、特にそういったコンバート関連の指定はありません。なお、このメソッドで登録された瞬間から、毎フレーム Ogg Vorbis のデコードが少しずつ行われます。初期化時、或いはプロパティの設定により Ogg Voribis の使用が無効化されている場合は、登録できない旨のエラーが出力されることに注意してください。
 
 適宜登録すると、`SoundId` オブジェクトが返されます。これが、登録したサウンドに紐づいた ID となり、この ID を使用してサウンドの再生を行うことになります。
 
