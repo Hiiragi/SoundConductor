@@ -97,6 +97,9 @@ package jp.hiiragi.managers.soundConductor.error
 		/** 指定された ByteArray は Ogg Vorbis フォーマットではありません。 */
 		public static const ERROR_10206:SoundConductorErrorType = create(10206, "指定された ByteArray は Ogg Vorbis フォーマットではありません。");
 
+		/** enabledOggVorbis が false のため、Ogg Vorbis を扱うことはできません。 */
+		public static const ERROR_10207:SoundConductorErrorType = create(10207, "enabledOggVorbis が false のため、Ogg Vorbis 扱うことはできません。 ");
+
 //--------------------------------------------------------------------------
 //
 //  Class variables

@@ -21,7 +21,7 @@
 			
 			protected function application1_creationCompleteHandler(event:FlexEvent):void
 			{
-				SoundConductor.initialize(true);
+				SoundConductor.initialize(true, null, true);
 				
 				var bgmSound:Sound = new BGM_01();
 				var normalSoundId:SoundId = SoundConductor.registerSound(bgmSound, true);

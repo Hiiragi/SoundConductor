@@ -90,11 +90,24 @@ package jp.hiiragi.managers.soundConductor
 
 		private static var _eventDispatcher:EventDispatcher = new EventDispatcher();
 
+		private static var _initializedOggManager:Boolean;
+
 //--------------------------------------------------------------------------
 //
 //  Class properties
 //
 //--------------------------------------------------------------------------
+		//----------------------------------
+		//  useSharedSoundGenerator
+		//----------------------------------
+		private static var _useSharedSoundGenerator:Boolean;
+
+		/**
+		 * 共用の SoundGenerator を使用するかどうかを取得します.
+		 * @return
+		 */
+		public static function get useSharedSoundGenerator():Boolean  { return _useSharedSoundGenerator; }
+
 		//----------------------------------
 		//  soundBufferSize
 		//----------------------------------
@@ -107,15 +120,28 @@ package jp.hiiragi.managers.soundConductor
 		public static function get soundBufferSize():SoundBufferType  { return _soundBufferSize; }
 
 		//----------------------------------
-		//  useSharedSoundGenerator
+		//  enabledOggVorbis
 		//----------------------------------
-		private static var _useSharedSoundGenerator:Boolean;
+		private static var _enabledOggVorbis:Boolean;
 
 		/**
-		 * 共用の SoundGenerator を使用するかどうかを取得します.
+		 * Ogg Vorbis の再生が有効かどうかを取得・設定します.
+		 * <p>有効化の初回のみ、初期化が走るため若干のタイムラグが発生することに注意してください。</p>
 		 * @return
 		 */
-		public static function get useSharedSoundGenerator():Boolean  { return _useSharedSoundGenerator; }
+		public static function get enabledOggVorbis():Boolean  { return _enabledOggVorbis; }
+
+		public static function set enabledOggVorbis(value:Boolean):void
+		{
+			// 一回ここで OggManager を生成することによって OggManager 全体の初期化が走る（このマネージャは実際には使用しない
+			_enabledOggVorbis = value;
+
+			if (value && !_initializedOggManager)
+			{
+				_initializedOggManager = true;
+				var oggManager:OggManager = new OggManager();
+			}
+		}
 
 		//----------------------------------
 		//  isMute
@@ -165,17 +191,17 @@ package jp.hiiragi.managers.soundConductor
 		 * <code>useSharedSoundGenerator</code> が <code>false</code> の場合、この値を設定する必要はありません。
 		 * 設定には <code>SoundBufferType</code> クラスの定数を使用してください。<code>null</code> の場合は、<code>SoundBufferType.BUFFER_SIZE_4096</code> が適用されます。
 		 * デフォルトは <code>null</code> です。
+		 *
+		 * @param enabledOggVorbis	OggVorbis の再生を有効にするかどうかを設定します。有効化の初回のみ、初期化が走るため若干のタイムラグが発生することに注意してください。デフォルトは <code>false</code> です。
 		 */
-		public static function initialize(useSharedSoundGenerator:Boolean = false, bufferType:SoundBufferType = null):void
+		public static function initialize(useSharedSoundGenerator:Boolean = false, bufferType:SoundBufferType = null, enabledOggVorbis:Boolean = false):void
 		{
 			if (_isInitialized)
 				throw new SoundConductorError(SoundConductorErrorType.ERROR_10011);
 
-			// 一回ここで OggManager を生成することによって OggManager 全体の初期化が走る（実際には使用しない
-			var oggManager:OggManager = new OggManager();
-
-			_soundBufferSize = bufferType || SoundBufferType.BUFFER_SIZE_4096;
 			_useSharedSoundGenerator = useSharedSoundGenerator;
+			_soundBufferSize = bufferType || SoundBufferType.BUFFER_SIZE_4096;
+			SoundConductor.enabledOggVorbis = enabledOggVorbis;
 
 			if (!SoundUtil.checkPlayable())
 			{
@@ -364,7 +390,11 @@ package jp.hiiragi.managers.soundConductor
 		{
 			checkInitialize();
 
-			if (!SoundUtil.checkOggFormat(oggBinary))
+			if (!_enabledOggVorbis)
+			{
+				throw new SoundConductorError(SoundConductorErrorType.ERROR_10207);
+			}
+			else if (!SoundUtil.checkOggFormat(oggBinary))
 			{
 				throw new SoundConductorError(SoundConductorErrorType.ERROR_10206);
 			}
